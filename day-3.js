@@ -3,7 +3,7 @@ function process1(input) {
   let j = -3;
   for (let i = 0; i < input.length; i++) {
     j += 3;
-    if (input[i][j % 31] === "#") {
+    if (input[i][j % input[0].length] === "#") {
       nTrees++;
     }
   }
@@ -17,7 +17,7 @@ function process(input) {
       let j = -right;
       for (let i = 0; i < input.length; i += down) {
         j += right;
-        if (input[i][j % 31] === "#") {
+        if (input[i][j % input[0].length] === "#") {
           nTrees++;
         }
       }
