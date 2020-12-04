@@ -10,14 +10,11 @@ const requiredFields = {
 
 function process1(input) {
   const numValid = input.reduce((numValid, passport) => {
-    const hasFields = passport.split("\n").reduce((hasFields, line) => {
-      const pairs = line.split(" ");
-      pairs.forEach(pair => {
-        const key = pair.split(":")[0];
-        if (requiredFields[key]) {
-          hasFields[key] = true;
-        }
-      });
+    const hasFields = passport.split(/[ \n]/).reduce((hasFields, pair) => {
+      const [key] = pair.split(":");
+      if (requiredFields[key]) {
+        hasFields[key] = true;
+      }
       return hasFields;
     }, {});
     if (Object.keys(hasFields).length === Object.keys(requiredFields).length) {
@@ -30,54 +27,51 @@ function process1(input) {
 
 function process(input) {
   const numValid = input.reduce((numValid, passport) => {
-    const hasFields = passport.split("\n").reduce((hasFields, line) => {
-      const pairs = line.split(" ");
-      pairs.forEach(pair => {
-        const [key, value] = pair.split(":");
-        switch (key) {
-          case "byr":
-            if (/^\d{4}$/.test(value) && +value >= 1920 && +value <= 2002) {
-              hasFields[key] = true;
-            }
-            break;
-          case "iyr":
-            if (/^\d{4}$/.test(value) && +value >= 2010 && +value <= 2020) {
-              hasFields[key] = true;
-            }
-            break;
-          case "eyr":
-            if (/^\d{4}$/.test(value) && +value >= 2020 && +value <= 2030) {
-              hasFields[key] = true;
-            }
-            break;
-          case "hgt":
-            if (/^\d+(cm|in)/.test(value)) {
-              const height = +value.substr(0, value.length - 2);
-              if (
-                (value.endsWith("cm") && height >= 150 && height <= 193) ||
-                (value.endsWith("in") && height >= 59 && height <= 76)
-              ) {
-                hasFields[key] = true;
-              }
-            }
-            break;
-          case "hcl":
-            if (/^#[0-9a-f]{6}/.test(value)) {
-              hasFields[key] = true;
-            }
-            break;
-          case "ecl":
-            if (/^(amb|blu|brn|gry|grn|hzl|oth)$/.test(value)) {
-              hasFields[key] = true;
-            }
-            break;
-          case "pid":
-            if (/^\d{9}$/.test(value)) {
-              hasFields[key] = true;
-            }
-            break;
-        }
-      });
+    const hasFields = passport.split(/[ \n]/).reduce((hasFields, pair) => {
+      const [key, value] = pair.split(":");
+      switch (key) {
+        case "byr":
+          if (/^\d{4}$/.test(value) && +value >= 1920 && +value <= 2002) {
+            hasFields[key] = true;
+          }
+          break;
+        case "iyr":
+          if (/^\d{4}$/.test(value) && +value >= 2010 && +value <= 2020) {
+            hasFields[key] = true;
+          }
+          break;
+        case "eyr":
+          if (/^\d{4}$/.test(value) && +value >= 2020 && +value <= 2030) {
+            hasFields[key] = true;
+          }
+          break;
+        case "hgt":
+          const found = value.match(/^(\d+)(cm|in)$/);
+          if (!found) break;
+          const [, height, unit] = found;
+          if (
+            (unit === "cm" && +height >= 150 && +height <= 193) ||
+            (unit === "in" && +height >= 59 && +height <= 76)
+          ) {
+            hasFields[key] = true;
+          }
+          break;
+        case "hcl":
+          if (/^#[0-9a-f]{6}$/.test(value)) {
+            hasFields[key] = true;
+          }
+          break;
+        case "ecl":
+          if (/^(amb|blu|brn|gry|grn|hzl|oth)$/.test(value)) {
+            hasFields[key] = true;
+          }
+          break;
+        case "pid":
+          if (/^\d{9}$/.test(value)) {
+            hasFields[key] = true;
+          }
+          break;
+      }
       return hasFields;
     }, {});
     if (Object.keys(hasFields).length === Object.keys(requiredFields).length) {
