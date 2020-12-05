@@ -1,49 +1,19 @@
-function processPass(input) {
-  const pass = input.split("");
-  const [min, max] = pass.slice(0, -3).reduce(
-    ([min, max], letter) => {
-      const range = max - min;
-      if (letter === "F") {
-        return [min, min + range / 2];
-      }
-      return [min + range / 2, max];
-    },
-    [0, 128]
-  );
-  const row = Math.floor(Math.min(min, max));
-
-  const [minSeat, maxSeat] = pass.slice(-3).reduce(
-    ([min, max], letter) => {
-      const range = max - min;
-      if (letter === "L") {
-        return [min, min + range / 2];
-      }
-      return [min + range / 2, max];
-    },
-    [0, 8]
-  );
-  const seat = Math.floor(Math.min(minSeat, maxSeat));
-  return row * 8 + seat;
+function processPass(pass) {
+  const binary = pass.replace(/[BR]/g, 1).replace(/[FL]/g, 0);
+  return parseInt(binary, 2);
 }
 
 function process1(input) {
-  const max = input.reduce((max, pass) => {
-    const id = processPass(pass);
-    return Math.max(id, max);
-  }, 0);
-  console.log(max);
+  const ids = input.map(pass => processPass(pass));
+  console.log(Math.max(...ids));
 }
 
 function process(input) {
-  const seats = input.reduce((seats, pass) => {
-    const id = processPass(pass);
-    seats.push(id);
-    return seats;
-  }, []);
-  seats.sort();
-  for (let i = 0; i < seats.length - 1; i++) {
-    const before = +seats[i];
-    const after = +seats[i + 1];
+  const ids = input.map(pass => processPass(pass));
+  ids.sort();
+  for (let i = 0; i < ids.length - 1; i++) {
+    const before = +ids[i];
+    const after = +ids[i + 1];
     if (after - before === 2) {
       console.log(before + 1);
     }
