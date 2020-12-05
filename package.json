@@ -2,5 +2,8 @@
   "name": "js",
   "version": "0.0.0",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "esm": "^3.2.25",
+    "js-combinatorics": "^1.4.5"
+  }
 }
