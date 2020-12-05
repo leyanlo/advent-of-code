@@ -35,23 +35,15 @@ function process1(input) {
 }
 
 function process(input) {
-  const map = [...Array(128 * 8).keys()].reduce((map, i) => {
-    map[i] = false;
-    return map;
-  }, {});
-  input.forEach(pass => {
+  const seats = input.reduce((seats, pass) => {
     const id = processPass(pass);
-    map[id] = true;
-  });
-  const arr = Object.keys(map).reduce((arr, i) => {
-    if (map[i]) {
-      arr.push(i);
-    }
-    return arr;
+    seats.push(id);
+    return seats;
   }, []);
-  for (let i = 0; i < arr.length - 1; i++) {
-    const before = +arr[i];
-    const after = +arr[i + 1];
+  seats.sort();
+  for (let i = 0; i < seats.length - 1; i++) {
+    const before = +seats[i];
+    const after = +seats[i + 1];
     if (after - before === 2) {
       console.log(before + 1);
     }
