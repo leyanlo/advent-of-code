@@ -1,4 +1,4 @@
-function process1(input) {
+function solve1(input) {
   const map = input.reduce((map, orbit) => {
     [center, object] = orbit.split(")");
     map[object] = center;
@@ -14,7 +14,7 @@ function process1(input) {
   console.log(nOrbits);
 }
 
-function process(input) {
+function solve2(input) {
   const map = input.reduce((map, orbit) => {
     [center, object] = orbit.split(")");
     map[object] = center;
@@ -1755,4 +1755,5 @@ NNM)XKG
 KXX)N9V
 5CJ)LW2`.split("\n");
 
-process(input);
+solve1(input);
+solve2(input);

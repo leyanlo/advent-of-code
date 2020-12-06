@@ -71,7 +71,7 @@ function intcode(firstInput, secondInput, arr, i = 0) {
   return [output, -1];
 }
 
-function process1(puzzleInput) {
+function solve1(puzzleInput) {
   const permutations = [...new $C.Permutation("01234")].map((arr) => {
     return arr.map((s) => +s);
   });
@@ -85,7 +85,7 @@ function process1(puzzleInput) {
   console.log(maxSignal);
 }
 
-function process(puzzleInput) {
+function solve2(puzzleInput) {
   const permutations = [...new $C.Permutation("56789")].map((arr) => {
     return arr.map((s) => +s);
   });
@@ -116,4 +116,5 @@ const puzzleInput = `3,8,1001,8,10,8,105,1,0,0,21,42,67,88,101,114,195,276,357,4
   .split(",")
   .map((s) => +s);
 
-process(puzzleInput);
+solve1(puzzleInput);
+solve2(puzzleInput);

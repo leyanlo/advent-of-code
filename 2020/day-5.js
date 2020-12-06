@@ -3,13 +3,13 @@ function processPass(pass) {
   return parseInt(binary, 2);
 }
 
-function process1(input) {
-  const ids = input.map(pass => processPass(pass));
+function solve1(input) {
+  const ids = input.map((pass) => processPass(pass));
   console.log(Math.max(...ids));
 }
 
-function process(input) {
-  const ids = input.map(pass => processPass(pass));
+function solve2(input) {
+  const ids = input.map((pass) => processPass(pass));
   ids.sort();
   for (let i = 0; i < ids.length - 1; i++) {
     const before = +ids[i];
@@ -764,4 +764,5 @@ BFBFFFBRRR
 FBBFFBBRLL
 FBFFFFBRRL`.split("\n");
 
-process(input);
+solve1(input);
+solve2(input);

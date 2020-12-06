@@ -1,11 +1,11 @@
-function process1(input) {
+function solve1(input) {
   const sum = input.reduce((sum, mass) => {
     return sum + ~~(mass / 3) - 2;
   }, 0);
   console.log(sum);
 }
 
-function process(input) {
+function solve2(input) {
   const sum = input.reduce((sum, mass) => {
     let fuel = ~~(mass / 3) - 2;
     while (fuel > 0) {
@@ -118,4 +118,5 @@ const input = `83285
 88983
 74518`.split("\n");
 
-process(input);
+solve1(input);
+solve2(input);

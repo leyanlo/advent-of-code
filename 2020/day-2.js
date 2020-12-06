@@ -1,4 +1,4 @@
-function process1(input) {
+function solve1(input) {
   const numValid = input.reduce((numValid, line) => {
     const split = line.split(" ");
     const [min, max] = split[0].split("-");
@@ -18,7 +18,7 @@ function process1(input) {
   console.log(numValid);
 }
 
-function process(input) {
+function solve2(input) {
   const numValid = input.reduce((numValid, line) => {
     const split = line.split(" ");
     const [left, right] = split[0].split("-");
@@ -1036,4 +1036,5 @@ const input = `1-8 n: dpwpmhknmnlglhjtrbpx
 11-14 g: ggggggggggggggggg
 6-7 q: qqqqvqhq`.split("\n");
 
-process(input);
+solve1(input);
+solve2(input);

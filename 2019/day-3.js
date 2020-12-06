@@ -1,9 +1,9 @@
-function process1(input) {
+function solve1(input) {
   const [wire1, wire2] = input;
   const map = {};
   let row = 0;
   let col = 0;
-  wire1.split(",").forEach(command => {
+  wire1.split(",").forEach((command) => {
     let dir;
     switch (command[0]) {
       case "U":
@@ -32,7 +32,7 @@ function process1(input) {
   row = 0;
   col = 0;
   minDist = Number.MAX_SAFE_INTEGER;
-  wire2.split(",").forEach(command => {
+  wire2.split(",").forEach((command) => {
     let dir;
     switch (command[0]) {
       case "U":
@@ -62,13 +62,13 @@ function process1(input) {
   console.log(minDist);
 }
 
-function process(input) {
+function solve2(input) {
   const [wire1, wire2] = input;
   const map = {};
   let row = 0;
   let col = 0;
   let steps = 0;
-  wire1.split(",").forEach(command => {
+  wire1.split(",").forEach((command) => {
     let dir;
     switch (command[0]) {
       case "U":
@@ -99,7 +99,7 @@ function process(input) {
   col = 0;
   steps = 0;
   minSum = Number.MAX_SAFE_INTEGER;
-  wire2.split(",").forEach(command => {
+  wire2.split(",").forEach((command) => {
     let dir;
     switch (command[0]) {
       case "U":
@@ -135,4 +135,5 @@ L1004,D252,L909,D935,R918,D981,L251,U486,R266,U613,L546,D815,L789,D692,L550,U633
   "\n"
 );
 
-process(input);
+solve1(input);
+solve2(input);

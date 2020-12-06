@@ -1,4 +1,4 @@
-function process1(input) {
+function solve1(input) {
   let nTrees = 0;
   let j = -3;
   for (let i = 0; i < input.length; i++) {
@@ -10,21 +10,24 @@ function process1(input) {
   console.log(nTrees);
 }
 
-function process(input) {
-  const product = [[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]].reduce(
-    (product, [right, down]) => {
-      let nTrees = 0;
-      let j = -right;
-      for (let i = 0; i < input.length; i += down) {
-        j += right;
-        if (input[i][j % input[0].length] === "#") {
-          nTrees++;
-        }
+function solve2(input) {
+  const product = [
+    [1, 1],
+    [3, 1],
+    [5, 1],
+    [7, 1],
+    [1, 2],
+  ].reduce((product, [right, down]) => {
+    let nTrees = 0;
+    let j = -right;
+    for (let i = 0; i < input.length; i += down) {
+      j += right;
+      if (input[i][j % input[0].length] === "#") {
+        nTrees++;
       }
-      return product * nTrees;
-    },
-    1
-  );
+    }
+    return product * nTrees;
+  }, 1);
   console.log(product);
 }
 
@@ -352,4 +355,5 @@ const input = `.........#.#.#.........#.#.....
 ..##..##....#.....#.......#.#..
 ...###.#..#.##............#....`.split("\n");
 
-process(input);
+solve1(input);
+solve2(input);

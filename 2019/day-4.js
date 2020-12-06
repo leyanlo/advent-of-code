@@ -1,8 +1,8 @@
-function process1(input) {
+function solve1(input) {
   const [min, max] = input;
   let count = 0;
   for (let i = min; i <= max; i++) {
-    const digits = ("" + i).split("").map(s => +s);
+    const digits = ("" + i).split("").map((s) => +s);
     let hasAdjacent = false;
     let neverDecrease = true;
     let digit = digits[0];
@@ -17,11 +17,11 @@ function process1(input) {
   console.log(count);
 }
 
-function process(input) {
+function solve2(input) {
   const [min, max] = input;
   let count = 0;
   for (let i = min; i <= max; i++) {
-    const digits = ("" + i).split("").map(s => +s);
+    const digits = ("" + i).split("").map((s) => +s);
     let hasAdjacent = false;
     let neverDecrease = true;
     let digit = digits[0];
@@ -44,6 +44,7 @@ function process(input) {
   console.log(count);
 }
 
-const input = `254032-789860`.split("-").map(s => +s);
+const input = `254032-789860`.split("-").map((s) => +s);
 
-process(input);
+solve1(input);
+solve2(input);

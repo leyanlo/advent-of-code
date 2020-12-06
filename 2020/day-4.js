@@ -5,10 +5,10 @@ const requiredFields = {
   hgt: true,
   hcl: true,
   ecl: true,
-  pid: true
+  pid: true,
 };
 
-function process1(input) {
+function solve1(input) {
   const numValid = input.reduce((numValid, passport) => {
     const hasFields = passport.split(/[ \n]/).reduce((hasFields, pair) => {
       const [key] = pair.split(":");
@@ -25,7 +25,7 @@ function process1(input) {
   console.log(numValid);
 }
 
-function process(input) {
+function solve2(input) {
   const numValid = input.reduce((numValid, passport) => {
     const hasFields = passport.split(/[ \n]/).reduce((hasFields, pair) => {
       const [key, value] = pair.split(":");
@@ -1112,4 +1112,5 @@ pid:147768826 ecl:blu byr:1922 hcl:#ceb3a1 cid:169
 ecl:blu byr:2002 eyr:2028 pid:998185490 cid:165 iyr:2020
 hgt:188cm hcl:#c0946f`.split("\n\n");
 
-process(input);
+solve1(input);
+solve2(input);

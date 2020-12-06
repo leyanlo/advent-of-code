@@ -1,4 +1,4 @@
-function process1(input) {
+function solve1(input) {
   const sum = input.reduce((sum, group) => {
     const answeredYes = {};
     const people = group.split("\n");
@@ -12,7 +12,7 @@ function process1(input) {
   console.log(sum);
 }
 
-function process(input) {
+function solve2(input) {
   const sum = input.reduce((sum, group) => {
     const answeredYesCount = {};
     const people = group.split("\n");
@@ -2214,4 +2214,5 @@ ewq
 zwynrv
 uvxym`.split("\n\n");
 
-process(input);
+solve1(input);
+solve2(input);

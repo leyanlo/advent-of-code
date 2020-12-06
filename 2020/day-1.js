@@ -1,25 +1,29 @@
-function process1(input) {
+function solve1(input) {
   const seen = {};
-  input.forEach(n => {
+  let product;
+  input.forEach((n) => {
     const testN = 2020 - n;
     if (seen[testN]) {
-      console.log(n * testN);
+      product = n * testN;
     }
     seen[n] = true;
   });
+  console.log(product);
 }
 
-function process(input) {
+function solve2(input) {
   const seen = {};
-  input.forEach(n => {
-    Object.keys(seen).forEach(prevN => {
+  let product;
+  input.forEach((n) => {
+    Object.keys(seen).forEach((prevN) => {
       const testN = 2020 - prevN - n;
       if (seen[testN]) {
-        console.log(testN * prevN * n);
+        product = testN * prevN * n;
       }
     });
     seen[n] = true;
   });
+  console.log(product);
 }
 
 const input = `1728
@@ -223,4 +227,5 @@ const input = `1728
 1245
 1620`.split("\n");
 
-process(input);
+solve1(input);
+solve2(input);
