@@ -1,37 +1,34 @@
 function process1(input) {
-  console.log(input);
   const sum = input.reduce((sum, group) => {
-    console.log(group.split("\n"));
-    const map = {};
-    group.split("\n").forEach((line) => {
-      line.split("").forEach((letter) => {
-        map[letter] = true;
+    const answeredYes = {};
+    group.split("\n").forEach((person) => {
+      person.split("").forEach((question) => {
+        answeredYes[question] = true;
       });
     });
-    return sum + Object.keys(map).length;
+    return sum + Object.keys(answeredYes).length;
   }, 0);
   console.log(sum);
 }
 
 function process(input) {
-  console.log(input);
   const sum = input.reduce((sum, group) => {
-    console.log(group.split("\n"));
-    const map = {};
-    group.split("\n").forEach((line) => {
-      line.split("").forEach((letter) => {
-        map[letter] = (map[letter] || 0) + 1;
+    const answeredYesCount = {};
+    group.split("\n").forEach((person) => {
+      person.split("").forEach((question) => {
+        answeredYesCount[question] = (answeredYesCount[question] || 0) + 1;
       });
     });
-    console.log(map);
-    return sum + Object.keys(map).reduce((sum, letter) => {
-      console.log(map[letter],group.split('\n').length)
-      if (map[letter] === group.split("\n").length) {
-        return sum + 1;
-      }
-      return sum;
-    }, 0);
-    return sum + Object.keys(map).length;
+    const unanimousYesCount = Object.keys(answeredYesCount).reduce(
+      (unanimousYesCount, letter) => {
+        if (answeredYesCount[letter] === group.split("\n").length) {
+          return unanimousYesCount + 1;
+        }
+        return unanimousYesCount;
+      },
+      0
+    );
+    return sum + unanimousYesCount;
   }, 0);
   console.log(sum);
 }
