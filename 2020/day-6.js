@@ -1,7 +1,8 @@
 function process1(input) {
   const sum = input.reduce((sum, group) => {
     const answeredYes = {};
-    group.split("\n").forEach((person) => {
+    const people = group.split("\n");
+    people.forEach((person) => {
       person.split("").forEach((question) => {
         answeredYes[question] = true;
       });
@@ -14,14 +15,15 @@ function process1(input) {
 function process(input) {
   const sum = input.reduce((sum, group) => {
     const answeredYesCount = {};
-    group.split("\n").forEach((person) => {
+    const people = group.split("\n");
+    people.forEach((person) => {
       person.split("").forEach((question) => {
         answeredYesCount[question] = (answeredYesCount[question] || 0) + 1;
       });
     });
     const unanimousYesCount = Object.keys(answeredYesCount).reduce(
-      (unanimousYesCount, letter) => {
-        if (answeredYesCount[letter] === group.split("\n").length) {
+      (unanimousYesCount, question) => {
+        if (answeredYesCount[question] === people.length) {
           return unanimousYesCount + 1;
         }
         return unanimousYesCount;
