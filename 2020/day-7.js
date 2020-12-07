@@ -1,3 +1,21 @@
+function inputToMap(input) {
+  return input.reduce((map, line) => {
+    const [left, right] = line.split(' contain ');
+    const bag = left.split(' ').slice(0, -1).join(' ');
+    if (right === 'no other bags.') {
+      map[bag] = {};
+    } else {
+      map[bag] = right.split(', ').reduce((innerMap, rule) => {
+        const split = rule.split(' ');
+        const innerBag = split.slice(1, -1).join(' ');
+        innerMap[innerBag] = +split[0];
+        return innerMap;
+      }, {});
+    }
+    return map;
+  }, {});
+}
+
 function hasBag(map, outerBag, innerBag) {
   if (map[outerBag][innerBag]) {
     return true;
@@ -10,56 +28,23 @@ function hasBag(map, outerBag, innerBag) {
 
 function numBags(map, bag) {
   return Object.keys(map[bag]).reduce((acc, key) => {
-    return acc + map[bag][key] * numBags(map, key);
-  }, 1);
+    return acc + map[bag][key] * (1 + numBags(map, key));
+  }, 0);
 }
 
 function solve1(input) {
-  const map = input.reduce((map, line) => {
-    const [left, right] = line.split(' contain ');
-    const leftBag = left.split(' ').slice(0, -1).join(' ');
-    if (right === 'no other bags.') {
-      map[leftBag] = {};
-    } else {
-      const bags = right.split(', ');
-      map[leftBag] = bags.reduce((contains, bag) => {
-        const split = bag.split(' ');
-        contains[split.slice(1, -1).join(' ')] = +split[0];
-        return contains;
-      }, {});
-    }
-    return map;
-  }, {});
+  const map = inputToMap(input);
 
-  const newMap = Object.keys(map).reduce((newMap, key) => {
-    newMap[key] = hasBag(map, key, 'shiny gold');
-    return newMap;
-  }, {});
-  console.log(
-    Object.keys(newMap).reduce((acc, k) => {
-      return acc + (newMap[k] ? 1 : 0);
-    }, 0)
-  );
+  const count = Object.keys(map).reduce((count, key) => {
+    return count + hasBag(map, key, 'shiny gold');
+  }, 0);
+  console.log(count);
 }
 
 function solve2(input) {
-  const map = input.reduce((map, line) => {
-    const [left, right] = line.split(' contain ');
-    const leftBag = left.split(' ').slice(0, -1).join(' ');
-    if (right === 'no other bags.') {
-      map[leftBag] = {};
-    } else {
-      const bags = right.split(', ');
-      map[leftBag] = bags.reduce((contains, bag) => {
-        const split = bag.split(' ');
-        contains[split.slice(1, -1).join(' ')] = +split[0];
-        return contains;
-      }, {});
-    }
-    return map;
-  }, {});
+  const map = inputToMap(input);
 
-  console.log(numBags(map, 'shiny gold') - 1);
+  console.log(numBags(map, 'shiny gold'));
 }
 
 const input = `striped orange bags contain 1 vibrant green bag, 5 plaid yellow bags, 1 drab magenta bag.
