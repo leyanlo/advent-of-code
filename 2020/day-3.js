@@ -3,7 +3,7 @@ function solve1(input) {
   let j = -3;
   for (let i = 0; i < input.length; i++) {
     j += 3;
-    if (input[i][j % input[0].length] === "#") {
+    if (input[i][j % input[0].length] === '#') {
       nTrees++;
     }
   }
@@ -22,7 +22,7 @@ function solve2(input) {
     let j = -right;
     for (let i = 0; i < input.length; i += down) {
       j += right;
-      if (input[i][j % input[0].length] === "#") {
+      if (input[i][j % input[0].length] === '#') {
         nTrees++;
       }
     }
@@ -353,7 +353,7 @@ const input = `.........#.#.#.........#.#.....
 .###..............#.#..#.......
 .....#.........#.......#......#
 ..##..##....#.....#.......#.#..
-...###.#..#.##............#....`.split("\n");
+...###.#..#.##............#....`.split('\n');
 
 solve1(input);
 solve2(input);

@@ -1,9 +1,24 @@
 {
   "name": "advent-of-code",
   "version": "0.0.0",
-  "private": true,
+  "author": "Leyan Lo <leyanlo@gmail.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "format": "prettier --ignore-path .gitignore --write \"**/*.{js,md}\"",
+    "lint": "eslint --fix --ignore-path .gitignore \"**/*.js\""
+  },
   "dependencies": {
     "esm": "^3.2.25",
     "js-combinatorics": "^1.4.5"
+  },
+  "devDependencies": {
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
+    "prettier": "^2.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leyanlo/advent-of-code"
   }
 }

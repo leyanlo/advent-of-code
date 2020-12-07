@@ -225,7 +225,7 @@ const input = `1728
 1782
 1523
 1245
-1620`.split("\n");
+1620`.split('\n');
 
 solve1(input);
 solve2(input);

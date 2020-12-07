@@ -1,10 +1,10 @@
 function solve1(input) {
   const numValid = input.reduce((numValid, line) => {
-    const split = line.split(" ");
-    const [min, max] = split[0].split("-");
+    const split = line.split(' ');
+    const [min, max] = split[0].split('-');
     const letter = split[1][0];
     const password = split[2];
-    const numLetters = password.split("").reduce((numLetters, l) => {
+    const numLetters = password.split('').reduce((numLetters, l) => {
       if (l === letter) {
         return numLetters + 1;
       }
@@ -20,8 +20,8 @@ function solve1(input) {
 
 function solve2(input) {
   const numValid = input.reduce((numValid, line) => {
-    const split = line.split(" ");
-    const [left, right] = split[0].split("-");
+    const split = line.split(' ');
+    const [left, right] = split[0].split('-');
     const letter = split[1][0];
     const password = split[2];
     if (
@@ -1034,7 +1034,7 @@ const input = `1-8 n: dpwpmhknmnlglhjtrbpx
 1-11 s: qsssssspsssss
 4-11 g: zkxvrprgzxjcbg
 11-14 g: ggggggggggggggggg
-6-7 q: qqqqvqhq`.split("\n");
+6-7 q: qqqqvqhq`.split('\n');
 
 solve1(input);
 solve2(input);

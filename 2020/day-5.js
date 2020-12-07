@@ -762,7 +762,7 @@ FBFFFBFLRR
 FBBBBFFLRL
 BFBFFFBRRR
 FBBFFBBRLL
-FBFFFFBRRL`.split("\n");
+FBFFFFBRRL`.split('\n');
 
 solve1(input);
 solve2(input);

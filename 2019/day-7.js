@@ -1,8 +1,8 @@
-require = require("esm")(module);
-const $C = require("js-combinatorics");
+require = require('esm')(module);
+const $C = require('js-combinatorics');
 
 function getParamsAndOpcode(n) {
-  const paddedN = ("" + n).padStart(5, "0");
+  const paddedN = ('' + n).padStart(5, '0');
   return [+paddedN[0], +paddedN[1], +paddedN[2], +paddedN.substr(3)];
 }
 
@@ -34,7 +34,7 @@ function intcode(firstInput, secondInput, arr, i = 0) {
           arr[position] = secondInput;
           break;
         default:
-          console.error("more than two inputs", inputCount);
+          console.error('more than two inputs', inputCount);
       }
       i += 2;
     } else if (opcode === 4) {
@@ -63,7 +63,7 @@ function intcode(firstInput, secondInput, arr, i = 0) {
       arr[position] = first === second ? 1 : 0;
       i += 4;
     } else {
-      console.error("invalid opcode", opcode);
+      console.error('invalid opcode', opcode);
       break;
     }
     [mode3, mode2, mode1, opcode] = getParamsAndOpcode(arr[i]);
@@ -72,7 +72,7 @@ function intcode(firstInput, secondInput, arr, i = 0) {
 }
 
 function solve1(puzzleInput) {
-  const permutations = [...new $C.Permutation("01234")].map((arr) => {
+  const permutations = [...new $C.Permutation('01234')].map((arr) => {
     return arr.map((s) => +s);
   });
   const maxSignal = permutations.reduce((maxSignal, permutation) => {
@@ -86,7 +86,7 @@ function solve1(puzzleInput) {
 }
 
 function solve2(puzzleInput) {
-  const permutations = [...new $C.Permutation("56789")].map((arr) => {
+  const permutations = [...new $C.Permutation('56789')].map((arr) => {
     return arr.map((s) => +s);
   });
   const maxSignal = permutations.reduce((maxSignal, permutation) => {
@@ -113,7 +113,7 @@ function solve2(puzzleInput) {
 }
 
 const puzzleInput = `3,8,1001,8,10,8,105,1,0,0,21,42,67,88,101,114,195,276,357,438,99999,3,9,101,3,9,9,1002,9,4,9,1001,9,5,9,102,4,9,9,4,9,99,3,9,1001,9,3,9,1002,9,2,9,101,2,9,9,102,2,9,9,1001,9,5,9,4,9,99,3,9,102,4,9,9,1001,9,3,9,102,4,9,9,101,4,9,9,4,9,99,3,9,101,2,9,9,1002,9,3,9,4,9,99,3,9,101,4,9,9,1002,9,5,9,4,9,99,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,99,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,99,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,99,3,9,102,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,99,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,101,2,9,9,4,9,99`
-  .split(",")
+  .split(',')
   .map((s) => +s);
 
 solve1(puzzleInput);

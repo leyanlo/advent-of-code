@@ -1,8 +1,8 @@
 function solve1(input) {
   const sum = input.reduce((sum, group) => {
-    const people = group.split("\n");
+    const people = group.split('\n');
     const answers = people.reduce((answers, person) => {
-      person.split("").forEach((question) => {
+      person.split('').forEach((question) => {
         answers[question] = true;
       });
       return answers;
@@ -14,9 +14,9 @@ function solve1(input) {
 
 function solve2(input) {
   const sum = input.reduce((sum, group) => {
-    const people = group.split("\n");
+    const people = group.split('\n');
     const answers = people.reduce((answers, person) => {
-      person.split("").forEach((question) => {
+      person.split('').forEach((question) => {
         answers[question] = true;
       });
       return answers;
@@ -2212,7 +2212,7 @@ q
 ewq
 
 zwynrv
-uvxym`.split("\n\n");
+uvxym`.split('\n\n');
 
 solve1(input);
 solve2(input);

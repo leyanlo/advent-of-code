@@ -6,7 +6,7 @@ function solve2(input) {
   // TOOD
 }
 
-const input = ``.split("\n");
+const input = ``.split('\n');
 
 solve1(input);
 solve2(input);

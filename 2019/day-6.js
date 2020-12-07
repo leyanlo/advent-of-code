@@ -1,11 +1,11 @@
 function solve1(input) {
   const map = input.reduce((map, orbit) => {
-    [center, object] = orbit.split(")");
+    [center, object] = orbit.split(')');
     map[object] = center;
     return map;
   }, {});
   const nOrbits = Object.keys(map).reduce((nOrbits, object) => {
-    while (object !== "COM") {
+    while (object !== 'COM') {
       object = map[object];
       nOrbits++;
     }
@@ -16,20 +16,20 @@ function solve1(input) {
 
 function solve2(input) {
   const map = input.reduce((map, orbit) => {
-    [center, object] = orbit.split(")");
+    [center, object] = orbit.split(')');
     map[object] = center;
     return map;
   }, {});
   const myPath = [];
-  let curr = "YOU";
-  while (curr !== "COM") {
+  let curr = 'YOU';
+  while (curr !== 'COM') {
     curr = map[curr];
     myPath.unshift(curr);
   }
 
   const santaPath = [];
-  curr = "SAN";
-  while (curr !== "COM") {
+  curr = 'SAN';
+  while (curr !== 'COM') {
     curr = map[curr];
     santaPath.unshift(curr);
   }
@@ -1753,7 +1753,7 @@ TRH)K6C
 LL2)M9H
 NNM)XKG
 KXX)N9V
-5CJ)LW2`.split("\n");
+5CJ)LW2`.split('\n');
 
 solve1(input);
 solve2(input);

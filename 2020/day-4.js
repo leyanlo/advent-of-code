@@ -11,7 +11,7 @@ const requiredFields = {
 function solve1(input) {
   const numValid = input.reduce((numValid, passport) => {
     const hasFields = passport.split(/[ \n]/).reduce((hasFields, pair) => {
-      const [key] = pair.split(":");
+      const [key] = pair.split(':');
       if (requiredFields[key]) {
         hasFields[key] = true;
       }
@@ -28,45 +28,45 @@ function solve1(input) {
 function solve2(input) {
   const numValid = input.reduce((numValid, passport) => {
     const hasFields = passport.split(/[ \n]/).reduce((hasFields, pair) => {
-      const [key, value] = pair.split(":");
+      const [key, value] = pair.split(':');
       switch (key) {
-        case "byr":
+        case 'byr':
           if (/^\d{4}$/.test(value) && +value >= 1920 && +value <= 2002) {
             hasFields[key] = true;
           }
           break;
-        case "iyr":
+        case 'iyr':
           if (/^\d{4}$/.test(value) && +value >= 2010 && +value <= 2020) {
             hasFields[key] = true;
           }
           break;
-        case "eyr":
+        case 'eyr':
           if (/^\d{4}$/.test(value) && +value >= 2020 && +value <= 2030) {
             hasFields[key] = true;
           }
           break;
-        case "hgt":
+        case 'hgt':
           const found = value.match(/^(\d+)(cm|in)$/);
           if (!found) break;
           const [, height, unit] = found;
           if (
-            (unit === "cm" && +height >= 150 && +height <= 193) ||
-            (unit === "in" && +height >= 59 && +height <= 76)
+            (unit === 'cm' && +height >= 150 && +height <= 193) ||
+            (unit === 'in' && +height >= 59 && +height <= 76)
           ) {
             hasFields[key] = true;
           }
           break;
-        case "hcl":
+        case 'hcl':
           if (/^#[0-9a-f]{6}$/.test(value)) {
             hasFields[key] = true;
           }
           break;
-        case "ecl":
+        case 'ecl':
           if (/^(amb|blu|brn|gry|grn|hzl|oth)$/.test(value)) {
             hasFields[key] = true;
           }
           break;
-        case "pid":
+        case 'pid':
           if (/^\d{9}$/.test(value)) {
             hasFields[key] = true;
           }
@@ -1110,7 +1110,7 @@ eyr:2030 hgt:163cm iyr:2014
 pid:147768826 ecl:blu byr:1922 hcl:#ceb3a1 cid:169
 
 ecl:blu byr:2002 eyr:2028 pid:998185490 cid:165 iyr:2020
-hgt:188cm hcl:#c0946f`.split("\n\n");
+hgt:188cm hcl:#c0946f`.split('\n\n');
 
 solve1(input);
 solve2(input);

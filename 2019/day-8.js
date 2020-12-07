@@ -5,8 +5,8 @@ function solve1(input) {
   let fewestZeros = Number.MAX_SAFE_INTEGER;
   for (let i = 0; i < nLayers; i++) {
     const layer = input.substr(i * layerSize, layerSize);
-    const nZeros = layer.split("").reduce((nZeros, pixel) => {
-      return pixel === "0" ? nZeros + 1 : nZeros;
+    const nZeros = layer.split('').reduce((nZeros, pixel) => {
+      return pixel === '0' ? nZeros + 1 : nZeros;
     }, 0);
     if (nZeros < fewestZeros) {
       fewestZeros = nZeros;
@@ -15,12 +15,12 @@ function solve1(input) {
   }
 
   const pixelCounts = layerWithFewestZeros
-    .split("")
+    .split('')
     .reduce((pixelCounts, pixel) => {
       pixelCounts[pixel] = (pixelCounts[pixel] || 0) + 1;
       return pixelCounts;
     }, {});
-  console.log(pixelCounts["1"] * pixelCounts["2"]);
+  console.log(pixelCounts['1'] * pixelCounts['2']);
 }
 
 function solve2(input) {
@@ -31,7 +31,7 @@ function solve2(input) {
   const finalImage = [...Array(layerSize)].map(() => 2);
   for (let i = 0; i < nLayers; i++) {
     const layer = input.substr(i * layerSize, layerSize);
-    layer.split("").forEach((pixel, i) => {
+    layer.split('').forEach((pixel, i) => {
       if (finalImage[i] === 2) {
         finalImage[i] = +pixel;
       }
@@ -42,8 +42,8 @@ function solve2(input) {
     console.log(
       finalImage
         .slice(i * width, (i + 1) * width)
-        .map((pixel) => pixel || " ")
-        .join("")
+        .map((pixel) => pixel || ' ')
+        .join('')
     );
   }
 }

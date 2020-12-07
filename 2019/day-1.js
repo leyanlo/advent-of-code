@@ -116,7 +116,7 @@ const input = `83285
 80664
 149742
 88983
-74518`.split("\n");
+74518`.split('\n');
 
 solve1(input);
 solve2(input);
