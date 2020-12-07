@@ -54,13 +54,13 @@ function intcode(firstInput, secondInput, arr, i = 0) {
       const first = mode1 ? arr[i + 1] : arr[arr[i + 1]];
       const second = mode2 ? arr[i + 2] : arr[arr[i + 2]];
       const position = mode3 ? i + 3 : arr[i + 3];
-      arr[position] = first < second ? 1 : 0;
+      arr[position] = +(first < second);
       i += 4;
     } else if (opcode === 8) {
       const first = mode1 ? arr[i + 1] : arr[arr[i + 1]];
       const second = mode2 ? arr[i + 2] : arr[arr[i + 2]];
       const position = mode3 ? i + 3 : arr[i + 3];
-      arr[position] = first === second ? 1 : 0;
+      arr[position] = +(first === second);
       i += 4;
     } else {
       console.error('invalid opcode', opcode);

@@ -53,13 +53,15 @@ function solve(input, puzzleInput) {
         i = !(arr[paramIndices[0]] || 0) ? arr[paramIndices[1]] || 0 : i + 3;
         break;
       case 7:
-        arr[paramIndices[2]] =
-          (arr[paramIndices[0]] || 0) < (arr[paramIndices[1]] || 0) ? 1 : 0;
+        arr[paramIndices[2]] = +(
+          (arr[paramIndices[0]] || 0) < (arr[paramIndices[1]] || 0)
+        );
         i += 4;
         break;
       case 8:
-        arr[paramIndices[2]] =
-          (arr[paramIndices[0]] || 0) === (arr[paramIndices[1]] || 0) ? 1 : 0;
+        arr[paramIndices[2]] = +(
+          (arr[paramIndices[0]] || 0) === (arr[paramIndices[1]] || 0)
+        );
         i += 4;
         break;
       case 9:
