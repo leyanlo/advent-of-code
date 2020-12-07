@@ -1,36 +1,24 @@
 function solve1(input) {
   const sum = input.reduce((sum, group) => {
-    const answeredYes = {};
-    const people = group.split("\n");
-    people.forEach((person) => {
-      person.split("").forEach((question) => {
-        answeredYes[question] = true;
-      });
-    });
-    return sum + Object.keys(answeredYes).length;
+    const answers = new Set(group.replace(/[ \n]/g, "").split(""));
+    return sum + answers.size;
   }, 0);
   console.log(sum);
 }
 
 function solve2(input) {
   const sum = input.reduce((sum, group) => {
-    const answeredYesCount = {};
+    const answers = new Set(group.replace(/[ \n]/g, "").split(""));
     const people = group.split("\n");
-    people.forEach((person) => {
-      person.split("").forEach((question) => {
-        answeredYesCount[question] = (answeredYesCount[question] || 0) + 1;
-      });
-    });
-    const unanimousYesCount = Object.keys(answeredYesCount).reduce(
-      (unanimousYesCount, question) => {
-        if (answeredYesCount[question] === people.length) {
-          return unanimousYesCount + 1;
+    const unanimousAnswers = people.reduce((unanimousAnswers, person) => {
+      [...unanimousAnswers].forEach((answer) => {
+        if (!person.includes(answer)) {
+          unanimousAnswers.delete(answer);
         }
-        return unanimousYesCount;
-      },
-      0
-    );
-    return sum + unanimousYesCount;
+      });
+      return unanimousAnswers;
+    }, answers);
+    return sum + unanimousAnswers.size;
   }, 0);
   console.log(sum);
 }
