@@ -1,24 +1,36 @@
 function solve1(input) {
   const sum = input.reduce((sum, group) => {
-    const answers = new Set(group.replace(/[ \n]/g, "").split(""));
-    return sum + answers.size;
+    const people = group.split("\n");
+    const answers = people.reduce((answers, person) => {
+      person.split("").forEach((question) => {
+        answers[question] = true;
+      });
+      return answers;
+    }, {});
+    return sum + Object.keys(answers).length;
   }, 0);
   console.log(sum);
 }
 
 function solve2(input) {
   const sum = input.reduce((sum, group) => {
-    const answers = new Set(group.replace(/[ \n]/g, "").split(""));
     const people = group.split("\n");
-    const unanimousAnswers = people.reduce((unanimousAnswers, person) => {
-      [...unanimousAnswers].forEach((answer) => {
-        if (!person.includes(answer)) {
-          unanimousAnswers.delete(answer);
+    const answers = people.reduce((answers, person) => {
+      person.split("").forEach((question) => {
+        answers[question] = true;
+      });
+      return answers;
+    }, {});
+    people.forEach((person) => {
+      Object.keys(answers).forEach((question) => {
+        if (person.indexOf(question) === -1) {
+          answers[question] = false;
         }
       });
-      return unanimousAnswers;
-    }, answers);
-    return sum + unanimousAnswers.size;
+    });
+    return (
+      sum + Object.keys(answers).filter((question) => answers[question]).length
+    );
   }, 0);
   console.log(sum);
 }
