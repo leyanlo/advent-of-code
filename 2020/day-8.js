@@ -32,7 +32,9 @@ function solve2(input) {
       let [op, val] = input[i].split(' ');
       val = +val;
       if (i === toggleI) {
-        if (op === 'jmp') {
+        if (op === 'acc') {
+          break;
+        } else if (op === 'jmp') {
           op = 'nop';
         } else if (op === 'nop') {
           op = 'jmp';
