@@ -1,57 +1,24 @@
-function solve1(input) {
-  input = input.map((s) => +s);
-  const num = 25;
-  const window = input.slice(0, num);
-  for (let i = num; i < input.length - num; i++) {
-    // console.log(window)
-    let found = false;
-    for (let j = 0; j < num; j++) {
-      for (let k = j + 1; k < num; k++) {
-        // console.log(window[j], window[k], input[i])
-        if (window[j] + window[k] === input[i]) {
-          found = true;
-          break;
-        }
-      }
-      if (found) break;
-    }
-    if (!found) {
-      console.log(input[i]);
-    }
-    window.shift();
-    window.push(input[i]);
-    // console.log(window)
-  }
-}
-
-function getInvalid(input, num) {
-  input = input.map((s) => +s);
-  const window = input.slice(0, num);
-  for (let i = num; i < input.length - num; i++) {
-    // console.log(window)
-    let found = false;
-    for (let j = 0; j < num; j++) {
-      for (let k = j + 1; k < num; k++) {
-        // console.log(window[j], window[k], input[i])
-        if (window[j] + window[k] === input[i]) {
-          found = true;
-          break;
-        }
-      }
-      if (found) break;
-    }
+function getInvalid(input, preamble) {
+  let window = input.slice(0, preamble);
+  for (let i = preamble; i < input.length - preamble; i++) {
+    const found = window.some((n, j) => {
+      return window.slice(j).some((m) => {
+        return n + m === input[i];
+      });
+    });
     if (!found) {
       return input[i];
     }
-    window.shift();
-    window.push(input[i]);
-    // console.log(window)
+    window = input.slice(i - preamble + 1, i + 1);
   }
 }
 
-function solve(input) {
-  const invalid = getInvalid(input, 25);
-  input = input.map((s) => +s);
+function solve1(input, preamble) {
+  console.log(getInvalid(input, preamble));
+}
+
+function solve2(input, preamble) {
+  const invalid = getInvalid(input, preamble);
   let left = 0;
   let right = 1;
   let sum = input.slice(left, right).reduce((acc, sum) => acc + sum, 0);
@@ -62,13 +29,12 @@ function solve(input) {
       left++;
     }
     sum = input.slice(left, right).reduce((acc, sum) => acc + sum, 0);
-    console.log({ left, right, sum });
   }
 
-  console.log(left, right);
-  const max = Math.max(...input.slice(left, right));
-  const min = Math.min(...input.slice(left, right));
-  console.log(max + min);
+  const range = input.slice(left, right);
+  const min = Math.min(...range);
+  const max = Math.max(...range);
+  console.log(min + max);
 }
 
 const input = `33
@@ -1070,6 +1036,9 @@ const input = `33
 72963771707508
 75415171865071
 74939409624468
-83267654028700`.split('\n');
+83267654028700`
+  .split('\n')
+  .map((s) => +s);
 
-solve(input);
+solve1(input, 25);
+solve2(input, 25);
