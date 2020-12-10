@@ -1,60 +1,39 @@
 function solve1(input) {
-  const diffs = { 1: 1, 3: 1 };
+  const diffMap = {};
   for (let i = 0; i < input.length - 1; i++) {
-    diffs[input[i + 1] - input[i]] = (diffs[input[i + 1] - input[i]] || 0) + 1;
+    const diff = input[i + 1] - input[i];
+    diffMap[diff] = (diffMap[diff] || 0) + 1;
   }
-  console.log(diffs[1] * diffs[3]);
+  console.log(diffMap[1] * diffMap[3]);
 }
 
-function solve(input) {
-  const nextMap = {
-    0: [input[0]],
-    [input[input.length - 1]]: [input[input.length - 1] + 3],
-  };
-  const prevMap = {
-    [input[0]]: [0],
-    [input[input.length - 1] + 3]: [input[input.length - 1]],
-  };
-  for (let i = 0; i < input.length - 1; i++) {
+function solve2(input) {
+  const prevMap = {};
+  for (let i = 0; i < input.length; i++) {
     const curr = input[i];
-    const next = input[i + 1];
-    const next2 = input[i + 2];
-    const next3 = input[i + 3];
-    if (next - curr <= 3) {
-      nextMap[curr] = nextMap[curr] || [];
-      nextMap[curr].push(next);
-      prevMap[next] = prevMap[next] || [];
-      prevMap[next].push(curr);
-    }
-    if (next2 - curr <= 3) {
-      nextMap[curr] = nextMap[curr] || [];
-      nextMap[curr].push(next2);
-      prevMap[next2] = prevMap[next2] || [];
-      prevMap[next2].push(curr);
-    }
-    if (next3 - curr <= 3) {
-      nextMap[curr] = nextMap[curr] || [];
-      nextMap[curr].push(next3);
-      prevMap[next3] = prevMap[next3] || [];
-      prevMap[next3].push(curr);
+    for (let j = 0; j < 3; j++) {
+      const next = input[i + 1 + j];
+      if (next - curr <= 3) {
+        prevMap[next] = prevMap[next] || [];
+        prevMap[next].push(curr);
+      }
     }
   }
-  console.log(nextMap);
-  console.log(prevMap);
 
-  const countMap = Object.keys(prevMap).reduce((acc, i) => {
-    const nums = prevMap[i];
-    nums.forEach((num) => {
-      if (num === 0) {
-        acc[i] = (acc[i] || 0) + 1;
-        return;
+  const countMap = {};
+  for (let i = 1; i < input.length; i++) {
+    const n = input[i];
+    const prevs = prevMap[n];
+    for (let j = 0; j < prevs.length; j++) {
+      const prev = prevs[j];
+      if (prev === 0) {
+        countMap[n] = (countMap[n] || 0) + 1;
+      } else {
+        countMap[n] = (countMap[n] || 0) + countMap[prev];
       }
-      acc[i] = (acc[i] || 0) + acc[num]
-    })
-
-    return acc;
-  }, {})
-  console.log(countMap)
+    }
+  }
+  console.log(countMap[input[input.length - 1]]);
 }
 
 const input = `151
@@ -155,11 +134,13 @@ const input = `151
 20
 124
 9
-66
-`
+66`
   .split('\n')
   .map((s) => +s);
 
 input.sort((a, b) => a - b);
+input.push(input[input.length - 1] + 3);
+input.unshift(0);
 
-solve(input);
+solve1(input);
+solve2(input);
