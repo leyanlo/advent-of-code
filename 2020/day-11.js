@@ -1,8 +1,4 @@
-function deepEqual(arr1, arr2) {
-  return arr1.join() === arr2.join();
-}
-
-const neighbors = [
+const dirs = [
   [-1, -1],
   [-1, 0],
   [-1, 1],
@@ -13,70 +9,61 @@ const neighbors = [
   [1, 1],
 ];
 
+function getAdjacents(curr, i, j) {
+  return dirs.reduce((adjacents, [di, dj]) => {
+    return adjacents + (!!curr[i + di] && curr[i + di][j + dj] === '#');
+  }, 0);
+}
+
 function solve1(input) {
   let curr;
   let next = input;
   do {
     curr = next;
-    next = [];
-    for (let i = 0; i < curr.length; i++) {
-      next.push([]);
-      for (let j = 0; j < curr[0].length; j++) {
-        const pixel = curr[i][j];
-        if (pixel === '.') {
-          next[i].push('.');
-        } else if (pixel === 'L') {
-          const adjacents = neighbors.reduce((adjacents, [di, dj]) => {
-            return (
-              adjacents + +(!!curr[i + di] && curr[i + di][j + dj] === '#')
-            );
-          }, 0);
-          if (adjacents === 0) {
-            next[i].push('#');
-          } else {
-            next[i].push('L');
+    next = curr.map((row, i) => {
+      return row
+        .split('')
+        .map((char, j) => {
+          if (char === '.') {
+            return char;
           }
-        } else if (pixel === '#') {
-          const adjacents = neighbors.reduce((adjacents, [di, dj]) => {
-            return (
-              adjacents + +(!!curr[i + di] && curr[i + di][j + dj] === '#')
-            );
-          }, 0);
-          if (adjacents >= 4) {
-            next[i].push('L');
-          } else {
-            next[i].push('#');
-          }
-        }
-      }
-      next[i] = next[i].join('');
-    }
-  } while (!deepEqual(curr, next));
+          const adjacents = getAdjacents(curr, i, j);
+          return char === 'L'
+            ? !adjacents
+              ? '#'
+              : 'L'
+            : adjacents >= 4
+            ? 'L'
+            : '#';
+        })
+        .join('');
+    });
+  } while (curr.join() !== next.join());
   const occupied = curr.reduce((occupied, row) => {
     return (
-      occupied + row.split('').reduce((sum, seat) => sum + +(seat === '#'), 0)
+      occupied + row.split('').reduce((sum, char) => sum + (char === '#'), 0)
     );
   }, 0);
   console.log(occupied);
 }
 
-function getAdjacents(curr, i, j) {
-  return neighbors.reduce((adjacents, [di, dj]) => {
+function getSeen(curr, i, j) {
+  return dirs.reduce((seen, [di, dj]) => {
     let currI = i + di;
     let currJ = j + dj;
-    let currAdjacents = 0;
+    let currSeen = false;
     while (curr[currI] && curr[currI][currJ]) {
-      // console.log(currI, currJ, curr[currI] && curr[currI][currJ])
       if (curr[currI][currJ] === '#') {
-        currAdjacents = 1;
-        break;
-      } else if (curr[currI][currJ] === 'L') {
+        currSeen = true;
         break;
       }
-      currI = currI + di;
-      currJ = currJ + dj;
+      if (curr[currI][currJ] === 'L') {
+        break;
+      }
+      currI += di;
+      currJ += dj;
     }
-    return adjacents + currAdjacents;
+    return seen + currSeen;
   }, 0);
 }
 
@@ -85,33 +72,19 @@ function solve2(input) {
   let next = input;
   do {
     curr = next;
-    next = [];
-    for (let i = 0; i < curr.length; i++) {
-      next.push([]);
-      for (let j = 0; j < curr[0].length; j++) {
-        const pixel = curr[i][j];
-        if (pixel === '.') {
-          next[i].push('.');
-        } else if (pixel === 'L') {
-          const adjacents = getAdjacents(curr, i, j);
-          if (adjacents === 0) {
-            next[i].push('#');
-          } else {
-            next[i].push('L');
+    next = curr.map((row, i) => {
+      return row
+        .split('')
+        .map((char, j) => {
+          if (char === '.') {
+            return char;
           }
-        } else if (pixel === '#') {
-          const adjacents = getAdjacents(curr, i, j);
-          // console.log(i, j, adjacents)
-          if (adjacents >= 5) {
-            next[i].push('L');
-          } else {
-            next[i].push('#');
-          }
-        }
-      }
-      next[i] = next[i].join('');
-    }
-  } while (!deepEqual(curr, next));
+          const seen = getSeen(curr, i, j);
+          return char === 'L' ? (!seen ? '#' : 'L') : seen >= 5 ? 'L' : '#';
+        })
+        .join('');
+    });
+  } while (curr.join() !== next.join());
   const occupied = curr.reduce((occupied, row) => {
     return (
       occupied + row.split('').reduce((sum, seat) => sum + +(seat === '#'), 0)
@@ -216,7 +189,9 @@ LLLLL.LLLL.LLLLLLLLL.LLLLLL.LLLLLLLLLLLLLLL.LLLLLLLLL.LLLLLLL..LLLL.LLLLLL.LLLLL
 LLLLL.LLLL.LLLLLLLLLLLLL.LLL.LLLLLLLLLLLLLL.LLLLLL.LLLLLLLLLLLLLLLL.LLLLLL.LLLLLLLLLLLLLLLL.LLLLLL
 LLLLL.LLLL.LLLLLLLLLLLLLLLL.LLLLLLLLLLLLLLL.L.LLLLLLL.LL.LLLLLLL.LL.LLLLLL.LLLLLL.LLLLLLLLL..LLLLL
 LLL.L.LLLL.LLLLLLLLL.LLLLLL..LLLLLL.LLLLLLL.LLLLLLLLL.LLLLLLLL.LLLL.LLLLLLL.LLLLL.LLLLLLLLL.LLLLLL
-L.LLL.LLLLLLLLLLLLLL.LLLLLLLLLLLLLL.LLLLLLLLLLLLLLLLLLLLL.LLLL.LLLL..LLLLLLLLLLLLLLLLLL.LLL.LLLLLL`.split('\n');
+L.LLL.LLLLLLLLLLLLLL.LLLLLLLLLLLLLL.LLLLLLLLLLLLLLLLLLLLL.LLLL.LLLL..LLLLLLLLLLLLLLLLLL.LLL.LLLLLL`.split(
+  '\n'
+);
 
 solve1(input);
 solve2(input);
