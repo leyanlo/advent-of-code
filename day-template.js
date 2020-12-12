@@ -1,7 +1,12 @@
+const inputIdx = 0;
+
 function solve(input) {
   console.log(input);
 }
 
-const input = ``.split('\n');
+let inputs = [];
+inputs.push(``);
 
-solve(input);
+inputs = inputs.map((s) => s.split('\n'));
+
+solve(inputs[inputIdx]);
