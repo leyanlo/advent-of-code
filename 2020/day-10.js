@@ -8,32 +8,19 @@ function solve1(input) {
 }
 
 function solve2(input) {
-  const prevMap = {};
+  const waysMap = {
+    0: 1,
+  };
   for (let i = 0; i < input.length; i++) {
     const curr = input[i];
     for (let j = 0; j < 3; j++) {
       const next = input[i + 1 + j];
       if (next - curr <= 3) {
-        prevMap[next] = prevMap[next] || [];
-        prevMap[next].push(curr);
+        waysMap[next] = (waysMap[next] || 0) + waysMap[curr];
       }
     }
   }
-
-  const countMap = {};
-  for (let i = 1; i < input.length; i++) {
-    const n = input[i];
-    const prevs = prevMap[n];
-    for (let j = 0; j < prevs.length; j++) {
-      const prev = prevs[j];
-      if (prev === 0) {
-        countMap[n] = (countMap[n] || 0) + 1;
-      } else {
-        countMap[n] = (countMap[n] || 0) + countMap[prev];
-      }
-    }
-  }
-  console.log(countMap[input[input.length - 1]]);
+  console.log(waysMap[input[input.length - 1]]);
 }
 
 const input = `151
