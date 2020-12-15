@@ -1,21 +1,21 @@
 const inputIdx = 1;
 
 function solve(input, iters) {
-  const map = input.reduce((map, num, i) => {
-    map[num] = [i + 1];
-    return map;
-  }, {});
+  const map = {};
+  for (let i = 0; i < input.length - 1; i++) {
+    const num = input[i];
+    map[num] = i + 1;
+  }
 
   let last = input[input.length - 1];
-  for (let i = input.length; i < iters; i++) {
+  for (let i = input.length - 1; i < iters - 1; i++) {
     if (i % 1000000 === 0) {
       console.log(i);
     }
-    const spoken = map[last][1] ? map[last][0] - map[last][1] : 0;
-    map[spoken] = map[spoken] || [];
-    map[spoken].unshift(i + 1);
-    map[spoken].length = Math.min(2, map[spoken].length);
-    last = spoken;
+
+    const next = map[last] ? i + 1 - map[last] : 0;
+    map[last] = i + 1;
+    last = next;
   }
 
   console.log(last);
@@ -34,7 +34,7 @@ let inputs = [];
 inputs.push(`0,3,6`);
 inputs.push(`1,2,16,19,18,0`);
 
-inputs = inputs.map((s) => s.split(','));
+inputs = inputs.map((s) => s.split(',').map((s) => +s));
 
 solve1(inputs[inputIdx]);
 solve2(inputs[inputIdx]);
