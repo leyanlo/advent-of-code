@@ -34,7 +34,7 @@ let inputs = [];
 inputs.push(`0,3,6`);
 inputs.push(`1,2,16,19,18,0`);
 
-inputs = inputs.map((s) => s.split(',').map((s) => +s));
+inputs = inputs.map((s) => s.split(',').map(Number));
 
 solve1(inputs[inputIdx]);
 solve2(inputs[inputIdx]);

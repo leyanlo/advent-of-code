@@ -61,8 +61,8 @@ function solve1(input) {
 }
 
 function dist(coord1, coord2) {
-  const [row1, col1] = coord1.split(',').map((s) => +s);
-  const [row2, col2] = coord2.split(',').map((s) => +s);
+  const [row1, col1] = coord1.split(',').map(Number);
+  const [row2, col2] = coord2.split(',').map(Number);
   return Math.sqrt((row2 - row1) ** 2 + (col2 - col1) ** 2);
 }
 
@@ -108,7 +108,7 @@ function solve2(input) {
     i++;
   }
 
-  const [destroyX, destroyY] = destroyCoords.split(',').map((s) => +s);
+  const [destroyX, destroyY] = destroyCoords.split(',').map(Number);
   console.log(100 * destroyX + destroyY);
 }
 

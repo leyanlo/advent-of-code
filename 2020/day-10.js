@@ -123,7 +123,7 @@ const input = `151
 9
 66`
   .split('\n')
-  .map((s) => +s);
+  .map(Number);
 
 input.sort((a, b) => a - b);
 input.push(input[input.length - 1] + 3);

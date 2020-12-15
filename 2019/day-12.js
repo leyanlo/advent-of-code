@@ -1,6 +1,6 @@
 function solve1(input) {
   let positions = input.map((line) => {
-    return line.match(/([\-0-9]+)/g).map((s) => +s);
+    return line.match(/([\-0-9]+)/g).map(Number);
   });
   const velocities = input.map(() => [0, 0, 0]);
 
@@ -39,7 +39,7 @@ function solve1(input) {
 
 function solve2(input) {
   let positions = input.map((line) => {
-    return line.match(/([\-0-9]+)/g).map((s) => +s);
+    return line.match(/([\-0-9]+)/g).map(Number);
   });
   const velocities = input.map(() => [0, 0, 0]);
 

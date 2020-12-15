@@ -1038,7 +1038,7 @@ const input = `33
 74939409624468
 83267654028700`
   .split('\n')
-  .map((s) => +s);
+  .map(Number);
 
 solve1(input, 25);
 solve2(input, 25);

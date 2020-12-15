@@ -6,7 +6,7 @@ function solve1(input) {
   ids = ids
     .split(',')
     .filter((s) => s !== 'x')
-    .map((s) => +s);
+    .map(Number);
   let min = ids[0] - (ts % ids[0]);
   let minId = 0;
   for (let i = 1; i < ids.length; i++) {
@@ -23,7 +23,7 @@ function solve1(input) {
 function solve2(input) {
   let [, ids] = input;
 
-  ids = ids.split(',').map((s) => +s);
+  ids = ids.split(',').map(Number);
 
   let earliestTs = ids[0];
   let currProduct = ids[0];
