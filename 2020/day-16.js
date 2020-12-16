@@ -1,104 +1,75 @@
 const inputIdx = 2;
 
 function solve1(input) {
-  let [rules, yours, nearby] = input;
+  const [rules, , nearbyTickets] = input;
 
-  const map = rules.split('\n').reduce((map, rule) => {
-    const matches = rule.match(/\d+-\d+/g);
-    matches.forEach((match) => {
-      const [low, high] = match.split('-').map(Number);
-      for (let i = low; i <= high; i++) {
-        map[i] = true;
-      }
-    });
-    return map;
+  const ranges = rules.match(/\d+-\d+/g);
+  const hasValueMap = ranges.reduce((hasValueMap, range) => {
+    const [min, max] = range.split('-');
+    for (let i = +min; i <= +max; i++) {
+      hasValueMap[i] = true;
+    }
+    return hasValueMap;
   }, {});
+  console.log({hasValueMap})
 
-  const invalids = nearby.match(/\d+/g).filter((value) => !map[value]);
-  console.log(invalids.reduce((sum, invalid) => sum + +invalid, 0));
+  const invalidValues = nearbyTickets
+    .match(/\d+/g)
+    .filter((value) => !hasValueMap[value]);
+  const errorRate = invalidValues.reduce((sum, invalid) => sum + +invalid, 0);
+  console.log(errorRate);
 }
 
 function solve2(input) {
-  let [rules, yours, nearby] = input;
+  let [rules, yourTicket, nearbyTickets] = input;
 
-  const fields = {};
-  const map = rules.split('\n').reduce((map, rule) => {
-    let [, field, start1, end1, start2, end2] = rule.match(
-      /^([ \w]+): (\d+)-(\d+) or (\d+)-(\d+)$/
-    );
-    fields[field] = true;
-    start1 = +start1;
-    end1 = +end1;
-    start2 = +start2;
-    end2 = +end2;
-    for (let i = start1; i <= end1; i++) {
-      map[i] = map[i] || {};
-      map[i][field] = true;
-    }
-    for (let i = start2; i <= end2; i++) {
-      map[i] = map[i] || {};
-      map[i][field] = true;
-    }
-    return map;
+  const hasFieldMap = rules.split('\n').reduce((hasField, rule) => {
+    const [field, ranges] = rule.split(': ');
+    ranges.split(' or ').forEach((range) => {
+      const [min, max] = range.split('-');
+      for (let i = +min; i <= +max; i++) {
+        hasField[i] = hasField[i] || {};
+        hasField[i][field] = true;
+      }
+    });
+    return hasField;
   }, {});
-  // console.log(map);
 
-  nearby = nearby
+  nearbyTickets = nearbyTickets
     .split('\n')
     .slice(1)
-    .filter((ticket) => {
-      return ticket.split(',').every((value) => map[value]);
+    .filter((ticket) => ticket.split(',').every((value) => hasFieldMap[value]))
+    .map((ticket) => ticket.split(',').map(Number));
+
+  const fieldIdxMaps = nearbyTickets.reduce((fieldIdxMaps, ticket) => {
+    ticket.forEach((value, i) => {
+      fieldIdxMaps[i] = Object.keys(fieldIdxMaps[i] || hasFieldMap[value])
+        .filter((field) => hasFieldMap[value][field])
+        .reduce((acc, field) => {
+          acc[field] = i;
+          return acc;
+        }, {});
     });
-  // console.log(nearby);
+    return fieldIdxMaps;
+  }, []);
 
-  // console.log(fields);
-  const fieldsForIdx = [];
-  for (let i = 0; i < nearby[0].split(',').length; i++) {
-    for (let n of nearby) {
-      const value = n.split(',')[i];
-      if (!fieldsForIdx[i]) {
-        fieldsForIdx[i] = map[value];
-      } else {
-        fieldsForIdx[i] = Object.keys(fieldsForIdx[i])
-          .filter((field) => map[value][field])
-          .reduce((acc, field) => {
-            acc[field] = '' + i;
-            return acc;
-          }, {});
-      }
-    }
-  }
-  // console.log(fieldsForIdx);
-
-  const map2 = {};
-  while (Object.keys(map2).length < Object.keys(fields).length) {
-    let minField = null;
-    let minFieldI = -1;
-    for (let i = 0; i < fieldsForIdx.length; i++) {
-      const fields = Object.keys(fieldsForIdx[i]);
-      if (fields.length === 1) {
-        minField = fields[0];
-        minFieldI = i;
-        break;
-      }
-    }
-
-    map2[minField] = minFieldI;
-    fieldsForIdx.map((fields) => {
-      delete fields[minField];
+  const fields = fieldIdxMaps
+    .sort((a, b) => Object.keys(a).length - Object.keys(b).length)
+    .reduce((fields, fieldIdxMap) => {
+      const field = Object.keys(fieldIdxMap).filter(
+        (field) => !fields.includes(field)
+      )[0];
+      fields[fieldIdxMap[field]] = field;
       return fields;
-    });
-  }
+    }, []);
 
-  const x = Object.keys(map2)
-    .filter((k) => k.startsWith('departure'))
-    .map((k) => map2[k]);
-  yours = yours.split('\n').slice(1)[0].split(',');
+  yourTicket = yourTicket.split('\n').slice(1)[0].split(',').map(Number);
   console.log(
-    x
-      .map((i) => yours[i])
-      .map(Number)
-      .reduce((acc, j) => acc * j, 1)
+    fields.reduce(
+      (product, field, i) =>
+        product * (field.startsWith('departure') ? yourTicket[i] : 1),
+      1
+    )
   );
 }
 
