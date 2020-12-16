@@ -1,24 +1,19 @@
 const inputIdx = 1;
 
 function solve(input, iters) {
-  const map = {};
-  for (let i = 0; i < input.length - 1; i++) {
-    const num = input[i];
-    map[num] = i + 1;
+  const seen = input.reduce((seen, num, i) => {
+    seen[num] = i + 1;
+    return seen;
+  }, new Uint32Array(iters)); // use Uint32Array for performance on V8
+
+  let next = 0;
+  for (let i = input.length; i < iters - 1; i++) {
+    const prev = seen[next];
+    seen[next] = i + 1;
+    next = prev ? i + 1 - prev : 0;
   }
 
-  let last = input[input.length - 1];
-  for (let i = input.length - 1; i < iters - 1; i++) {
-    if (i % 1000000 === 0) {
-      console.log(i);
-    }
-
-    const next = map[last] ? i + 1 - map[last] : 0;
-    map[last] = i + 1;
-    last = next;
-  }
-
-  console.log(last);
+  console.log(next);
 }
 
 function solve1(input) {
@@ -26,7 +21,6 @@ function solve1(input) {
 }
 
 function solve2(input) {
-  // paste into Safari for best performance
   solve(input, 30000000);
 }
 
