@@ -148,8 +148,7 @@ function solve1(input) {
 
   console.log(
     prev
-      .flat()
-      .flat()
+      .flat(2)
       .reduce((count, active) => count + active, 0)
   );
 }
@@ -196,9 +195,7 @@ function solve2(input) {
 
   console.log(
     prev
-      .flat()
-      .flat()
-      .flat()
+      .flat(3)
       .reduce((count, active) => count + active, 0)
   );
 }
