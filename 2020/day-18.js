@@ -1,22 +1,26 @@
 const inputIdx = 1;
 
-const parenRegex = /\(([\d+* ]+)\)/;
-const addRegex = /(\d+ \+ \d+)/;
+const parenRegex = /\([^()]+\)/g;
+const addRegex = /\d+ \+ \d+/g;
 
 function solveLine(line, part) {
   let expr = line;
-  let match = expr.match(parenRegex);
-  while (match) {
-    expr = expr.replace(match[0], solveLine(match[1]));
-    match = expr.match(parenRegex);
+  let matches = expr.match(parenRegex);
+  while (matches) {
+    for (let match of matches) {
+      expr = expr.replace(match, solveLine(match.substr(1, match.length - 2)));
+    }
+    matches = expr.match(parenRegex);
   }
 
   if (part === 2) {
-    match = expr.match(addRegex);
-    while (match) {
-      let [a, , b] = match[0].split(' ');
-      expr = expr.replace(match[0], +a + +b);
-      match = expr.match(addRegex);
+    matches = expr.match(addRegex);
+    while (matches) {
+      for (let match of matches) {
+        let [a, b] = match.split(' + ');
+        expr = expr.replace(match, +a + +b);
+      }
+      matches = expr.match(addRegex);
     }
   }
 
