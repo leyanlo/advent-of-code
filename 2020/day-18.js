@@ -1,19 +1,22 @@
 const inputIdx = 1;
 
-function solve(input, part) {
-  let expr = input;
-  let match = expr.match(/\(([\d+\-*/ ]+)\)/);
+const parenRegex = /\(([\d+* ]+)\)/;
+const addRegex = /(\d+ \+ \d+)/;
+
+function solveLine(line, part) {
+  let expr = line;
+  let match = expr.match(parenRegex);
   while (match) {
-    expr = expr.replace(match[0], solve(match[1]));
-    match = expr.match(/\(([\d+\-*/ ]+)\)/);
+    expr = expr.replace(match[0], solveLine(match[1]));
+    match = expr.match(parenRegex);
   }
 
   if (part === 2) {
-    match = expr.match(/(\d+ \+ \d+)/);
+    match = expr.match(addRegex);
     while (match) {
       let [a, , b] = match[0].split(' ');
       expr = expr.replace(match[0], +a + +b);
-      match = expr.match(/(\d+ \+ \d+)/);
+      match = expr.match(addRegex);
     }
   }
 
@@ -36,21 +39,24 @@ function solve(input, part) {
 
 function solve1(input) {
   const sum = input.split('\n').reduce((sum, line) => {
-    return sum + solve(line, 1);
+    return sum + solveLine(line, 1);
   }, 0);
   console.log(sum);
 }
 
 function solve2(input) {
   const sum = input.split('\n').reduce((sum, line) => {
-    return sum + solve(line, 2);
+    return sum + solveLine(line, 2);
   }, 0);
   console.log(sum);
 }
 
 let inputs = [];
 inputs.push(`1 + (2 * 3) + (4 * (5 + 6))
-2 * 3 + (4 * 5)`);
+2 * 3 + (4 * 5)
+5 + (8 * 3 + 9 + 3 * 4 * 3)
+5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))
+((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2`);
 
 inputs.push(`3 * 4 * 2 * 5 * (3 + 4 * (6 + 3 + 2 + 8 + 4) + 5 * 7)
 2 + 6 * 2 * 4 * (9 + 6 * 7 + 2 * 7) + 3
