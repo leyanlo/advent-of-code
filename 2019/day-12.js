@@ -1,8 +1,13 @@
+require = require('esm')(module);
+const math = require('mathjs');
+
+const inputIdx = 2;
+
 function solve1(input) {
-  let positions = input.map((line) => {
+  let positions = input.split('\n').map((line) => {
     return line.match(/([\-0-9]+)/g).map(Number);
   });
-  const velocities = input.map(() => [0, 0, 0]);
+  const velocities = positions.map(() => [0, 0, 0]);
 
   for (let step = 0; step < 1000; step++) {
     for (let i = 0; i < positions.length - 1; i++) {
@@ -38,39 +43,49 @@ function solve1(input) {
 }
 
 function solve2(input) {
-  let positions = input.map((line) => {
+  const positions = input.split('\n').map((line) => {
     return line.match(/([\-0-9]+)/g).map(Number);
   });
-  const velocities = input.map(() => [0, 0, 0]);
 
-  const seen = {};
-  let step = 0;
-  while (!seen[positions.join() + velocities.join()]) {
-    seen[positions.join() + velocities.join()] = true;
-    step++;
-    for (let i = 0; i < positions.length - 1; i++) {
-      for (let j = i + 1; j < positions.length; j++) {
-        const pos1 = positions[i];
-        const pos2 = positions[j];
-        const dv = pos2.map((p2, k) => {
-          return p2 > pos1[k] ? 1 : p2 === pos1[k] ? 0 : -1;
-        });
-        velocities[i] = velocities[i].map((v, k) => v + dv[k]);
-        velocities[j] = velocities[j].map((v, k) => v - dv[k]);
+  const posByDim = [...Array(3).keys()].map((i) => positions.map((p) => p[i]));
+  const velByDim = [...Array(3).keys()].map(() => positions.map(() => 0));
+
+  const stepByDim = [0, 0, 0];
+  for (let i = 0; i < posByDim.length; i++) {
+    const seen = {};
+    while (!seen[[posByDim[i].join(), velByDim[i].join()].join()]) {
+      seen[[posByDim[i].join(), velByDim[i].join()].join()] = true;
+      stepByDim[i]++;
+      for (let j = 0; j < posByDim[i].length - 1; j++) {
+        for (let k = j + 1; k < posByDim[i].length; k++) {
+          const pos1 = posByDim[i][j];
+          const pos2 = posByDim[i][k];
+          const dv = pos2 > pos1 ? 1 : pos2 === pos1 ? 0 : -1;
+          velByDim[i][j] += dv;
+          velByDim[i][k] -= dv;
+        }
       }
+      posByDim[i] = posByDim[i].map((pos, j) => pos + velByDim[i][j]);
     }
-    positions = positions.map((pos, i) =>
-      pos.map((p, j) => p + velocities[i][j])
-    );
   }
-  console.log(step);
+  console.log(math.lcm(...stepByDim));
 }
 
-const input = `<x=-13, y=-13, z=-13>
+const inputs = [];
+inputs.push(`<x=-1, y=0, z=2>
+<x=2, y=-10, z=-7>
+<x=4, y=-8, z=8>
+<x=3, y=5, z=-1>`);
+
+inputs.push(`<x=-8, y=-10, z=0>
+<x=5, y=5, z=10>
+<x=2, y=-7, z=3>
+<x=9, y=-8, z=-3>`);
+
+inputs.push(`<x=-13, y=-13, z=-13>
 <x=5, y=-8, z=3>
 <x=-6, y=-10, z=-3>
-<x=0, y=5, z=-5>`.split('\n');
+<x=0, y=5, z=-5>`);
 
-solve1(input);
-// TODO: optimize
-// solve2(input);
+solve1(inputs[inputIdx]);
+solve2(inputs[inputIdx]);
