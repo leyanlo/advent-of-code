@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "esm": "^3.2.25",
-    "js-combinatorics": "^1.4.5"
+    "js-combinatorics": "^1.4.5",
+    "mathjs": "^8.1.0"
   },
   "devDependencies": {
     "eslint": "^7.15.0",
