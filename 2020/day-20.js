@@ -2,153 +2,51 @@ require = require('esm')(module);
 const { rotate: rotate2d } = require('2d-array-rotation');
 
 const inputIdx = 1;
+const debug = false;
+const part1 = true;
+const part2 = true;
 
-function getEdges(tile, flip) {
-  const top = parseInt(tile[0].join(''), 2);
-  const right = parseInt(tile.map((row) => row[row.length - 1]).join(''), 2);
-  const bottom = parseInt([...tile[tile.length - 1]].reverse().join(''), 2);
-  const left = parseInt(
-    tile
-      .map((row) => row[0])
-      .reverse()
-      .join(''),
-    2
-  );
+function getEdges(tile) {
+  const top = tile[0];
+  const right = tile.map((row) => row[row.length - 1]).join('');
+  const bottom = [...tile[tile.length - 1]].reverse().join('');
+  const left = tile
+    .map((row) => row[0])
+    .reverse()
+    .join('');
 
-  const topFlip = parseInt(
-    top.toString(2).padStart(tile.length, '0').split('').reverse().join(''),
-    2
-  );
-  const rightFlip = parseInt(
-    right.toString(2).padStart(tile.length, '0').split('').reverse().join(''),
-    2
-  );
-  const bottomFlip = parseInt(
-    bottom.toString(2).padStart(tile.length, '0').split('').reverse().join(''),
-    2
-  );
-  const leftFlip = parseInt(
-    left.toString(2).padStart(tile.length, '0').split('').reverse().join(''),
-    2
-  );
-
-  return flip
-    ? [bottomFlip, rightFlip, topFlip, leftFlip]
-    : [top, right, bottom, left];
+  return [top, right, bottom, left];
 }
 
-// function solve1(input) {
-//   const tiles = input.split('\n\n').reduce((tiles, tile) => {
-//     let [id, ...img] = tile.split('\n');
-//     id = id.match(/Tile (\d+):/)[1];
-//
-//     img = img.map((line) =>
-//       line.split('').map((char) => (char === '#' ? 1 : 0))
-//     );
-//     tiles[id] = img;
-//     return tiles;
-//   }, {});
-//   // console.log(tiles);
-//
-//   const tileEdges = Object.keys(tiles).reduce((tileEdges, id) => {
-//     tileEdges[id] = getEdges(tiles[id]);
-//     tileEdges[id + 'f'] = getEdges(tiles[id], true);
-//     return tileEdges;
-//   }, {});
-//   // console.log({ tileEdges });
-//
-//   const edgeToId = Object.keys(tileEdges).reduce((edgeToId, id) => {
-//     const edges = tileEdges[id];
-//     for (let i = 0; i < edges.length; i++) {
-//       const edge = edges[i];
-//       edgeToId[edge] = edgeToId[edge] || [];
-//       edgeToId[edge].push(id);
-//     }
-//     return edgeToId;
-//   }, {});
-//   // console.log({ edgeToId });
-//
-//   const tileConnections = Object.keys(tileEdges).reduce(
-//     (tileConnections, id) => {
-//       const edges = tileEdges[id];
-//       const flippedEdges = edges.map((e) =>
-//         parseInt(
-//           e.toString(2).padStart(10, '0').split('').reverse().join(''),
-//           2
-//         )
-//       );
-//       tileConnections[id] = [];
-//       for (let edge of flippedEdges) {
-//         tileConnections[id].push(
-//           edgeToId[edge]
-//             .filter((i) => !i.startsWith(id) && !id.startsWith(i))
-//             .reduce((acc, i) => {
-//               return i;
-//             }, null)
-//         );
-//       }
-//       return tileConnections;
-//     },
-//     {}
-//   );
-//   // console.log({ tileConnections });
-//
-//   const cornerIds = Object.keys(tileConnections).filter(
-//     (id) =>
-//       !id.endsWith('f') && tileConnections[id].filter(Boolean).length === 2
-//   );
-//   // console.log({ cornerIds });
-//
-//   console.log(cornerIds.reduce((product, id) => product * id, 1));
-//
-//   // const invalids = Object.keys(tileConnections).filter((id) => {
-//   //   return tileConnections[id].reduce((count, c) => count + !!c, 0) === 1;
-//   // });
-//   // console.log({ invalids });
-//
-//   // const validTileConnections = tile;
-// }
-
-function solve2(input) {
+function solve1(input) {
   const tiles = input.split('\n\n').reduce((tiles, tile) => {
     let [id, ...img] = tile.split('\n');
-    id = id.match(/Tile (\d+):/)[1];
-
-    img = img.map((line) =>
-      line.split('').map((char) => (char === '#' ? 1 : 0))
-    );
+    id = id.match(/^Tile (\d+):$/)[1];
     tiles[id] = img;
     tiles[id + 'f'] = [...img].reverse();
     return tiles;
   }, {});
-  // console.log(tiles);
 
   const tileEdges = Object.keys(tiles).reduce((tileEdges, id) => {
     tileEdges[id] = getEdges(tiles[id]);
     return tileEdges;
   }, {});
-  console.log({ tileEdges });
+  debug && console.log({ tileEdges });
 
   const edgeToId = Object.keys(tileEdges).reduce((edgeToId, id) => {
     const edges = tileEdges[id];
-    for (let i = 0; i < edges.length; i++) {
-      const edge = edges[i];
+    for (let edge of edges) {
       edgeToId[edge] = edgeToId[edge] || [];
       edgeToId[edge].push(id);
     }
     return edgeToId;
   }, {});
-  console.log({ edgeToId });
+  debug && console.log({ edgeToId });
 
   const tileConnections = Object.keys(tileEdges).reduce(
     (tileConnections, id) => {
       const edges = tileEdges[id];
-      const flippedEdges = edges.map((e) =>
-        parseInt(
-          e.toString(2).padStart(10, '0').split('').reverse().join(''),
-          2
-        )
-      );
+      const flippedEdges = edges.map((e) => e.split('').reverse().join(''));
       tileConnections[id] = [];
       for (let edge of flippedEdges) {
         tileConnections[id].push(
@@ -163,20 +61,68 @@ function solve2(input) {
     },
     {}
   );
-  console.log({ tileConnections });
+  debug && console.log({ tileConnections });
 
-  // top-left corner
+  const cornerIds = Object.keys(tileConnections).filter(
+    (id) =>
+      !id.endsWith('f') && tileConnections[id].filter(Boolean).length === 2
+  );
+  debug && console.log({ cornerIds });
+
+  console.log(cornerIds.reduce((product, id) => product * id, 1));
+}
+
+function solve2(input) {
+  const tiles = input.split('\n\n').reduce((tiles, tile) => {
+    let [id, ...img] = tile.split('\n');
+    id = id.match(/^Tile (\d+):$/)[1];
+    tiles[id] = img;
+    tiles[id + 'f'] = [...img].reverse();
+    return tiles;
+  }, {});
+
+  const tileEdges = Object.keys(tiles).reduce((tileEdges, id) => {
+    tileEdges[id] = getEdges(tiles[id]);
+    return tileEdges;
+  }, {});
+  debug && console.log({ tileEdges });
+
+  const edgeToId = Object.keys(tileEdges).reduce((edgeToId, id) => {
+    const edges = tileEdges[id];
+    for (let edge of edges) {
+      edgeToId[edge] = edgeToId[edge] || [];
+      edgeToId[edge].push(id);
+    }
+    return edgeToId;
+  }, {});
+  debug && console.log({ edgeToId });
+
+  const tileConnections = Object.keys(tileEdges).reduce(
+    (tileConnections, id) => {
+      const edges = tileEdges[id];
+      const flippedEdges = edges.map((e) => e.split('').reverse().join(''));
+      tileConnections[id] = [];
+      for (let edge of flippedEdges) {
+        tileConnections[id].push(
+          edgeToId[edge]
+            .filter((i) => !i.startsWith(id) && !id.startsWith(i))
+            .reduce((acc, i) => {
+              return i;
+            }, null)
+        );
+      }
+      return tileConnections;
+    },
+    {}
+  );
+  debug && console.log({ tileConnections });
+
+  // start from top-left corner
   const topLeftId = Object.keys(tileConnections).find((id) => {
     const [top, right, bottom, left] = tileConnections[id];
     return !top && right && bottom && !left;
   });
   const topLeft = { id: topLeftId, rotate: 0 };
-  // const topLeft = '1951f';
-  // const topLeft = { id: '2971', rotate: 0 };
-  // const topLeft = { id: '1951', rotate: 1 };
-  // const topLeft = { id: '1171', rotate: 1 };
-  // const topLeft = { id: '1951f', rotate: 0 };
-  console.log({ topLeft });
   const nTiles = Object.keys(tiles).length / 2;
   const imgInfos = [...Array(Math.sqrt(nTiles))].map(() => []);
   for (let i = 0; i < Math.sqrt(nTiles); i++) {
@@ -206,9 +152,9 @@ function solve2(input) {
       };
     }
   }
-  console.log(imgInfos);
+  debug && console.log(imgInfos);
 
-  const img = [...Array(Math.sqrt(nTiles) * 8)].map(() => []);
+  const img = [...Array(Math.sqrt(nTiles) * 8)].map(() => '');
   for (let i = 0; i < Math.sqrt(nTiles); i++) {
     for (let j = 0; j < Math.sqrt(nTiles); j++) {
       const { id, rotate } = imgInfos[i][j];
@@ -225,23 +171,17 @@ function solve2(input) {
               ? tile[tile.length - 1 - r][tile.length - 1 - c]
               : tile[c][tile.length - 1 - r];
 
-          img[i * tileSize + r - 1][j * tileSize + c - 1] = pixel;
+          img[i * tileSize + r - 1] += pixel;
         }
       }
     }
   }
-  console.log(
-    img
-      .map((line) => line.map((char) => (char ? '#' : '.')).join(''))
-      .join('\n')
-  );
+  debug && console.log(img.join('\n'));
 
   const monster = `                  # 
 #    ##    ##    ###
- #  #  #  #  #  #   `
-    .split('\n')
-    .map((line) => line.split('').map((char) => +(char === '#')));
-  // console.log(monster.join('\n'));
+ #  #  #  #  #  #   `.split('\n');
+  debug && console.log(monster.join('\n'));
 
   for (let deg of [0, 90, 180, 270]) {
     for (let flip of [true, false]) {
@@ -255,7 +195,7 @@ function solve2(input) {
           let abort = false;
           for (let im = 0; im < mon.length; im++) {
             for (let jm = 0; jm < mon[0].length; jm++) {
-              if (mon[im][jm] && !img[i + im][j + jm]) {
+              if (mon[im][jm] === '#' && img[i + im][j + jm] === '.') {
                 abort = true;
                 break;
               }
@@ -270,18 +210,18 @@ function solve2(input) {
         }
       }
       if (nMonsters) {
-        console.log({ nMonsters });
+        debug && console.log({ nMonsters });
         const monsterRoughness = monster.reduce(
-          (r, line) => r + line.reduce((r2, char) => r2 + char, 0),
+          (r, line) => r + line.match(/#/g).length,
           0
         );
-        console.log({ monsterRoughness });
+        debug && console.log({ monsterRoughness });
         const imgRoughness = img.reduce(
-          (r, line) => r + line.reduce((r2, char) => r2 + char, 0),
+          (r, line) => r + line.match(/#/g).length,
           0
         );
-        console.log({ imgRoughness });
-        console.log('answer: ', imgRoughness - nMonsters * monsterRoughness);
+        debug && console.log({ imgRoughness });
+        console.log(imgRoughness - nMonsters * monsterRoughness);
       }
     }
   }
@@ -2124,4 +2064,5 @@ Tile 2131:
 .#...##.##
 #..###....`);
 
-solve2(inputs[inputIdx]);
+part1 && solve1(inputs[inputIdx]);
+part2 && solve2(inputs[inputIdx]);
