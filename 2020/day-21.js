@@ -1,58 +1,55 @@
 const inputIdx = 1;
+const debug = false;
 
 function solve(input) {
-  const lines = input.split('\n');
-
-  console.log({ lines });
   const recipes = [];
-  const allergenToIngredients = {};
-  for (let line of lines) {
-    let [ingredients, allergens] = line.split(/(?: \(contains )|\)/);
-    ingredients = ingredients.split(' ');
+  const allergenToRecipes = {};
+  for (let line of input.split('\n')) {
+    let [recipe, allergens] = line.split(/(?: \(contains )|\)/);
+    recipe = recipe.split(' ');
     allergens = allergens.split(', ');
-    recipes.push({ ingredients, allergens });
+    recipes.push(recipe);
 
     for (let allergen of allergens) {
-      allergenToIngredients[allergen] = allergenToIngredients[allergen] || [];
-      allergenToIngredients[allergen].push(ingredients);
+      allergenToRecipes[allergen] = allergenToRecipes[allergen] || [];
+      allergenToRecipes[allergen].push(recipe);
     }
   }
-  console.log(recipes);
-  console.log(allergenToIngredients);
+  debug && console.log({ recipes });
+  debug && console.log('allergenToRecipes', allergenToRecipes);
 
-  const allergenToCandidates = {};
-  for (let allergen of Object.keys(allergenToIngredients)) {
-    let commonIngredients = allergenToIngredients[allergen][0];
-    for (let ingredients of allergenToIngredients[allergen].slice(1)) {
-      commonIngredients = commonIngredients.filter((ing) =>
-        ingredients.includes(ing)
+  const allergenToIngredients = {};
+  for (let allergen of Object.keys(allergenToRecipes)) {
+    let commonIngredients = allergenToRecipes[allergen][0];
+    for (let ingredients of allergenToRecipes[allergen].slice(1)) {
+      commonIngredients = commonIngredients.filter((ingredient) =>
+        ingredients.includes(ingredient)
       );
     }
-    allergenToCandidates[allergen] = commonIngredients;
+    allergenToIngredients[allergen] = commonIngredients;
   }
-  console.log({ allergenToCandidates });
+  debug && console.log({ allergenToIngredients });
 
   const ingredientToAllergen = {};
   while (
     Object.keys(ingredientToAllergen).length <
-    Object.keys(allergenToCandidates).length
+    Object.keys(allergenToIngredients).length
   ) {
-    for (let allergen of Object.keys(allergenToCandidates)) {
-      const candidates = allergenToCandidates[allergen].filter(
+    for (let allergen of Object.keys(allergenToIngredients)) {
+      const ingredients = allergenToIngredients[allergen].filter(
         (candidate) => !Object.keys(ingredientToAllergen).includes(candidate)
       );
-      if (candidates.length === 1) {
-        ingredientToAllergen[candidates[0]] = allergen;
+      if (ingredients.length === 1) {
+        ingredientToAllergen[ingredients[0]] = allergen;
       }
     }
   }
-  console.log({ ingredientToAllergen });
+  debug && console.log({ ingredientToAllergen });
 
-  const nSafeIngredients = recipes.reduce((n, { ingredients }) => {
+  const nSafeIngredients = recipes.reduce((n, recipe) => {
     return (
       n +
-      ingredients.filter((ingredient) => !ingredientToAllergen[ingredient])
-        .length
+      recipe.filter((ingredient) => !ingredientToAllergen[ingredient]).length
     );
   }, 0);
   console.log(nSafeIngredients);
@@ -64,7 +61,7 @@ function solve(input) {
     },
     {}
   );
-  console.log(allergenToIngredient);
+  debug && console.log({ allergenToIngredient });
   console.log(
     Object.keys(allergenToIngredient)
       .sort()
