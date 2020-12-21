@@ -1,8 +1,8 @@
 require = require('esm')(module);
 const { rotate: rotate2d } = require('2d-array-rotation');
 
-const inputIdx = 1;
-const debug = false;
+const inputIdx = 0;
+const debug = true;
 const part1 = true;
 const part2 = true;
 
@@ -152,7 +152,7 @@ function solve2(input) {
       };
     }
   }
-  debug && console.log(imgInfos);
+  debug && console.log('imgInfos:', imgInfos);
 
   const img = [...Array(Math.sqrt(nTiles) * 8)].map(() => '');
   for (let i = 0; i < Math.sqrt(nTiles); i++) {
@@ -176,12 +176,12 @@ function solve2(input) {
       }
     }
   }
-  debug && console.log(img.join('\n'));
+  debug && console.log(['img:', ...img].join('\n'));
 
   const monster = `                  # 
 #    ##    ##    ###
  #  #  #  #  #  #   `.split('\n');
-  debug && console.log(monster.join('\n'));
+  debug && console.log(['monster:', ...monster].join('\n'));
 
   for (let deg of [0, 90, 180, 270]) {
     for (let flip of [true, false]) {
