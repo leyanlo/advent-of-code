@@ -1,68 +1,76 @@
-const inputIdx = 0;
+const inputIdx = 1;
 
-function solve1(input) {
+function solve(input) {
   const lines = input.split('\n');
-  const ingredients = [];
-  const allergens = [];
+
+  console.log({ lines });
+  const recipes = [];
+  const allergenToIngredients = {};
   for (let line of lines) {
-    let [ing, all] = line.split(/(?: \(contains )|\)/);
-    ing = ing.split(' ');
-    all = all.split(', ');
-    ingredients.push(ing);
-    allergens.push(all);
+    let [ingredients, allergens] = line.split(/(?: \(contains )|\)/);
+    ingredients = ingredients.split(' ');
+    allergens = allergens.split(', ');
+    recipes.push({ ingredients, allergens });
+
+    for (let allergen of allergens) {
+      allergenToIngredients[allergen] = allergenToIngredients[allergen] || [];
+      allergenToIngredients[allergen].push(ingredients);
+    }
   }
-  const allAllergens = [...new Set(allergens.flat())];
-  console.log({ ingredients, allergens, allAllergens });
+  console.log(recipes);
+  console.log(allergenToIngredients);
 
-  const allergenToIngredient = {};
+  const allergenToCandidates = {};
+  for (let allergen of Object.keys(allergenToIngredients)) {
+    let commonIngredients = allergenToIngredients[allergen][0];
+    for (let ingredients of allergenToIngredients[allergen].slice(1)) {
+      commonIngredients = commonIngredients.filter((ing) =>
+        ingredients.includes(ing)
+      );
+    }
+    allergenToCandidates[allergen] = commonIngredients;
+  }
+  console.log({ allergenToCandidates });
 
-  const allergenToLine = {};
-  const seenIngredients = {};
-  while (Object.keys(allergenToIngredient).length < allAllergens.length) {
-    for (let i = 0; i < lines.length; i++) {
-      if (ingredients[i].length === 1 && allergens[i].length === 1) {
-        allergenToIngredient[allergens[i][0]] = ingredients[i][0];
-        for (let j = 0; j < lines.length; j++) {
-          ingredients[j] = ingredients[j].filter(
-            (ingredient) => ingredient !== ingredients[i][0]
-          );
-          allergens[j] = allergens[j].filter((a) => a !== allergens[i][0]);
-        }
-      }
-
-      for (let allergen of allergens[i]) {
-        allergenToLine[allergen] = allergenToLine[allergen] || [];
-        const matches = [];
-        for (let prevLine of allergenToLine[allergen]) {
-          for (let a of ingredients[i]) {
-            for (let b of ingredients[prevLine]) {
-              if (a === b) {
-                matches.push(a);
-              }
-            }
-          }
-          if ((matches.length = 1)) {
-            allergenToIngredient[allergen] = matches[0];
-            for (let j = 0; j < lines.length; j++) {
-              ingredients[j] = ingredients[j].filter(
-                (ingredient) => ingredient !== matches[0]
-              );
-              allergens[j] = allergens[j].filter((a) => a !== allergen);
-            }
-          }
-        }
-        allergenToLine[allergen].push(i);
-      }
-
-      for (let ingredient of ingredients[i]) {
-        seenIngredients[ingredient] = seenIngredients[ingredient] || [];
-        seenIngredients[ingredient].push(i);
+  const ingredientToAllergen = {};
+  while (
+    Object.keys(ingredientToAllergen).length <
+    Object.keys(allergenToCandidates).length
+  ) {
+    for (let allergen of Object.keys(allergenToCandidates)) {
+      const candidates = allergenToCandidates[allergen].filter(
+        (candidate) => !Object.keys(ingredientToAllergen).includes(candidate)
+      );
+      if (candidates.length === 1) {
+        ingredientToAllergen[candidates[0]] = allergen;
       }
     }
   }
+  console.log({ ingredientToAllergen });
 
-  console.log({ ingredients, allergens, allergenToIngredient });
-  console.log(ingredients.flat().length);
+  const nSafeIngredients = recipes.reduce((n, { ingredients }) => {
+    return (
+      n +
+      ingredients.filter((ingredient) => !ingredientToAllergen[ingredient])
+        .length
+    );
+  }, 0);
+  console.log(nSafeIngredients);
+
+  const allergenToIngredient = Object.keys(ingredientToAllergen).reduce(
+    (acc, ingredient) => {
+      acc[ingredientToAllergen[ingredient]] = ingredient;
+      return acc;
+    },
+    {}
+  );
+  console.log(allergenToIngredient);
+  console.log(
+    Object.keys(allergenToIngredient)
+      .sort()
+      .map((allergen) => allergenToIngredient[allergen])
+      .join()
+  );
 }
 
 const inputs = [];
@@ -111,4 +119,4 @@ sjdmzj dgbndg cfb tdrxvd hnpd dntsjl xskgz pfbz fpgmtjg mmhmx tzkfgq lmcqt ngrcb
 xmcdn kcddk lg zbfqrn tzkfgq pxf qtpvndc ldkt rxjq fqpt flrjj jfl sjdmzj rzc nvxk lxrsn vvlbp zmvpzp tsch zhvhng ngrcb cfb blnsd bqrsxn djmbx jnmsr cfgc hqxp mmhmx mk mxfgnv njjvq jxvc xkgpch ncx tsdcm fsjcf fpgmtjg cvd klnrvd jpvvt nkjc xvsxb tmckpp pfbz dvjxl ctnb nhhbtd rrtkdz mdtrqk prnjsm zmkx nbh tcff czcfdv tdrxvd xxhp lmcqt vtrchx cxbkg zfrkt slkjz xl mjzpgzs dvzz cmtvkq jtfmtpd xpmx xdqx vzkbf (contains shellfish, soy, nuts)
 hrrt dlhfnjb dntsjl xjsgl hclf rzc rxjq djmbx mzlzxcc jnmsr mjzpgzs xvsbr xvsxb ttlvf zbfqrn mmhmx fdhfpn lmcqt tflkk rbkr npxrdnd jgrrd fpgmtjg mdtrqk vplz sfmbms hmnln bgblpf qvkdgn lbdlb bqrsxn cfb lfvdf cxbkg hcrgt hnpd ngrcb cggl ndqk kcddk xkgpch jbmxr dgbndg fkpjn nbhhmfx tmckpp bcvlvk hndcnf qdhk cjhv slkjz tsch zhvhng qtpvndc blnsd ccmvjbn xskgz nrlf hlzkpt dqntj fqpt ldkt bnfhd vrl sjpkc pbkr (contains sesame, peanuts, dairy)`);
 
-solve1(inputs[inputIdx]);
+solve(inputs[inputIdx]);
