@@ -29,9 +29,8 @@ function solve1(input) {
   console.log({ score });
 }
 
-const memo = {};
-
 function getFinalDecks(decks, round, game) {
+  const memo = {};
   let winner;
   while (decks.every((deck) => deck.length)) {
     debug && console.log({ round, game, decks });
