@@ -5,13 +5,13 @@ const part2 = true;
 
 function solve1(input) {
   const labels = input.split('').map(Number);
+  const max = labels.length;
   const nextMap = labels.reduce((nextMap, label, i) => {
-    nextMap[label] = labels[(i + 1) % labels.length];
+    nextMap[label] = labels[(i + 1) % max];
     return nextMap;
   }, {});
-  let curr = labels[0];
-  const max = 9;
 
+  let curr = labels[0];
   for (let i = 0; i < 100; i++) {
     const pickup = [
       nextMap[curr],
@@ -55,8 +55,8 @@ function solve2(input) {
     nextMap[labels[i] || i + 1] = labels[i + 1] || i + 2;
   }
   nextMap[max] = labels[0];
-  let curr = labels[0];
 
+  let curr = labels[0];
   for (let i = 0; i < 10000000; i++) {
     const pickup = [
       nextMap[curr],
