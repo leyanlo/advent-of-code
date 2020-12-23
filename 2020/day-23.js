@@ -1,36 +1,58 @@
 const inputIdx = 1;
+const debug = false;
+const part1 = true;
+const part2 = false;
 
 function solve1(input) {
-  let cups = input.split('').map(Number);
-  console.log({ cups });
+  const labels = input.split('').map(Number);
+  const nextMap = labels.reduce((nextMap, label, i) => {
+    nextMap[label] = labels[(i + 1) % labels.length];
+    return nextMap;
+  }, {});
+  let curr = labels[0];
+  const max = 9;
 
   for (let i = 0; i < 100; i++) {
-    console.log({ i });
-    let pickUp = cups.splice(1, 3);
-    console.log({ pickUp });
+    const pickup = [
+      nextMap[curr],
+      nextMap[nextMap[curr]],
+      nextMap[nextMap[nextMap[curr]]],
+    ];
 
-    let dest = cups[0] - 1;
-    while (cups.indexOf(dest) === -1) {
-      dest = dest === 0 ? 9 : dest - 1;
+    let dest = ((curr - 2 + max) % max) + 1;
+    while (pickup.includes(dest)) {
+      dest = ((dest - 2 + max) % max) + 1;
     }
 
-    const destI = cups.indexOf(dest);
-    console.log({ dest });
+    debug && console.log({ i, nextMap, curr, pickup, dest });
 
-    cups.splice(destI + 1, 0, ...pickUp);
-    cups = [...cups.slice(1), cups[0]];
-
-    console.log();
-    console.log({ cups });
+    nextMap[curr] = nextMap[pickup[2]];
+    const tmp = nextMap[dest];
+    nextMap[dest] = pickup[0];
+    nextMap[pickup[2]] = tmp;
+    curr = nextMap[curr];
   }
 
-  const i = cups.indexOf(1);
-  console.log([...cups, ...cups].slice(i + 1, i + 9).join(''));
+  console.log(
+    [...Array(max - 1)]
+      .reduce(
+        (cups) => {
+          cups.push(nextMap[cups[cups.length - 1]]);
+          return cups;
+        },
+        [1]
+      )
+      .slice(1)
+      .join('')
+  );
 }
+
+function solve2(input) {}
 
 const inputs = [];
 inputs.push(`389125467`);
 
 inputs.push(`974618352`);
 
-solve1(inputs[inputIdx]);
+part1 && solve1(inputs[inputIdx]);
+part2 && solve2(inputs[inputIdx]);
