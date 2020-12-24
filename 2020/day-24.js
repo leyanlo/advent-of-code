@@ -10,74 +10,59 @@ const dirs = {
   ne: [0, 1],
 };
 
-function solve1(input) {
-  let instrs = input.split('\n');
-  let map = {};
-  while (instrs.length) {
-    let curr = [0, 0];
-    let instr = instrs.shift();
+function solve(input) {
+  const instrs = input.split('\n');
+  let floor = {};
+  for (let instr of instrs) {
+    let x = 0;
+    let y = 0;
     while (instr.length) {
       const dir = Object.keys(dirs).find((dir) => instr.startsWith(dir));
       instr = instr.slice(dir.length);
-      curr = curr.map((d, i) => d + dirs[dir][i]);
+      x += dirs[dir][0];
+      y += dirs[dir][1];
     }
-    map[curr.join()] = !map[curr.join()];
+    floor[[x, y].join()] = !floor[[x, y].join()];
   }
   console.log(
-    Object.keys(map).reduce((count, coord) => {
-      return count + map[coord];
+    Object.keys(floor).reduce((count, coord) => {
+      return count + floor[coord];
     }, 0)
   );
-}
-
-function solve2(input) {
-  let instrs = input.split('\n');
-  let map = {};
-  while (instrs.length) {
-    let curr = [0, 0];
-    let instr = instrs.shift();
-    while (instr.length) {
-      const dir = Object.keys(dirs).find((dir) => instr.startsWith(dir));
-      instr = instr.slice(dir.length);
-      curr = curr.map((d, i) => d + dirs[dir][i]);
-    }
-    map[curr.join()] = !map[curr.join()];
-  }
 
   for (let i = 0; i < 100; i++) {
-    let blacks = Object.keys(map).reduce((blacks, coord) => {
-      map[coord] && blacks.push(coord.split(',').map(Number));
+    const blacks = Object.keys(floor).reduce((blacks, coord) => {
+      floor[coord] && blacks.push(coord.split(',').map(Number));
       return blacks;
     }, []);
-    // console.log(blacks);
-    let newMap = { ...map };
+    const nextFloor = { ...floor };
     for (let [bx, by] of blacks) {
       let blackNeighbors = 0;
       for (let [dx, dy] of Object.values(dirs)) {
-        if (map[[bx + dx, by + dy].join()]) {
+        if (floor[[bx + dx, by + dy].join()]) {
           blackNeighbors++;
         } else {
           let whiteNeighbors = 0;
           for (let [dx2, dy2] of Object.values(dirs)) {
-            if (map[[bx + dx + dx2, by + dy + dy2].join()]) {
+            if (floor[[bx + dx + dx2, by + dy + dy2].join()]) {
               whiteNeighbors++;
             }
           }
           if (whiteNeighbors === 2) {
-            newMap[[bx + dx, by + dy].join()] = true;
+            nextFloor[[bx + dx, by + dy].join()] = true;
           }
         }
       }
       if (blackNeighbors === 0 || blackNeighbors > 2) {
-        newMap[[bx, by].join()] = false;
+        nextFloor[[bx, by].join()] = false;
       }
     }
-    map = { ...newMap };
+    floor = { ...nextFloor };
   }
 
   console.log(
-    Object.keys(map).reduce((count, coord) => {
-      return count + map[coord];
+    Object.keys(floor).reduce((count, coord) => {
+      return count + floor[coord];
     }, 0)
   );
 }
@@ -576,5 +561,4 @@ seseewenwseseseesesew
 seneswseswnweneseswnwwnwsenenwsenwsesww
 wwseneswswwswwneseswswswswwseswswwne`);
 
-solve1(inputs[inputIdx]);
-solve2(inputs[inputIdx]);
+solve(inputs[inputIdx]);
