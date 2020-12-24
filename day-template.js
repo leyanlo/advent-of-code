@@ -1,10 +1,10 @@
 const inputIdx = 0;
 
-function solve1(input) {
+function solve(input) {
   console.log(input);
 }
 
 const inputs = [];
 inputs.push(``);
 
-solve1(inputs[inputIdx]);
+solve(inputs[inputIdx]);
