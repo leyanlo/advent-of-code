@@ -1,4 +1,4 @@
-const inputIdx = 4;
+const inputIdx = 5;
 const debug = true;
 
 function solve(input) {
@@ -31,13 +31,13 @@ function solve(input) {
     );
     const chemQty = fuelReactants[chem];
     const { reactants, qty } = map[chem];
+    const multiplier = Math.ceil(chemQty / qty);
     for (let reactantChem of Object.keys(reactants)) {
-      const multiplier = Math.ceil(chemQty / qty);
       fuelReactants[reactantChem] =
         (fuelReactants[reactantChem] || 0) +
         multiplier * reactants[reactantChem];
-      fuelReactants[chem] -= multiplier * qty;
     }
+    fuelReactants[chem] -= multiplier * qty;
   }
   debug && console.log('fuelReactants', fuelReactants);
   console.log(fuelReactants['ORE']);
