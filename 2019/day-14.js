@@ -1,5 +1,5 @@
 const inputIdx = 5;
-const debug = true;
+const debug = false;
 
 function solve(input) {
   const reactions = input.split('\n');
@@ -20,7 +20,9 @@ function solve(input) {
   }
   debug && console.log('map', map);
 
-  const fuelReactants = map['FUEL'].reactants;
+  let fuelReactants = {
+    ...map['FUEL'].reactants,
+  };
   while (
     Object.keys(fuelReactants).some(
       (chem) => chem !== 'ORE' && fuelReactants[chem] > 0
@@ -41,6 +43,44 @@ function solve(input) {
   }
   debug && console.log('fuelReactants', fuelReactants);
   console.log(fuelReactants['ORE']);
+
+  let fuelQty = Math.floor(1000000000000 / fuelReactants['ORE']);
+  while (fuelReactants['ORE'] < 1000000000000) {
+    fuelQty++;
+    fuelReactants = Object.keys(map['FUEL'].reactants).reduce(
+      (fuelReactants, chem) => {
+        fuelReactants[chem] *= fuelQty;
+        return fuelReactants;
+      },
+      {
+        ...map['FUEL'].reactants,
+      }
+    );
+    while (
+      Object.keys(fuelReactants).some(
+        (chem) => chem !== 'ORE' && fuelReactants[chem] > 0
+      )
+    ) {
+      const chem = Object.keys(fuelReactants).find(
+        (chem) => chem !== 'ORE' && fuelReactants[chem] > 0
+      );
+      const chemQty = fuelReactants[chem];
+      const { reactants, qty } = map[chem];
+      const multiplier = Math.ceil(chemQty / qty);
+      for (let reactantChem of Object.keys(reactants)) {
+        fuelReactants[reactantChem] =
+          (fuelReactants[reactantChem] || 0) +
+          multiplier * reactants[reactantChem];
+      }
+      fuelReactants[chem] -= multiplier * qty;
+    }
+    debug && console.log('fuelReactants', fuelReactants);
+    debug && console.log(fuelReactants['ORE']);
+    if (fuelQty % 10000 === 0) {
+      console.log(fuelQty, fuelReactants['ORE'])
+    }
+  }
+  console.log(fuelQty - 1);
 }
 
 const inputs = [];
