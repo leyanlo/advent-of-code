@@ -7,6 +7,8 @@ const dirs = [
   [-1, 0],
 ];
 
+const memo = {};
+
 function countSteps(rows, start, keys, doors) {
   // found all keys
   if (!Object.keys(keys).length) {
@@ -53,6 +55,12 @@ function countSteps(rows, start, keys, doors) {
       delete nextKeys[char];
       const nextDoors = { ...doors };
       delete nextDoors[char];
+      const memoKey = [...nextStart, ...Object.keys(nextKeys)].join();
+      if (memo[memoKey] && memo[memoKey] < steps) {
+        // skip if previously found shorter path
+        continue;
+      }
+      memo[memoKey] = steps;
       minSteps = Math.min(
         minSteps,
         steps + countSteps(nextRows, nextStart, nextKeys, nextDoors)
