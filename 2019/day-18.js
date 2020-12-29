@@ -9,26 +9,29 @@ const dirs = [
 
 const memo = {};
 
-function countSteps(rows, start, keys, doors) {
+function getMinPath(map, curr, keys, doors) {
   // found all keys
   if (!Object.keys(keys).length) {
-    return 0;
+    return { minSteps: 0, minPathKeys: [] };
   }
 
   const queue = dirs.map((dir) => ({
-    coords: [start[0] + dir[0], start[1] + dir[1]],
+    coords: [curr[0] + dir[0], curr[1] + dir[1]],
     steps: 1,
+    pathKeys: [],
   }));
   const seen = {
-    [start.join()]: true,
+    [curr.join()]: true,
   };
-  let minSteps = Number.MAX_SAFE_INTEGER;
+  let minSteps = 0;
+  let minPathKeys = [];
   while (queue.length) {
     const {
       coords: [row, col],
       steps,
+      pathKeys,
     } = queue.shift();
-    const char = rows[row][col];
+    const char = map[row][col];
     if (seen[[row, col].join()]) {
       // skip if seen
       continue;
@@ -42,54 +45,55 @@ function countSteps(rows, start, keys, doors) {
         ...dirs.map((dir) => ({
           coords: [row + dir[0], col + dir[1]],
           steps: steps + 1,
+          pathKeys: [...pathKeys],
         }))
       );
     } else if (/[a-z]/.test(char)) {
-      const nextRows = rows.map((row) => [...row]);
+      const nextRows = map.map((row) => [...row]);
       nextRows[row][col] = '.';
-      if (doors[char]) {
-        nextRows[doors[char][0]][doors[char][1]] = '.';
+      const door = doors[char.toUpperCase()];
+      if (door) {
+        // unlock door if present
+        nextRows[door[0]][door[1]] = '.';
       }
       const nextStart = [row, col];
       const nextKeys = { ...keys };
       delete nextKeys[char];
       const nextDoors = { ...doors };
-      delete nextDoors[char];
+      delete nextDoors[char.toUpperCase()];
       const memoKey = [...nextStart, ...Object.keys(nextKeys)].join();
-      if (memo[memoKey] && memo[memoKey] < steps) {
-        // skip if previously found shorter path
-        continue;
+      const minPath =
+        memo[memoKey] || getMinPath(nextRows, nextStart, nextKeys, nextDoors);
+      memo[memoKey] = minPath;
+      if (minSteps === 0 || steps + minPath.minSteps < minSteps) {
+        minSteps = steps + minPath.minSteps;
+        minPathKeys = [char, ...minPath.minPathKeys];
       }
-      memo[memoKey] = steps;
-      minSteps = Math.min(
-        minSteps,
-        steps + countSteps(nextRows, nextStart, nextKeys, nextDoors)
-      );
     }
   }
-  return minSteps;
+  return { minSteps, minPathKeys };
 }
 
 function solve(input) {
-  const rows = input.split('\n').map((row) => row.split(''));
-  let start;
+  const map = input.split('\n').map((row) => row.split(''));
+  let curr;
   const keys = {};
   const doors = {};
-  for (let i = 0; i < rows.length; i++) {
-    for (let j = 0; j < rows[i].length; j++) {
-      if (rows[i][j] === '@') {
-        start = [i, j];
-      } else if (/[a-z]/.test(rows[i][j])) {
-        keys[rows[i][j]] = true;
-      } else if (/[A-Z]/.test(rows[i][j])) {
-        doors[rows[i][j].toLowerCase()] = [i, j];
+  for (let i = 0; i < map.length; i++) {
+    for (let j = 0; j < map[i].length; j++) {
+      if (map[i][j] === '@') {
+        // remove @ and keep track of curr separately
+        map[i][j] = '.';
+        curr = [i, j];
+      } else if (/[a-z]/.test(map[i][j])) {
+        keys[map[i][j]] = [i, j];
+      } else if (/[A-Z]/.test(map[i][j])) {
+        doors[map[i][j]] = [i, j];
       }
     }
   }
 
-  rows[start[0]][start[1]] = '.';
-
-  console.log(countSteps(rows, start, keys, doors));
+  console.log(getMinPath(map, curr, keys, doors).minSteps);
 }
 
 const inputs = [];
