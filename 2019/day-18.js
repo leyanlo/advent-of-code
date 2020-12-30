@@ -1,4 +1,6 @@
-const inputIdx = 5;
+const inputIdx = 9;
+const part1 = true;
+const part2 = true;
 
 const dirs = [
   [0, 1],
@@ -9,25 +11,33 @@ const dirs = [
 
 const memo = {};
 
-function getMinPath(map, curr, keys, doors) {
+function getMinPath(map, currs, keys, doors) {
   // found all keys
   if (!Object.keys(keys).length) {
     return { minSteps: 0, minPathKeys: [] };
   }
 
-  const queue = dirs.map((dir) => ({
-    coords: [curr[0] + dir[0], curr[1] + dir[1]],
-    steps: 1,
-    pathKeys: [],
-  }));
-  const seen = {
-    [curr.join()]: true,
-  };
+  const queue = dirs
+    .map((dir) =>
+      currs.map((curr) => ({
+        coords: [
+          [curr[0] + dir[0], curr[1] + dir[1]],
+          ...currs.filter((c) => c.join() !== curr.join()),
+        ],
+        steps: 1,
+        pathKeys: [],
+      }))
+    )
+    .flat();
+  const seen = currs.reduce((seen, curr) => {
+    seen[curr.join()] = true;
+    return seen;
+  }, {});
   let minSteps = 0;
   let minPathKeys = [];
   while (queue.length) {
     const {
-      coords: [row, col],
+      coords: [[row, col], ...restCoords],
       steps,
       pathKeys,
     } = queue.shift();
@@ -43,7 +53,7 @@ function getMinPath(map, curr, keys, doors) {
     } else if (char === '.') {
       queue.push(
         ...dirs.map((dir) => ({
-          coords: [row + dir[0], col + dir[1]],
+          coords: [[row + dir[0], col + dir[1]], ...restCoords],
           steps: steps + 1,
           pathKeys: [...pathKeys],
         }))
@@ -56,7 +66,7 @@ function getMinPath(map, curr, keys, doors) {
         // unlock door if present
         nextRows[door[0]][door[1]] = '.';
       }
-      const nextStart = [row, col];
+      const nextStart = [[row, col], ...restCoords];
       const nextKeys = { ...keys };
       delete nextKeys[char];
       const nextDoors = { ...doors };
@@ -74,9 +84,9 @@ function getMinPath(map, curr, keys, doors) {
   return { minSteps, minPathKeys };
 }
 
-function solve(input) {
+function solve1(input) {
   const map = input.split('\n').map((row) => row.split(''));
-  let curr;
+  let currs;
   const keys = {};
   const doors = {};
   for (let i = 0; i < map.length; i++) {
@@ -84,7 +94,7 @@ function solve(input) {
       if (map[i][j] === '@') {
         // remove @ and keep track of curr separately
         map[i][j] = '.';
-        curr = [i, j];
+        currs = [[i, j]];
       } else if (/[a-z]/.test(map[i][j])) {
         keys[map[i][j]] = [i, j];
       } else if (/[A-Z]/.test(map[i][j])) {
@@ -93,7 +103,39 @@ function solve(input) {
     }
   }
 
-  console.log(getMinPath(map, curr, keys, doors).minSteps);
+  console.log(getMinPath(map, currs, keys, doors).minSteps);
+}
+
+function solve2(input) {
+  const map = input.split('\n').map((row) => row.split(''));
+  let currs;
+  const keys = {};
+  const doors = {};
+  for (let i = 0; i < map.length; i++) {
+    for (let j = 0; j < map[i].length; j++) {
+      if (map[i][j] === '@') {
+        for (let k = i - 1; k <= i + 1; k++) {
+          for (let l = j - 1; l <= j + 1; l++) {
+            map[k][l] = k === i || l === j ? '#' : '.';
+          }
+        }
+        // remove @ and keep track of curr separately
+        map[i][j] = '.';
+        currs = [
+          [i - 1, j - 1],
+          [i - 1, j + 1],
+          [i + 1, j - 1],
+          [i + 1, j + 1],
+        ];
+      } else if (/[a-z]/.test(map[i][j])) {
+        keys[map[i][j]] = [i, j];
+      } else if (/[A-Z]/.test(map[i][j])) {
+        doors[map[i][j]] = [i, j];
+      }
+    }
+  }
+
+  console.log(getMinPath(map, currs, keys, doors).minSteps);
 }
 
 const inputs = [];
@@ -129,6 +171,40 @@ inputs.push(`########################
 ###A#B#C################
 ###g#h#i################
 ########################`);
+
+inputs.push(`#######
+#a.#Cd#
+##...##
+##.@.##
+##...##
+#cB#Ab#
+#######`);
+
+inputs.push(`###############
+#d.ABC.#.....a#
+######...######
+######.@.######
+######...######
+#b.....#.....c#
+###############`);
+
+inputs.push(`#############
+#DcBa.#.GhKl#
+#.###...#I###
+#e#d#.@.#j#k#
+###C#...###J#
+#fEbA.#.FgHi#
+#############`);
+
+inputs.push(`#############
+#g#f.D#..h#l#
+#F###e#E###.#
+#dCba...BcIJ#
+#####.@.#####
+#nK.L...G...#
+#M###N#H###.#
+#o#m..#i#jk.#
+#############`);
 
 inputs.push(`#################################################################################
 #.#.....#.........#...S.#...............#...............#.......#.....#.........#
@@ -212,4 +288,5 @@ inputs.push(`###################################################################
 #...#...#.......#.....#....h..#.......#.#.......#...#...........#.......#.......#
 #################################################################################`);
 
-solve(inputs[inputIdx]);
+part1 && solve1(inputs[inputIdx]);
+part2 && solve2(inputs[inputIdx]);
