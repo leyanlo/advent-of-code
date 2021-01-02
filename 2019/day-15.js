@@ -34,7 +34,7 @@ function intcode(input, arr) {
         i += 4;
         break;
       case 3:
-        arr[paramIndices[0]] = input;
+        arr[paramIndices[0]] = input.shift();
         i += 2;
         break;
       case 4:
@@ -98,7 +98,7 @@ function solve(puzzleInput) {
     const arr = [...puzzleInput];
     let status = 0;
     for (let command of commands.split(',')) {
-      status = intcode(+command, arr);
+      status = intcode([+command], arr);
     }
     map[coords.join()] = status;
 

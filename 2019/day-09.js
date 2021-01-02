@@ -35,7 +35,7 @@ function solve(input, puzzleInput) {
         i += 4;
         break;
       case 3:
-        arr[paramIndices[0]] = input;
+        arr[paramIndices[0]] = input.shift();
         i += 2;
         break;
       case 4:
@@ -75,5 +75,5 @@ const puzzleInput = `1102,34463338,34463338,63,1007,63,34463338,63,1005,63,53,11
   .split(',')
   .map(Number);
 
-solve(1, puzzleInput);
-solve(2, puzzleInput);
+solve([1], puzzleInput);
+solve([2], puzzleInput);
