@@ -13,7 +13,7 @@ function solve1(input, puzzleInput) {
   let i = 0;
   let relativeBase = 0;
   let [modes, opcode] = getModesAndOpcode(arr[i]);
-  const ret = [];
+  const output = [];
   while (opcode !== 99) {
     const paramIndices = modes.map((mode, j) => {
       const paramIndex = i + 1 + j;
@@ -42,7 +42,7 @@ function solve1(input, puzzleInput) {
         i += 2;
         break;
       case 4:
-        ret.push(arr[paramIndices[0]] || 0);
+        output.push(arr[paramIndices[0]] || 0);
         i += 2;
         break;
       case 5:
@@ -74,10 +74,10 @@ function solve1(input, puzzleInput) {
   }
 
   const screen = {};
-  for (let i = 0; i < ret.length; i += 3) {
-    const x = ret[i];
-    const y = ret[i + 1];
-    screen[[x, y].join()] = ret[i + 2];
+  for (let i = 0; i < output.length; i += 3) {
+    const x = output[i];
+    const y = output[i + 1];
+    screen[[x, y].join()] = output[i + 2];
   }
   const nBlocks = Object.values(screen).reduce(
     (nBlocks, id) => nBlocks + (id === 2),

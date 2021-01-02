@@ -10,6 +10,7 @@ function intcode(input, arr) {
   let i = 0;
   let relativeBase = 0;
   let [modes, opcode] = getModesAndOpcode(arr[i]);
+  const output = [];
   while (opcode !== 99) {
     const paramIndices = modes.map((mode, j) => {
       const paramIndex = i + 1 + j;
@@ -38,7 +39,9 @@ function intcode(input, arr) {
         i += 2;
         break;
       case 4:
-        return arr[paramIndices[0]] || 0;
+        output.push(arr[paramIndices[0]] || 0);
+        i += 2;
+        break;
       case 5:
         i = arr[paramIndices[0]] || 0 ? arr[paramIndices[1]] || 0 : i + 3;
         break;
@@ -66,6 +69,7 @@ function intcode(input, arr) {
     }
     [modes, opcode] = getModesAndOpcode(arr[i]);
   }
+  return output;
 }
 
 const dirs = {
@@ -98,7 +102,7 @@ function solve(puzzleInput) {
     const arr = [...puzzleInput];
     let status = 0;
     for (let command of commands.split(',')) {
-      status = intcode([+command], arr);
+      status = intcode([+command], arr)[0];
     }
     map[coords.join()] = status;
 
