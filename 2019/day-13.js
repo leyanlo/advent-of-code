@@ -38,7 +38,7 @@ function solve1(input, puzzleInput) {
         i += 4;
         break;
       case 3:
-        arr[paramIndices[0]] = input;
+        arr[paramIndices[0]] = input.shift();
         i += 2;
         break;
       case 4:
