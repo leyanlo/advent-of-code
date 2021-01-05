@@ -10,85 +10,7 @@ const dirs = [
   [-1, 0],
 ];
 
-function solve1(input) {
-  const maze = input.split('\n').map((row) => row.split(''));
-  debug && console.log(maze.map((row) => row.join('')).join('\n'));
-
-  const lettersToCoords = {};
-  for (let i = 0; i < maze.length; i++) {
-    for (let j = 0; j < maze[i].length; j++) {
-      if (maze[i][j] === '.') {
-        for (let [di, dj] of dirs) {
-          if (maze[i + di] && /[A-Z]/.test(maze[i + di][j + dj])) {
-            const letters = [maze[i + di][j + dj], maze[i + 2 * di][j + 2 * dj]]
-              .sort()
-              .join('');
-            lettersToCoords[letters] = lettersToCoords[letters] || [];
-            lettersToCoords[letters].push([i, j]);
-          }
-        }
-      }
-    }
-  }
-  debug && console.log(lettersToCoords);
-
-  const portals = Object.keys(lettersToCoords).reduce((portals, letters) => {
-    const coords = lettersToCoords[letters];
-    if (coords.length === 2) {
-      portals[coords[0].join()] = coords[1];
-      portals[coords[1].join()] = coords[0];
-    }
-    return portals;
-  }, {});
-  debug && console.log(portals);
-
-  const [aai, aaj] = lettersToCoords['AA'][0];
-  maze[aai][aaj] = 0;
-  const queue = dirs.reduce((acc, [di, dj]) => {
-    acc.push({
-      steps: 1,
-      coords: [aai + di, aaj + dj],
-    });
-    return acc;
-  }, []);
-  while (queue.length) {
-    const {
-      steps,
-      coords: [i, j],
-    } = queue.shift();
-    if (
-      (typeof maze[i][j] === 'number' && maze[i][j] < steps) ||
-      maze[i][j] !== '.'
-    ) {
-      continue;
-    }
-
-    maze[i][j] = steps;
-    const portal = portals[[i, j].join()];
-    if (portal) {
-      queue.push({
-        steps: steps + 1,
-        coords: portal,
-      });
-    }
-
-    queue.push(
-      ...dirs.reduce((acc, [di, dj]) => {
-        acc.push({
-          steps: steps + 1,
-          coords: [i + di, j + dj],
-        });
-        return acc;
-      }, [])
-    );
-  }
-  debug && console.log(maze.map((row) => row.join('')).join('\n'));
-
-  const [zzi, zzj] = lettersToCoords['ZZ'][0];
-  console.log(maze[zzi][zzj]);
-}
-
-function solve2(input) {
+function getMinSteps(input, part) {
   const maze = input.split('\n').map((row) => row.split(''));
   debug && console.log(maze.map((row) => row.join('')).join('\n'));
 
@@ -149,10 +71,9 @@ function solve2(input) {
       continue;
     }
 
-    if (!level && i === zzi && j === zzj) {
+    if (i === zzi && j === zzj && (part === 1 || level === 0)) {
       // found exit
-      console.log(steps);
-      break;
+      return steps;
     }
 
     seen[[i, j].join()] = seen[[i, j].join()] || {};
@@ -184,6 +105,14 @@ function solve2(input) {
       }, [])
     );
   }
+}
+
+function solve1(input) {
+  console.log(getMinSteps(input, 1));
+}
+
+function solve2(input) {
+  console.log(getMinSteps(input, 2));
 }
 
 const inputs = [];
