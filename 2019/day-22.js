@@ -1,4 +1,6 @@
 const inputIdx = 1;
+const part1 = true;
+const part2 = true;
 
 function solve1(input) {
   let deck = [...Array(10007).keys()];
@@ -17,6 +19,65 @@ function solve1(input) {
     }
   }
   console.log(deck.indexOf(2019));
+}
+
+// https://en.wikipedia.org/wiki/Modular_exponentiation#Pseudocode
+function powMod(base, exp, mod) {
+  if (mod === 1n) {
+    return 0n;
+  }
+  let res = 1n;
+  base = base % mod;
+  while (exp > 0n) {
+    if (exp % 2n === 1n) {
+      res = (res * base) % mod;
+    }
+    exp >>= 1n;
+    base = (base * base) % mod;
+  }
+  return res;
+}
+
+function inv(n, mod) {
+  return powMod(n, mod - 2n, mod);
+}
+
+// https://www.reddit.com/r/adventofcode/comments/ee0rqi/2019_day_22_solutions/fbnkaju/
+function solve2(input) {
+  const nCards = 119315717514047n;
+
+  const { offset, increment } = input.split('\n').reduce(
+    ({ offset, increment }, instr) => {
+      if (instr === 'deal into new stack') {
+        increment *= -1n;
+        offset = (offset + increment) % nCards;
+      } else if (instr.startsWith('cut')) {
+        const n = BigInt(instr.split(' ')[1]);
+        offset = (offset + increment * n) % nCards;
+      } else if (instr.startsWith('deal with increment')) {
+        const n = BigInt(instr.split(' ')[3]);
+        increment = (increment * inv(n, nCards)) % nCards;
+      }
+      return {
+        offset,
+        increment,
+      };
+    },
+    {
+      offset: 0n,
+      increment: 1n,
+    }
+  );
+
+  const nTimes = 101741582076661n;
+
+  const finalIncrement = powMod(increment, nTimes, nCards);
+  const finalOffset =
+    (offset *
+      (1n - powMod(increment, nTimes, nCards)) *
+      inv(1n - increment, nCards)) %
+    nCards;
+  console.log('' + ((finalOffset + finalIncrement * 2020n) % nCards));
 }
 
 const inputs = [];
@@ -125,4 +186,5 @@ deal into new stack
 deal with increment 70
 cut -9110`);
 
-solve1(inputs[inputIdx]);
+part1 && solve1(inputs[inputIdx]);
+part2 && solve2(inputs[inputIdx]);
