@@ -5,7 +5,7 @@ const inputIdx = 2;
 
 function solve1(input) {
   let positions = input.split('\n').map((line) => {
-    return line.match(/([\-0-9]+)/g).map(Number);
+    return line.match(/([-0-9]+)/g).map(Number);
   });
   const velocities = positions.map(() => [0, 0, 0]);
 
@@ -44,7 +44,7 @@ function solve1(input) {
 
 function solve2(input) {
   const positions = input.split('\n').map((line) => {
-    return line.match(/([\-0-9]+)/g).map(Number);
+    return line.match(/([-0-9]+)/g).map(Number);
   });
 
   const posByDim = [...Array(3).keys()].map((i) => positions.map((p) => p[i]));

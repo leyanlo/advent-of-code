@@ -29,6 +29,7 @@ function solve2(input) {
   const numValid = input.reduce((numValid, passport) => {
     const hasFields = passport.split(/[ \n]/).reduce((hasFields, pair) => {
       const [key, value] = pair.split(':');
+      let found, height, unit;
       switch (key) {
         case 'byr':
           if (/^\d{4}$/.test(value) && +value >= 1920 && +value <= 2002) {
@@ -46,9 +47,9 @@ function solve2(input) {
           }
           break;
         case 'hgt':
-          const found = value.match(/^(\d+)(cm|in)$/);
+          found = value.match(/^(\d+)(cm|in)$/);
           if (!found) break;
-          const [, height, unit] = found;
+          [, height, unit] = found;
           if (
             (unit === 'cm' && +height >= 150 && +height <= 193) ||
             (unit === 'in' && +height >= 59 && +height <= 76)
