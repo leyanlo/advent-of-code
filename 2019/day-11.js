@@ -38,6 +38,7 @@ function intcode(input, puzzleInput) {
           return relativeBase + (arr[paramIndex] || 0);
       }
     });
+    let output;
     switch (opcode) {
       case 1:
         arr[paramIndices[2]] =
@@ -54,7 +55,7 @@ function intcode(input, puzzleInput) {
         i += 2;
         break;
       case 4:
-        const output = arr[paramIndices[0]] || 0;
+        output = arr[paramIndices[0]] || 0;
         if (robotInstrCount % 2 === 0) {
           // paint
           hull[robotCoords.join()] = output;

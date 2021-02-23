@@ -1,6 +1,6 @@
 function solve1(input) {
   const map = input.reduce((map, orbit) => {
-    [center, object] = orbit.split(')');
+    const [center, object] = orbit.split(')');
     map[object] = center;
     return map;
   }, {});
@@ -16,7 +16,7 @@ function solve1(input) {
 
 function solve2(input) {
   const map = input.reduce((map, orbit) => {
-    [center, object] = orbit.split(')');
+    const [center, object] = orbit.split(')');
     map[object] = center;
     return map;
   }, {});

@@ -20,7 +20,7 @@ function solve1(input) {
         break;
     }
     const dist = +command.substr(1);
-    for (i = 0; i < dist; i++) {
+    for (let i = 0; i < dist; i++) {
       row += dir[0];
       col += dir[1];
       map[row] = map[row] || {};
@@ -31,7 +31,7 @@ function solve1(input) {
 
   row = 0;
   col = 0;
-  minDist = Number.MAX_SAFE_INTEGER;
+  let minDist = Number.MAX_SAFE_INTEGER;
   wire2.split(',').forEach((command) => {
     let dir;
     switch (command[0]) {
@@ -49,7 +49,7 @@ function solve1(input) {
         break;
     }
     const dist = +command.substr(1);
-    for (i = 0; i < dist; i++) {
+    for (let i = 0; i < dist; i++) {
       row += dir[0];
       col += dir[1];
       map[row] = map[row] || {};
@@ -85,7 +85,7 @@ function solve2(input) {
         break;
     }
     const dist = +command.substr(1);
-    for (i = 0; i < dist; i++) {
+    for (let i = 0; i < dist; i++) {
       row += dir[0];
       col += dir[1];
       steps++;
@@ -98,7 +98,7 @@ function solve2(input) {
   row = 0;
   col = 0;
   steps = 0;
-  minSum = Number.MAX_SAFE_INTEGER;
+  let minSum = Number.MAX_SAFE_INTEGER;
   wire2.split(',').forEach((command) => {
     let dir;
     switch (command[0]) {
@@ -116,7 +116,7 @@ function solve2(input) {
         break;
     }
     const dist = +command.substr(1);
-    for (i = 0; i < dist; i++) {
+    for (let i = 0; i < dist; i++) {
       row += dir[0];
       col += dir[1];
       steps++;
