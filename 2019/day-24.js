@@ -1,6 +1,6 @@
-const part1 = true;
-const part2 = true;
-const inputIdx = 1;
+const fs = require('fs');
+
+const input = fs.readFileSync('./day-24-input.txt', 'utf8');
 
 const dirs = [
   [-1, 0],
@@ -116,18 +116,5 @@ function solve2(input) {
   console.log(state.flat(2).reduce((acc, cell) => acc + cell, 0));
 }
 
-const inputs = [];
-inputs.push(`....#
-#..#.
-#..##
-..#..
-#....`);
-
-inputs.push(`#.###
-.....
-#..#.
-##.##
-..#.#`);
-
-part1 && solve1(inputs[inputIdx]);
-part2 && solve2(inputs[inputIdx]);
+solve1(input);
+solve2(input);
