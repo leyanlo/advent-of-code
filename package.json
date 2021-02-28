@@ -11,7 +11,8 @@
     "2d-array-rotation": "^2.1.1",
     "esm": "^3.2.25",
     "js-combinatorics": "^1.4.5",
-    "mathjs": "^8.1.0"
+    "mathjs": "^8.1.0",
+    "prompt-sync": "^4.2.0"
   },
   "devDependencies": {
     "eslint": "^7.15.0",
