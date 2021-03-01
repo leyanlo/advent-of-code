@@ -10,12 +10,12 @@ const intcode = require('./intcode.js');
 const input = fs.readFileSync('./day-25-input.txt', 'utf8');
 
 function getOutput(computer) {
-  let x = computer.next().value;
+  let nextChar = computer.next().value;
   const arr = [];
-  arr.push(String.fromCharCode(x));
-  while (x) {
-    x = computer.next().value;
-    arr.push(String.fromCharCode(x));
+  arr.push(String.fromCharCode(nextChar));
+  while (nextChar) {
+    nextChar = computer.next().value;
+    arr.push(String.fromCharCode(nextChar));
   }
   return arr.join('');
 }
