@@ -1,16 +1,10 @@
 const inputIdx = 1;
-const debug = false;
-const part1 = false;
+const part1 = true;
 const part2 = true;
-
-function toggleCase(char) {
-  return /[A-Z]/.test(char) ? char.toLowerCase() : char.toUpperCase();
-}
 
 const ACodePoint = 'A'.codePointAt(0);
 const ZCodePoint = 'Z'.codePointAt(0);
 const aCodePoint = 'a'.codePointAt(0);
-const zCodePoint = 'z'.codePointAt(0);
 
 const pairs = [];
 for (let cp = ACodePoint; cp <= ZCodePoint; cp++) {
@@ -18,9 +12,9 @@ for (let cp = ACodePoint; cp <= ZCodePoint; cp++) {
   pairs.push(String.fromCodePoint(cp + aCodePoint - ACodePoint, cp));
 }
 
-function solve1(input) {
-  let found = true;
+function getPolymerLength(input) {
   let polymer = input;
+  let found = true;
   while (found) {
     found = false;
     for (const pair of pairs) {
@@ -30,23 +24,29 @@ function solve1(input) {
       }
     }
   }
-  // console.log(polymer.length);
   return polymer.length;
 }
 
+function solve1(input) {
+  console.log(getPolymerLength(input));
+}
+
 function solve2(input) {
-  let min = input.length;
+  let minLength = input.length;
   for (let cp = ACodePoint; cp <= ZCodePoint; cp++) {
     const polymer = input.replace(
-      new RegExp(`[${String.fromCodePoint(cp, cp + aCodePoint - ACodePoint)}]`, 'g'),
+      new RegExp(
+        `[${String.fromCodePoint(cp, cp + aCodePoint - ACodePoint)}]`,
+        'g'
+      ),
       ''
     );
-    const length = solve1(polymer)
-    if (length < min) {
-      min = length;
+    const length = getPolymerLength(polymer);
+    if (length < minLength) {
+      minLength = length;
     }
   }
-  console.log(min)
+  console.log(minLength);
 }
 
 const inputs = [];
