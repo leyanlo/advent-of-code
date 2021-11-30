@@ -1,4 +1,91 @@
-const records = `[1518-11-22 00:49] wakes up
+const inputIdx = 1;
+const debug = false;
+const part1 = true;
+const part2 = true;
+
+const guardRegex = /Guard #(\d+)/;
+const asleepRegex = /\d\d:(\d\d)] falls asleep/;
+const wakesRegex = /\d\d:(\d\d)] wakes up/;
+
+function getSleeps(records) {
+  let guard, start;
+  const sleeps = {};
+  for (const record of records) {
+    if (guardRegex.test(record)) {
+      [, guard] = record.match(guardRegex);
+    } else if (asleepRegex.test(record)) {
+      [, start] = record.match(asleepRegex);
+    } else {
+      const [, end] = record.match(wakesRegex);
+      sleeps[guard] = sleeps[guard] ?? [];
+      for (let j = +start; j < +end; j++) {
+        sleeps[guard][j] = (sleeps[guard][j] ?? 0) + 1;
+      }
+    }
+  }
+  debug && console.log(sleeps);
+  return sleeps;
+}
+
+function solve1(records) {
+  const sleeps = getSleeps(records);
+  let mostGuard = {
+    guard: null,
+    minutes: 0,
+  };
+  for (const guard in sleeps) {
+    const minutes = sleeps[guard].reduce((acc, min) => acc + min, 0);
+    if (minutes > mostGuard.minutes) {
+      mostGuard = {
+        guard,
+        minutes,
+      };
+    }
+  }
+  debug && console.log(mostGuard);
+  let mostMinute = {
+    minute: null,
+    count: 0,
+  };
+  for (let i = 0; i < 60; i++) {
+    const count = sleeps[mostGuard.guard][i];
+    if (sleeps[mostGuard.guard][i] > mostMinute.count) {
+      mostMinute = {
+        minute: i,
+        count,
+      };
+    }
+  }
+  debug && console.log(mostMinute);
+  console.log(+mostGuard.guard * mostMinute.minute);
+}
+
+function solve2(records) {
+  const sleeps = getSleeps(records);
+  let most = {
+    guard: null,
+    count: 0,
+    minute: null,
+  };
+  for (const guard in sleeps) {
+    for (let i = 0; i < 60; i++) {
+      const count = sleeps[guard][i];
+      if (sleeps[guard][i] > most.count) {
+        most = {
+          guard,
+          minute: i,
+          count,
+        };
+      }
+    }
+  }
+  debug && console.log(most);
+  console.log(+most.guard * most.minute);
+}
+
+let inputs = [];
+
+inputs.push(`[1518-11-22 00:49] wakes up
 [1518-05-18 00:01] Guard #1171 begins shift
 [1518-11-20 00:28] wakes up
 [1518-10-27 00:37] wakes up
@@ -1037,11 +1124,9 @@ const records = `[1518-11-22 00:49] wakes up
 [1518-03-08 00:45] wakes up
 [1518-04-29 00:24] falls asleep
 [1518-10-24 00:41] wakes up
-[1518-07-25 23:53] Guard #863 begins shift`
-  .split('\n')
-  .sort();
+[1518-07-25 23:53] Guard #863 begins shift`);
 
-const records1 = `[1518-11-01 00:00] Guard #10 begins shift
+inputs.push(`[1518-11-01 00:00] Guard #10 begins shift
 [1518-11-01 00:05] falls asleep
 [1518-11-01 00:25] wakes up
 [1518-11-01 00:30] falls asleep
@@ -1057,93 +1142,9 @@ const records1 = `[1518-11-01 00:00] Guard #10 begins shift
 [1518-11-04 00:46] wakes up
 [1518-11-05 00:03] Guard #99 begins shift
 [1518-11-05 00:45] falls asleep
-[1518-11-05 00:55] wakes up`
-  .split('\n')
-  .sort();
+[1518-11-05 00:55] wakes up`);
 
-function solve1(records) {
-  let guard, start;
-  const sleeps = {};
-  for (let i = 0; i < records.length; i++) {
-    const record = records[i];
-    guard = record.match(/Guard #(\d+)/)?.[1] ?? guard;
-    start = record.match(/\d\d:(\d\d)] falls asleep/)?.[1] ?? start;
-    const end = record.match(/\d\d:(\d\d)] wakes up/)?.[1];
-    if (end) {
-      sleeps[guard] = sleeps[guard] ?? [];
-      for (let j = +start; j < +end; j++) {
-        sleeps[guard][j] = (sleeps[guard][j] ?? 0) + 1;
-      }
-    }
-  }
-  console.log(sleeps);
-  let most = {
-    g: null,
-    total: 0,
-  };
-  for (const g in sleeps) {
-    const total = sleeps[g].reduce((acc, min) => acc + min, 0);
-    if (total > most.total) {
-      most = {
-        g,
-        total,
-      };
-    }
-  }
-  console.log(most);
-  let most2 = {
-    minute: null,
-    count: 0,
-  };
-  for (let i = 0; i < 60; i++) {
-    const count = sleeps[most.g][i];
-    if (sleeps[most.g][i] > most2.count) {
-      most2 = {
-        minute: i,
-        count,
-      };
-    }
-  }
-  console.log(most2);
-  console.log(+most.g * most2.minute)
-}
+inputs = inputs.map((i) => i.split('\n').sort());
 
-function solve2(records) {
-  let guard, start;
-  const sleeps = {};
-  for (let i = 0; i < records.length; i++) {
-    const record = records[i];
-    guard = record.match(/Guard #(\d+)/)?.[1] ?? guard;
-    start = record.match(/\d\d:(\d\d)] falls asleep/)?.[1] ?? start;
-    const end = record.match(/\d\d:(\d\d)] wakes up/)?.[1];
-    if (end) {
-      sleeps[guard] = sleeps[guard] ?? [];
-      for (let j = +start; j < +end; j++) {
-        sleeps[guard][j] = (sleeps[guard][j] ?? 0) + 1;
-      }
-    }
-  }
-  console.log(sleeps);
-  let most3 = {
-    g: null,
-    count: 0,
-    minute: null
-  };
-  for (const g in sleeps) {
-    for (let i = 0; i < 60; i++) {
-      const count = sleeps[g][i];
-      if (sleeps[g][i] > most3.count) {
-        most3 = {
-          g,
-          minute: i,
-          count,
-        };
-      }
-    }
-  }
-  console.log(most3);
-  console.log(+most3.g * most3.minute);
-}
-
-// solve1(records);
-solve2(records);
+part1 && solve1(inputs[inputIdx]);
+part2 && solve2(inputs[inputIdx]);
