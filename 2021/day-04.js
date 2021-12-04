@@ -17,9 +17,7 @@ function hasBingo(marks) {
 
 function getBingo(nums, boards, part) {
   boards = [...boards];
-  const marks = [...boards].map((board) =>
-    [...board].map((row) => [...row].fill(false))
-  );
+  const marks = boards.map((board) => board.map((row) => row.map(() => false)));
   for (const n of nums) {
     for (let i = 0; i < boards.length; i++) {
       for (let j = 0; j < boards[0].length; j++) {
