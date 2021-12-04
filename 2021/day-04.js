@@ -15,7 +15,8 @@ function hasBingo(marks) {
   return false;
 }
 
-function getFirstBingo(nums, boards) {
+function getBingo(nums, boards, part) {
+  boards = [...boards];
   const marks = [...boards].map((board) =>
     [...board].map((row) => [...row].fill(false))
   );
@@ -29,41 +30,16 @@ function getFirstBingo(nums, boards) {
     }
     for (let i = 0; i < boards.length; i++) {
       if (hasBingo(marks[i])) {
-        return {
-          board: boards[i],
-          marks: marks[i],
-          n,
-        };
-      }
-    }
-  }
-}
-
-function getLastBingo(nums, boards) {
-  const marks = [...boards].map((board) =>
-    [...board].map((row) => [...row].fill(false))
-  );
-  const bingos = new Set();
-  for (const n of nums) {
-    for (let i = 0; i < boards.length; i++) {
-      for (let j = 0; j < boards[0].length; j++) {
-        for (let k = 0; k < boards[0][0].length; k++) {
-          if (boards[i][j][k] === n) marks[i][j][k] = true;
+        if (part === 1 || boards.length === 1) {
+          return {
+            board: boards[i],
+            marks: marks[i],
+            n,
+          };
         }
+        boards.splice(i, 1);
+        marks.splice(i, 1);
       }
-    }
-    for (let i = 0; i < boards.length; i++) {
-      if (hasBingo(marks[i])) {
-        bingos.add(i);
-      }
-    }
-    if (bingos.size === boards.length) {
-      const lastBingoIdx = [...bingos][bingos.size - 1];
-      return {
-        board: boards[lastBingoIdx],
-        marks: marks[lastBingoIdx],
-        n,
-      };
     }
   }
 }
@@ -84,7 +60,7 @@ function solve(input) {
   boards = boards.map((board) =>
     board.split('\n').map((row) => row.trim().split(/\s+/).map(Number))
   );
-  console.log(getScore(getFirstBingo(nums, boards)));
-  console.log(getScore(getLastBingo(nums, boards)));
+  console.log(getScore(getBingo(nums, boards, 1)));
+  console.log(getScore(getBingo(nums, boards, 2)));
 }
 solve(input);
