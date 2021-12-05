@@ -2,13 +2,13 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-04-input.txt', 'utf8').trimEnd();
 
-function hasBingo(marks) {
-  for (let i = 0; i < marks.length; i++) {
-    if (marks[i].every(Boolean)) return true;
+function hasBingo(board) {
+  for (let i = 0; i < board.length; i++) {
+    if (board[i].every((cell) => cell === -1)) return true;
   }
-  outer: for (let j = 0; j < marks[0].length; j++) {
-    for (let i = 0; i < marks.length; i++) {
-      if (!marks[i][j]) continue outer;
+  outer: for (let j = 0; j < board[0].length; j++) {
+    for (let i = 0; i < board.length; i++) {
+      if (board[i][j] !== -1) continue outer;
     }
     return true;
   }
@@ -16,40 +16,37 @@ function hasBingo(marks) {
 }
 
 function getBingo(nums, boards, part) {
-  boards = [...boards];
-  const marks = boards.map((board) => board.map((row) => row.map(() => false)));
+  boards = boards.map((board) => board.map((row) => row.map((cell) => cell)));
   for (const n of nums) {
     for (let i = 0; i < boards.length; i++) {
       for (let j = 0; j < boards[0].length; j++) {
         for (let k = 0; k < boards[0][0].length; k++) {
-          if (boards[i][j][k] === n) marks[i][j][k] = true;
+          if (boards[i][j][k] === n) boards[i][j][k] = -1;
         }
       }
     }
     for (let i = 0; i < boards.length; i++) {
-      if (hasBingo(marks[i])) {
+      if (hasBingo(boards[i])) {
         if (part === 1 || boards.length === 1) {
           return {
             board: boards[i],
-            marks: marks[i],
             n,
           };
         }
         boards.splice(i, 1);
-        marks.splice(i, 1);
       }
     }
   }
 }
 
-function getScore({ board, marks, n }) {
-  let sum = 0;
-  for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[0].length; j++) {
-      if (!marks[i][j]) sum += board[i][j];
-    }
-  }
-  return sum * n;
+function getScore({ board, n }) {
+  return (
+    n *
+    board
+      .flat()
+      .filter((cell) => cell !== -1)
+      .reduce((acc, cell) => acc + cell, 0)
+  );
 }
 
 function solve(input) {
