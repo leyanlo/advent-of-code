@@ -34,6 +34,7 @@ function getBingo(nums, boards, part) {
           };
         }
         boards.splice(i, 1);
+        i--;
       }
     }
   }
