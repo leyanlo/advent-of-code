@@ -2,8 +2,6 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-05-input.txt', 'utf8').trimEnd();
 
-const debug = false;
-
 function solve(input, part) {
   const lines = input
     .split('\n')
@@ -26,26 +24,6 @@ function solve(input, part) {
       diagram[x][y] = (diagram[x][y] ?? 0) + 1;
     }
   }
-
-  if (debug) {
-    const [maxX, maxY] = lines.reduce(
-      ([maxX, maxY], [[x1, y1], [x2, y2]]) => [
-        Math.max(maxX, x1, x2),
-        Math.max(maxY, y1, y2),
-      ],
-      [0, 0]
-    );
-    console.log(
-      [...Array(maxY + 1).keys()]
-        .map((y) =>
-          [...Array(maxX + 1).keys()]
-            .map((x) => diagram[x]?.[y] ?? '.')
-            .join('')
-        )
-        .join('\n')
-    );
-  }
-
   console.log(diagram.flat().filter((n) => n >= 2).length);
 }
 
