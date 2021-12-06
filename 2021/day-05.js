@@ -10,8 +10,8 @@ function solve(input, part) {
     );
   const diagram = [];
   for (const [[x1, y1], [x2, y2]] of lines) {
-    const dx = x2 === x1 ? 0 : (x2 - x1) / Math.abs(x2 - x1);
-    const dy = y2 === y1 ? 0 : (y2 - y1) / Math.abs(y2 - y1);
+    const dx = Math.sign(x2 - x1);
+    const dy = Math.sign(y2 - y1);
     if (dx && dy && (part === 1 || Math.abs(dy / dx) !== 1)) {
       continue;
     }
