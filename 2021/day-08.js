@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-08-input.txt', 'utf8').trimEnd();
 
-const numToDigit = {
+const charCountSumToDigit = {
   49: 8,
   37: 5,
   34: 2,
@@ -20,8 +20,8 @@ function solve1(input) {
     .split('\n')
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let count = 0;
-  for (const [signals, value] of lines) {
-    count += value.filter(
+  for (const [, digits] of lines) {
+    count += digits.filter(
       (s) =>
         s.length === 7 || s.length === 4 || s.length === 3 || s.length === 2
     ).length;
@@ -35,21 +35,21 @@ function solve2(input) {
     .split('\n')
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let sum = 0;
-  for (const [signals, values] of lines) {
-    const map = {};
+  for (const [signals, digits] of lines) {
+    const charCounts = {};
     for (const s of signals) {
-      for (const c of s) {
-        map[c] = (map[c] ?? 0) + 1;
+      for (const char of s) {
+        charCounts[char] = (charCounts[char] ?? 0) + 1;
       }
     }
-    sum += +values
+    sum += +digits
       .map(
-        (v) =>
-          numToDigit[
-            v
+        (digit) =>
+          charCountSumToDigit[
+            digit
               .split('')
-              .map((c) => map[c])
-              .reduce((acc, n) => acc + n)
+              .map((char) => charCounts[char])
+              .reduce((acc, charCount) => acc + charCount)
           ]
       )
       .join('');
