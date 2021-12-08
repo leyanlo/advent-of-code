@@ -22,41 +22,21 @@ function solve1(input) {
 }
 solve1(input);
 
-function getCharCounts(signals) {
-  const charCounts = {};
-  for (const signal of signals) {
-    for (const char of signal) {
-      charCounts[char] = (charCounts[char] ?? 0) + 1;
-    }
-  }
-  return charCounts;
-}
-
-function charCountSum(signal, charCounts) {
-  let sum = 0;
-  for (const char of signal) {
-    sum += charCounts[char];
-  }
-  return sum;
-}
-
-const exampleSignals = 'acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab'.split(
-  ' '
-);
-
-const exampleCharCounts = getCharCounts(exampleSignals);
-
+/**
+ * The sum of the character count frequencies of the characters of a signal will
+ * uniquely map to a digit.
+ */
 const charCountSumToDigit = {
-  [charCountSum('acedgfb', exampleCharCounts)]: 8,
-  [charCountSum('cdfbe', exampleCharCounts)]: 5,
-  [charCountSum('gcdfa', exampleCharCounts)]: 2,
-  [charCountSum('fbcad', exampleCharCounts)]: 3,
-  [charCountSum('dab', exampleCharCounts)]: 7,
-  [charCountSum('cefabd', exampleCharCounts)]: 9,
-  [charCountSum('cdfgeb', exampleCharCounts)]: 6,
-  [charCountSum('eafb', exampleCharCounts)]: 4,
-  [charCountSum('cagedb', exampleCharCounts)]: 0,
-  [charCountSum('ab', exampleCharCounts)]: 1,
+  17: 1,
+  25: 7,
+  30: 4,
+  34: 2,
+  37: 5,
+  39: 3,
+  41: 6,
+  42: 0,
+  45: 9,
+  49: 8,
 };
 
 function solve2(input) {
@@ -65,9 +45,20 @@ function solve2(input) {
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let sum = 0;
   for (const [signals, digits] of lines) {
-    const charCounts = getCharCounts(signals);
+    const charCount = {};
+    for (const char of signals.join('')) {
+      charCount[char] = (charCount[char] ?? 0) + 1;
+    }
     sum += +digits
-      .map((digit) => charCountSumToDigit[charCountSum(digit, charCounts)])
+      .map(
+        (digit) =>
+          charCountSumToDigit[
+            digit
+              .split('')
+              .map((char) => charCount[char])
+              .reduce((acc, count) => acc + count)
+          ]
+      )
       .join('');
   }
   console.log(sum);
