@@ -8,40 +8,55 @@ function solve1(input) {
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let count = 0;
   for (const [, digits] of lines) {
-    count += digits.filter(
-      (s) =>
-        s.length === 7 || s.length === 4 || s.length === 3 || s.length === 2
-    ).length;
+    for (const digit of digits) {
+      switch (digit.length) {
+        case 7:
+        case 4:
+        case 3:
+        case 2:
+          count++;
+      }
+    }
   }
   console.log(count);
 }
 solve1(input);
 
-const exampleSignals =
-  'acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab';
-
-const charCount = {};
-for (const char of exampleSignals
-  .split('')
-  .filter((char) => /[a-g]/.test(char))) {
-  charCount[char] = (charCount[char] ?? 0) + 1;
+function getCharCount(signals) {
+  const charCount = {};
+  for (const signal of signals) {
+    for (const char of signal) {
+      charCount[char] = (charCount[char] ?? 0) + 1;
+    }
+  }
+  return charCount;
 }
 
-function charCountSum(signal) {
-  return signal.split('').reduce((acc, char) => acc + charCount[char], 0);
+function charCountSum(signal, charCounts) {
+  let sum = 0;
+  for (const char of signal) {
+    sum += charCounts[char];
+  }
+  return sum;
 }
+
+const exampleSignals = 'acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab'.split(
+  ' '
+);
+
+const exampleCharCount = getCharCount(exampleSignals);
 
 const charCountSumToDigit = {
-  [charCountSum('acedgfb')]: 8,
-  [charCountSum('cdfbe')]: 5,
-  [charCountSum('gcdfa')]: 2,
-  [charCountSum('fbcad')]: 3,
-  [charCountSum('dab')]: 7,
-  [charCountSum('cefabd')]: 9,
-  [charCountSum('cdfgeb')]: 6,
-  [charCountSum('eafb')]: 4,
-  [charCountSum('cagedb')]: 0,
-  [charCountSum('ab')]: 1,
+  [charCountSum('acedgfb', exampleCharCount)]: 8,
+  [charCountSum('cdfbe', exampleCharCount)]: 5,
+  [charCountSum('gcdfa', exampleCharCount)]: 2,
+  [charCountSum('fbcad', exampleCharCount)]: 3,
+  [charCountSum('dab', exampleCharCount)]: 7,
+  [charCountSum('cefabd', exampleCharCount)]: 9,
+  [charCountSum('cdfgeb', exampleCharCount)]: 6,
+  [charCountSum('eafb', exampleCharCount)]: 4,
+  [charCountSum('cagedb', exampleCharCount)]: 0,
+  [charCountSum('ab', exampleCharCount)]: 1,
 };
 
 function solve2(input) {
@@ -50,22 +65,9 @@ function solve2(input) {
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let sum = 0;
   for (const [signals, digits] of lines) {
-    const charCounts = {};
-    for (const s of signals) {
-      for (const char of s) {
-        charCounts[char] = (charCounts[char] ?? 0) + 1;
-      }
-    }
+    const charCounts = getCharCount(signals);
     sum += +digits
-      .map(
-        (digit) =>
-          charCountSumToDigit[
-            digit
-              .split('')
-              .map((char) => charCounts[char])
-              .reduce((acc, charCount) => acc + charCount)
-          ]
-      )
+      .map((digit) => charCountSumToDigit[charCountSum(digit, charCounts)])
       .join('');
   }
   console.log(sum);
