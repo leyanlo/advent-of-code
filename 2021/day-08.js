@@ -22,14 +22,14 @@ function solve1(input) {
 }
 solve1(input);
 
-function getCharCount(signals) {
-  const charCount = {};
+function getCharCounts(signals) {
+  const charCounts = {};
   for (const signal of signals) {
     for (const char of signal) {
-      charCount[char] = (charCount[char] ?? 0) + 1;
+      charCounts[char] = (charCounts[char] ?? 0) + 1;
     }
   }
-  return charCount;
+  return charCounts;
 }
 
 function charCountSum(signal, charCounts) {
@@ -44,19 +44,19 @@ const exampleSignals = 'acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb 
   ' '
 );
 
-const exampleCharCount = getCharCount(exampleSignals);
+const exampleCharCounts = getCharCounts(exampleSignals);
 
 const charCountSumToDigit = {
-  [charCountSum('acedgfb', exampleCharCount)]: 8,
-  [charCountSum('cdfbe', exampleCharCount)]: 5,
-  [charCountSum('gcdfa', exampleCharCount)]: 2,
-  [charCountSum('fbcad', exampleCharCount)]: 3,
-  [charCountSum('dab', exampleCharCount)]: 7,
-  [charCountSum('cefabd', exampleCharCount)]: 9,
-  [charCountSum('cdfgeb', exampleCharCount)]: 6,
-  [charCountSum('eafb', exampleCharCount)]: 4,
-  [charCountSum('cagedb', exampleCharCount)]: 0,
-  [charCountSum('ab', exampleCharCount)]: 1,
+  [charCountSum('acedgfb', exampleCharCounts)]: 8,
+  [charCountSum('cdfbe', exampleCharCounts)]: 5,
+  [charCountSum('gcdfa', exampleCharCounts)]: 2,
+  [charCountSum('fbcad', exampleCharCounts)]: 3,
+  [charCountSum('dab', exampleCharCounts)]: 7,
+  [charCountSum('cefabd', exampleCharCounts)]: 9,
+  [charCountSum('cdfgeb', exampleCharCounts)]: 6,
+  [charCountSum('eafb', exampleCharCounts)]: 4,
+  [charCountSum('cagedb', exampleCharCounts)]: 0,
+  [charCountSum('ab', exampleCharCounts)]: 1,
 };
 
 function solve2(input) {
@@ -65,7 +65,7 @@ function solve2(input) {
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let sum = 0;
   for (const [signals, digits] of lines) {
-    const charCounts = getCharCount(signals);
+    const charCounts = getCharCounts(signals);
     sum += +digits
       .map((digit) => charCountSumToDigit[charCountSum(digit, charCounts)])
       .join('');
