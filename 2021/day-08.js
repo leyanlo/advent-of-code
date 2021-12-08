@@ -7,9 +7,9 @@ function solve1(input) {
     .split('\n')
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let count = 0;
-  for (const [, digits] of lines) {
-    for (const digit of digits) {
-      switch (digit.length) {
+  for (const [, outputs] of lines) {
+    for (const output of outputs) {
+      switch (output.length) {
         case 7:
         case 4:
         case 3:
@@ -23,8 +23,8 @@ function solve1(input) {
 solve1(input);
 
 /**
- * The sum of the character count frequencies of the characters of a signal will
- * uniquely map to a digit.
+ * The sum of the character count frequencies of the characters of an output
+ * value will uniquely map to a digit.
  */
 const charCountSumToDigit = {
   17: 1,
@@ -44,16 +44,16 @@ function solve2(input) {
     .split('\n')
     .map((line) => line.split(' | ').map((s) => s.split(' ')));
   let sum = 0;
-  for (const [signals, digits] of lines) {
+  for (const [signals, outputs] of lines) {
     const charCount = {};
     for (const char of signals.join('')) {
       charCount[char] = (charCount[char] ?? 0) + 1;
     }
-    sum += +digits
+    sum += +outputs
       .map(
-        (digit) =>
+        (output) =>
           charCountSumToDigit[
-            digit
+            output
               .split('')
               .map((char) => charCount[char])
               .reduce((acc, count) => acc + count)
