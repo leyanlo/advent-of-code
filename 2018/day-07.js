@@ -70,54 +70,46 @@ function solve2(input, nWorkers, offset) {
   const steps = [];
   const workers = [];
   let t = -1;
-  outer: do {
+  while (Object.keys(requirements).length > 1) {
+    t++;
+    for (let i = 0; i < workers.length; i++) {
+      const worker = workers[i];
+      worker.remaining--;
+      if (worker.remaining === 0) {
+        steps.push(worker.step);
+        delete requirements[worker.step];
+        workers.splice(i, 1);
+        i--;
+      }
+    }
+    let nextStep = getNextStep(requirements, workers);
+    while (nextStep && workers.length < nWorkers) {
+      workers.push({
+        step: nextStep,
+        remaining: nSeconds(nextStep, offset),
+      });
+      nextStep = getNextStep(requirements, workers);
+    }
     console.log(
       t.toString(10).padStart(3, ' '),
       [...Array(nWorkers).keys()].map((i) => workers[i]?.step ?? '.').join(' '),
       steps.join('')
     );
-    let nextStep = getNextStep(requirements, workers);
-    for (let i = 0; i < nWorkers; i++) {
-      let worker = workers[i];
-      if (worker) {
-        worker.remaining--;
-        if (worker.remaining === 0) {
-          steps.push(worker.step);
-          if (Object.keys(requirements).length === 1) {
-            workers.length = 0;
-            break outer;
-          }
-          delete requirements[worker.step];
-          nextStep = getNextStep(requirements, workers);
-          workers.splice(i, 1);
-          worker = undefined;
-        }
-      }
-      if (nextStep && !worker) {
-        workers.push({
-          step: nextStep,
-          remaining: nSeconds(nextStep, offset),
-        });
-        nextStep = getNextStep(requirements, workers);
-      }
-    }
-    t++;
-  } while (workers.some(({ remaining }) => remaining > -1));
-  const lastStep = Object.values(requirements)[0][0];
-  workers.push({
-    step: lastStep,
-    remaining: nSeconds(lastStep, offset),
-  });
-  for (; workers[0].remaining > 0; workers[0].remaining--) {
-    t++;
-    console.log(
-      t.toString(10).padStart(3, ' '),
-      workers.map(({ step }) => step ?? '.').join(' '),
-      steps.join('')
-    );
   }
   t++;
-  steps.push(lastStep);
-  console.log(t, steps.join(''));
+  steps.push(Object.keys(requirements)[0]);
+  const lastStep = Object.values(requirements)[0][0];
+  for (let i = 0; i < nSeconds(lastStep, offset); i++) {
+    console.log(
+      t.toString(10).padStart(3, ' '),
+      [lastStep, ...Array(nWorkers - 1).fill('.')].join(' '),
+      steps.join('')
+    );
+    t++;
+  }
+  console.log(t);
 }
+// solve2(input, 2, 0);
 solve2(input, 5, 60);
+
+console.log(987);
