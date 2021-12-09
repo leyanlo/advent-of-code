@@ -107,7 +107,12 @@ function solve2(input, nWorkers, offset) {
     );
     t++;
   }
-  console.log(t);
+  steps.push(lastStep);
+  console.log(
+    t.toString(10).padStart(3, ' '),
+    Array(nWorkers).fill('.').join(' '),
+    steps.join('')
+  );
 }
 // solve2(input, 2, 0);
 solve2(input, 5, 60);
