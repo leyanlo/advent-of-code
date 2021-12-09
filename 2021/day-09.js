@@ -1,47 +1,16 @@
 const fs = require('fs');
 
-var input = `2199943210
-3987894921
-9856789892
-8767896789
-9899965678`;
-var input = fs.readFileSync('./day-09-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-09-input.txt', 'utf8').trimEnd();
 
 const dirs = [
-  [1, 0],
   [0, 1],
-  [-1, 0],
+  [1, 0],
   [0, -1],
+  [-1, 0],
 ];
 
-// function solve(input) {
-//   const map = input.split('\n').map((line) => line.split('').map(Number));
-//   console.log(map);
-//   const lows = [];
-//   for (let i = 0; i < map.length; i++) {
-//     for (let j = 0; j < map[i].length; j++) {
-//       if (
-//         dirs.every(
-//           ([di, dj]) =>
-//             map[i + di]?.[j + dj] === undefined ||
-//             map[i][j] < map[i + di][j + dj]
-//         )
-//       ) {
-//         lows.push([i, j]);
-//       }
-//     }
-//   }
-//   console.log(lows);
-//   let sum = 0;
-//   for (const [i, j] of lows) {
-//     sum += map[i][j] + 1;
-//   }
-//   console.log(sum);
-// }
-// solve(input);
 function solve(input) {
   const map = input.split('\n').map((line) => line.split('').map(Number));
-  console.log(map);
   const lows = [];
   for (let i = 0; i < map.length; i++) {
     for (let j = 0; j < map[i].length; j++) {
@@ -56,7 +25,8 @@ function solve(input) {
       }
     }
   }
-  console.log(lows);
+  console.log(lows.reduce((acc, [i, j]) => acc + map[i][j] + 1, 0));
+
   const basinSizes = [];
   for (const [i, j] of lows) {
     const basin = new Set();
