@@ -7,7 +7,7 @@ Step A must be finished before step D can begin.
 Step B must be finished before step E can begin.
 Step D must be finished before step E can begin.
 Step F must be finished before step E can begin.`;
-// var input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
+var input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
 // function getNextStep(requirements) {
 //   console.log({ requirements });
@@ -40,16 +40,16 @@ Step F must be finished before step E can begin.`;
 // }
 // solve(input);
 function getNextStep(requirements, workers) {
-  console.log({ requirements });
+  // console.log({ requirements });
   const unavailableSteps = new Set([
     ...Object.values(requirements).flat(),
     ...workers.map((worker) => worker.step),
   ]);
-  console.log({ unavailableSteps });
+  // console.log({ unavailableSteps });
   const nextStep = Object.keys(requirements)
     .filter((step) => !unavailableSteps.has(step))
     .sort()[0];
-  console.log({ nextStep });
+  // console.log({ nextStep });
   return nextStep;
 }
 
@@ -73,13 +73,22 @@ function solve2(input, nWorkers, offset) {
     remaining: -1,
   }));
   let t = -1;
-  while (Object.keys(requirements).length>1) {
-    console.log({ t, steps, workers });
+  outer: do {
+    console.log(
+      t.toString(10).padStart(3, ' '),
+      workers.map(({ step }) => step ?? '.').join(' '),
+      steps.join('')
+    );
     let nextStep = getNextStep(requirements, workers);
     for (const worker of workers) {
       worker.remaining = Math.max(-1, worker.remaining - 1);
       if (worker.remaining === 0) {
         steps.push(worker.step);
+        if (Object.keys(requirements).length === 1) {
+          worker.step = null;
+          worker.remaining = -1;
+          break outer;
+        }
         delete requirements[worker.step];
         nextStep = getNextStep(requirements, workers);
         worker.step = null;
@@ -92,15 +101,20 @@ function solve2(input, nWorkers, offset) {
       }
     }
     t++;
+  } while (workers.some(({ remaining }) => remaining > -1));
+  const lastStep = Object.values(requirements)[0][0];
+  workers[0].step = lastStep;
+  workers[0].remaining = nSeconds(lastStep, offset);
+  for (; workers[0].remaining > 0; workers[0].remaining--) {
+    t++;
+    console.log(
+      t.toString(10).padStart(3, ' '),
+      workers.map(({ step }) => step ?? '.').join(' '),
+      steps.join('')
+    );
   }
-  steps.push(...Object.entries(requirements)[0]);
-  console.log(steps.join(''));
-  console.log(
-    t +
-      nSeconds(...Object.values(requirements)[0], offset) +
-      workers
-        .filter((worker) => worker.remaining !== -1)
-        .reduce((acc, worker) => acc + worker.remaining, 0)
-  );
+  t++;
+  steps.push(lastStep);
+  console.log(t, steps.join(''));
 }
-solve2(input, 2, 0);
+solve2(input, 5, 60);
