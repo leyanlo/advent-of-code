@@ -68,43 +68,46 @@ function solve2(input, nWorkers, offset) {
     requirements[start].push(end);
   }
   const steps = [];
-  const workers = [...Array(nWorkers).keys()].map(() => ({
-    step: null,
-    remaining: -1,
-  }));
+  const workers = [];
   let t = -1;
   outer: do {
     console.log(
       t.toString(10).padStart(3, ' '),
-      workers.map(({ step }) => step ?? '.').join(' '),
+      [...Array(nWorkers).keys()].map((i) => workers[i]?.step ?? '.').join(' '),
       steps.join('')
     );
     let nextStep = getNextStep(requirements, workers);
-    for (const worker of workers) {
-      worker.remaining = Math.max(-1, worker.remaining - 1);
-      if (worker.remaining === 0) {
-        steps.push(worker.step);
-        if (Object.keys(requirements).length === 1) {
-          worker.step = null;
-          worker.remaining = -1;
-          break outer;
+    for (let i = 0; i < nWorkers; i++) {
+      let worker = workers[i];
+      if (worker) {
+        worker.remaining--;
+        if (worker.remaining === 0) {
+          steps.push(worker.step);
+          if (Object.keys(requirements).length === 1) {
+            workers.length = 0;
+            break outer;
+          }
+          delete requirements[worker.step];
+          nextStep = getNextStep(requirements, workers);
+          workers.splice(i, 1);
+          worker = undefined;
         }
-        delete requirements[worker.step];
-        nextStep = getNextStep(requirements, workers);
-        worker.step = null;
-        worker.remaining = -1;
       }
-      if (nextStep && !worker.step) {
-        worker.step = nextStep;
-        worker.remaining = nSeconds(nextStep, offset);
+      if (nextStep && !worker) {
+        workers.push({
+          step: nextStep,
+          remaining: nSeconds(nextStep, offset),
+        });
         nextStep = getNextStep(requirements, workers);
       }
     }
     t++;
   } while (workers.some(({ remaining }) => remaining > -1));
   const lastStep = Object.values(requirements)[0][0];
-  workers[0].step = lastStep;
-  workers[0].remaining = nSeconds(lastStep, offset);
+  workers.push({
+    step: lastStep,
+    remaining: nSeconds(lastStep, offset),
+  });
   for (; workers[0].remaining > 0; workers[0].remaining--) {
     t++;
     console.log(
