@@ -65,9 +65,8 @@ function solve(input) {
   for (const stack of legalStacks) {
     scores.push(
       stack
-        .reverse()
         .map((char) => openToClose[char])
-        .reduce((acc, char) => acc * 5 + legalPoints[char], 0)
+        .reduceRight((acc, char) => acc * 5 + legalPoints[char], 0)
     );
   }
   console.log(scores.sort((a, b) => a - b)[~~(scores.length / 2)]);
