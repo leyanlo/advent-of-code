@@ -57,7 +57,9 @@ function solve(input) {
     legalStacks.push(stack);
   }
   console.log(
-    illegalChars.map((char) => illegalPoints[char]).reduce((acc, p) => acc + p)
+    illegalChars
+      .map((char) => illegalPoints[char])
+      .reduce((acc, points) => acc + points)
   );
 
   const scores = [];
