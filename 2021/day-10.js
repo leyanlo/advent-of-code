@@ -70,6 +70,6 @@ function solve(input) {
         .reduceRight((acc, points) => acc * 5 + points)
     );
   }
-  console.log(scores.sort((a, b) => a - b)[~~(scores.length / 2)]);
+  console.log(scores.sort((a, b) => a - b)[(scores.length - 1) / 2]);
 }
 solve(input);
