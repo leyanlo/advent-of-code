@@ -16,13 +16,6 @@ const legalPoints = {
   '>': 4,
 };
 
-const closeToOpen = {
-  ')': '(',
-  ']': '[',
-  '}': '{',
-  '>': '<',
-};
-
 const openToClose = {
   '(': ')',
   '[': ']',
@@ -48,7 +41,7 @@ function solve(input) {
         case ']':
         case '}':
         case '>':
-          if (stack.pop() !== closeToOpen[char]) {
+          if (char !== openToClose[stack.pop()]) {
             illegalChars.push(char);
             continue outer;
           }
