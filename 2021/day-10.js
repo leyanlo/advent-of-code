@@ -48,8 +48,7 @@ function solve(input) {
         case ']':
         case '}':
         case '>':
-          const prevChar = stack.pop();
-          if (prevChar !== closeToOpen[char]) {
+          if (stack.pop() !== closeToOpen[char]) {
             illegalChars.push(char);
             continue outer;
           }
