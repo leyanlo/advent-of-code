@@ -1,39 +1,29 @@
 const fs = require('fs');
 
-var input = `[({(<(())[]>[[{[]{<()<>>
-[(()[<>])]({[<{<<[]>>(
-{([(<{}[<>[]}>{[]{[(<()>
-(((({<>}<{<{<>}{[]{[]{}
-[[<[([]))<([[{}[[()]]]
-[{[{({}]{}}([{[{{{}}([]
-{<[[]]>}<{[{[{[]{()[[[]
-[<(<(<(<{}))><([]([]()
-<{([([[(<>()){}]>(<<{{
-<{([{{}}[<[[[<>{}]]]>[]]`;
-var input = fs.readFileSync('./day-10-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-10-input.txt', 'utf8').trimEnd();
 
-const points = {
+const illegalPoints = {
   ')': 3,
   ']': 57,
   '}': 1197,
   '>': 25137,
 };
 
-const points2 = {
+const legalPoints = {
   ')': 1,
   ']': 2,
   '}': 3,
   '>': 4,
 };
 
-const openMap = {
+const closeToOpen = {
   ')': '(',
   ']': '[',
   '}': '{',
   '>': '<',
 };
 
-const closeMap = {
+const openToClose = {
   '(': ')',
   '[': ']',
   '{': '}',
@@ -42,9 +32,8 @@ const closeMap = {
 
 function solve(input) {
   const lines = input.split('\n');
-  const illegals = [];
-  const incompletes = [];
-  const stacks = [];
+  const illegalChars = [];
+  const legalStacks = [];
   outer: for (const line of lines) {
     const stack = [];
     for (const char of line) {
@@ -59,28 +48,26 @@ function solve(input) {
         case ']':
         case '}':
         case '>':
-          const prev = stack.pop();
-          if (prev !== openMap[char]) {
-            illegals.push(char);
+          const prevChar = stack.pop();
+          if (prevChar !== closeToOpen[char]) {
+            illegalChars.push(char);
             continue outer;
           }
       }
     }
-    incompletes.push(line);
-    stacks.push(stack);
+    legalStacks.push(stack);
   }
-  console.log(illegals.map((c) => points[c]).reduce((acc, p) => acc + p));
+  console.log(
+    illegalChars.map((char) => illegalPoints[char]).reduce((acc, p) => acc + p)
+  );
 
-  console.log(incompletes, stacks);
   const scores = [];
-  for (const stack of stacks) {
+  for (const stack of legalStacks) {
     scores.push(
       stack
         .reverse()
-        .map((char) => closeMap[char])
-        .reduce((acc2, char) => {
-          return acc2 * 5 + points2[char];
-        }, 0)
+        .map((char) => openToClose[char])
+        .reduce((acc, char) => acc * 5 + legalPoints[char], 0)
     );
   }
   console.log(scores.sort((a, b) => a - b)[~~(scores.length / 2)]);
