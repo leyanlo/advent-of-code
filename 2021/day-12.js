@@ -2,10 +2,6 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
 
-function isSmall(cave) {
-  return /[a-z]/.test(cave);
-}
-
 function solve(input, maxDupes) {
   const lines = input.split('\n').map((line) => line.split('-'));
   const connections = {};
@@ -32,7 +28,7 @@ function solve(input, maxDupes) {
           validPaths.push(nextPath);
           continue;
         }
-        const smallCaves = nextPath.filter(isSmall);
+        const smallCaves = nextPath.filter((cave) => /[a-z]/.test(cave));
         if (smallCaves.length > new Set(smallCaves).size + maxDupes) {
           continue;
         }
