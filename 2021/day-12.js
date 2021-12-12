@@ -2,9 +2,8 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
 
-const aCodePoint = 'a'.codePointAt(0);
 function isSmall(cave) {
-  return cave.codePointAt(0) >= aCodePoint;
+  return /[a-z]/.test(cave);
 }
 
 function solve(input, maxDupes) {
