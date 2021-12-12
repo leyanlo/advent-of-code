@@ -3,65 +3,66 @@ const fs = require('fs');
 const input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
 
 const aCodePoint = 'a'.codePointAt(0);
-function isBig(char) {
-  return char.codePointAt(0) < aCodePoint;
+function isSmall(cave) {
+  return cave.codePointAt(0) >= aCodePoint;
 }
 
 function solve(input, maxDupes) {
   const lines = input.split('\n').map((line) => line.split('-'));
   const connections = {};
   for (const [a, b] of lines) {
-    connections[a] = connections[a] ?? new Set();
-    connections[a].add(b);
-    connections[b] = connections[b] ?? new Set();
-    connections[b].add(a);
+    connections[a] = connections[a] ?? [];
+    connections[a].push(b);
+    connections[b] = connections[b] ?? [];
+    connections[b].push(a);
   }
 
   let paths = [['start']];
-  let next = [[...connections.start]];
+  let nexts = [[...connections.start]];
   let step = 0;
-  while (next.flat().length) {
+  while (nexts.flat().length) {
     step++;
     const nextPaths = [];
-    const nextNext = [];
+    const nextNexts = [];
     for (let i = 0; i < paths.length; i++) {
       const path = paths[i];
-      if (next[i].length === 0) {
-        nextPaths.push([...path]);
-        nextNext.push([]);
+      const next = nexts[i];
+      if (next.length === 0) {
+        nextPaths.push(path);
+        nextNexts.push([]);
+        continue;
       }
-      for (const connection of next[i]) {
-        nextPaths.push([...path, connection]);
-        const nextNextOne = [];
-        for (const nextConnection of connections[connection]) {
-          const lowercaseConnections = path.filter(
-            (c) => c !== 'start' && c !== 'end' && !isBig(c)
+      for (const cave of next) {
+        nextPaths.push([...path, cave]);
+        const nextNext = [];
+        for (const nextCave of connections[cave]) {
+          const smallCaves = path.filter(
+            (cave) => cave !== 'start' && cave !== 'end' && isSmall(cave)
           );
           if (
-            nextConnection === 'start' ||
-            connection === 'end' ||
-            (!isBig(nextConnection) &&
-              [...lowercaseConnections, nextConnection].length >
-                new Set([...lowercaseConnections, nextConnection]).size +
-                  maxDupes)
+            nextCave === 'start' ||
+            cave === 'end' ||
+            (isSmall(nextCave) &&
+              [...smallCaves, nextCave].length >
+                new Set([...smallCaves, nextCave]).size + maxDupes)
           ) {
             continue;
           }
-          nextNextOne.push(nextConnection);
+          nextNext.push(nextCave);
         }
-        nextNext.push(nextNextOne);
+        nextNexts.push(nextNext);
       }
     }
     paths = nextPaths;
-    next = nextNext;
+    nexts = nextNexts;
   }
   const validPaths = paths
     .filter((path) => path[path.length - 1] === 'end')
     .filter((path) => {
-      const lowercase = path.filter(
-        (c) => c !== 'start' && c !== 'end' && !isBig(c)
+      const smallCaves = path.filter(
+        (cave) => cave !== 'start' && cave !== 'end' && isSmall(cave)
       );
-      return lowercase.length <= new Set(lowercase).size + maxDupes;
+      return smallCaves.length <= new Set(smallCaves).size + maxDupes;
     });
 
   console.log(validPaths.length);
