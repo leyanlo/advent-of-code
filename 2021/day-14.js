@@ -3,7 +3,7 @@ const fs = require('fs');
 const input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
 
 function solve(input, nSteps) {
-  let [template, rules] = input.split('\n\n');
+  const [template, rules] = input.split('\n\n');
 
   const nextPairs = rules.split('\n').reduce((acc, rule) => {
     const [left, right] = rule.split(' -> ');
