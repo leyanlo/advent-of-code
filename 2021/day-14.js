@@ -13,8 +13,8 @@ function solve(input, nSteps) {
 
   let pairCounts = {};
   for (let i = 0; i < template.length - 1; i++) {
-    pairCounts[template.slice(i, i + 2)] =
-      (pairCounts[template.slice(i, i + 2)] ?? 0) + 1;
+    const pair = template.slice(i, i + 2);
+    pairCounts[pair] = (pairCounts[pair] ?? 0) + 1;
   }
 
   for (let step = 0; step < nSteps; step++) {
