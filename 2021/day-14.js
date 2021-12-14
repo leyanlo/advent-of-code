@@ -34,9 +34,8 @@ function solve(input, nSteps) {
     elCounts[pair[1]] = (elCounts[pair[1]] ?? 0) + pairCounts[pair];
   }
 
-  console.log(
-    Math.max(...Object.values(elCounts)) - Math.min(...Object.values(elCounts))
-  );
+  const elCountValues = Object.values(elCounts);
+  console.log(Math.max(...elCountValues) - Math.min(...elCountValues));
 }
 solve(input, 10);
 solve(input, 40);
