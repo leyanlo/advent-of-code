@@ -18,13 +18,14 @@ function solve(input, nSteps) {
   }
 
   for (let step = 0; step < nSteps; step++) {
-    const nextCounts = {};
+    const nextPairCounts = {};
     for (const pair in pairCounts) {
       for (const nextPair of nextPairs[pair]) {
-        nextCounts[nextPair] = (nextCounts[nextPair] ?? 0) + pairCounts[pair];
+        nextPairCounts[nextPair] =
+          (nextPairCounts[nextPair] ?? 0) + pairCounts[pair];
       }
     }
-    pairCounts = nextCounts;
+    pairCounts = nextPairCounts;
   }
 
   const elCounts = {
