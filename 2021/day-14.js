@@ -11,27 +11,27 @@ function solve(input, nSteps) {
     return acc;
   }, {});
 
-  let counts = {};
+  let pairCounts = {};
   for (let i = 0; i < template.length - 1; i++) {
-    counts[template.slice(i, i + 2)] =
-      (counts[template.slice(i, i + 2)] ?? 0) + 1;
+    pairCounts[template.slice(i, i + 2)] =
+      (pairCounts[template.slice(i, i + 2)] ?? 0) + 1;
   }
 
   for (let step = 0; step < nSteps; step++) {
     const nextCounts = {};
-    for (const pair in counts) {
+    for (const pair in pairCounts) {
       for (const nextPair of nextPairs[pair]) {
-        nextCounts[nextPair] = (nextCounts[nextPair] ?? 0) + counts[pair];
+        nextCounts[nextPair] = (nextCounts[nextPair] ?? 0) + pairCounts[pair];
       }
     }
-    counts = nextCounts;
+    pairCounts = nextCounts;
   }
 
   const elCounts = {
     [template[0]]: 1,
   };
-  for (const pair in counts) {
-    elCounts[pair[1]] = (elCounts[pair[1]] ?? 0) + counts[pair];
+  for (const pair in pairCounts) {
+    elCounts[pair[1]] = (elCounts[pair[1]] ?? 0) + pairCounts[pair];
   }
 
   console.log(
