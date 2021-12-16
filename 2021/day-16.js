@@ -1,13 +1,6 @@
 const fs = require('fs');
 
-var input = `D2FE28`;
-var input = `38006F45291200`;
-var input = `EE00D40C823060`;
-var input = `8A004A801A8002F478`; // 16?
-var input = `620080001611562C8802118E34`; // 12?
-// var input = `C0015000016115A2E0802F182340`;// 23?
-// var input = `A0016C880162017C3686B18A3D4780`;// 31?
-var input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
 
 function getValue(bits) {
   let i = 0;
@@ -25,42 +18,61 @@ function parsePacket(bits, versions) {
   versions.push(version);
 
   const packetType = parseInt(bits.slice(i, (i += 3)), 2);
-
-  const values = [];
   if (packetType === 4) {
     const [value, offset] = getValue(bits.slice(i));
     return [value, i + offset];
-  } else {
-    const lengthTypeId = parseInt(bits[i++], 2);
-    if (lengthTypeId === 0) {
-      const lengthOfBits = parseInt(bits.slice(i, (i += 15)), 2);
-
-      let totalOffset = 0;
-      while (totalOffset < lengthOfBits) {
-        const [value, offset] = parsePacket(
-          bits.slice(i + totalOffset, i + lengthOfBits),
-          versions
-        );
-        values.push(value);
-        totalOffset += offset;
-      }
-      i += lengthOfBits;
-    } else {
-      const nSubPackets = parseInt(bits.slice(i, (i += 11)), 2);
-
-      let totalOffset = 0;
-      for (let j = 0; j < nSubPackets; j++) {
-        const [value, offset] = parsePacket(
-          bits.slice(i + totalOffset),
-          versions
-        );
-        values.push(value);
-        totalOffset += offset;
-      }
-      i += totalOffset;
-    }
   }
-  return [values.reduce((acc, v) => acc + v, 0), i];
+
+  const values = [];
+
+  const lengthType = parseInt(bits[i++], 2);
+  if (lengthType === 0) {
+    const length = parseInt(bits.slice(i, (i += 15)), 2);
+
+    let totalOffset = 0;
+    while (totalOffset < length) {
+      const [value, offset] = parsePacket(
+        bits.slice(i + totalOffset, i + length),
+        versions
+      );
+      values.push(value);
+      totalOffset += offset;
+    }
+    i += length;
+  } else {
+    const nSubPackets = parseInt(bits.slice(i, (i += 11)), 2);
+
+    let totalOffset = 0;
+    for (let j = 0; j < nSubPackets; j++) {
+      const [value, offset] = parsePacket(
+        bits.slice(i + totalOffset),
+        versions
+      );
+      values.push(value);
+      totalOffset += offset;
+    }
+    i += totalOffset;
+  }
+
+  let result;
+  if (packetType === 0) {
+    result = values.reduce((acc, v) => acc + v);
+  } else if (packetType === 1) {
+    result = values.reduce((acc, v) => acc * v);
+  } else if (packetType === 2) {
+    result = Math.min(...values);
+  } else if (packetType === 3) {
+    result = Math.max(...values);
+  } else if (packetType === 5) {
+    result = +(values[0] > values[1]);
+  } else if (packetType === 6) {
+    result = +(values[0] < values[1]);
+  } else if (packetType === 7) {
+    result = +(values[0] === values[1]);
+  } else {
+    throw new Error('Invalid packetType:', packetType);
+  }
+  return [result, i];
 }
 
 function solve(input) {
@@ -70,7 +82,8 @@ function solve(input) {
   }
   const bits = nibbles.join('');
   const versions = [];
-  const [versionSum] = parsePacket(bits, versions);
+  const [value] = parsePacket(bits, versions);
   console.log(versions.reduce((acc, v) => acc + v));
+  console.log(value);
 }
 solve(input);
