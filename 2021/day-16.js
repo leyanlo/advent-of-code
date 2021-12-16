@@ -11,12 +11,12 @@ var input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
 
 function getValue(bits) {
   let i = 0;
-  const values = [];
+  const nibbles = [];
   while (bits[i++] === '1') {
-    values.push(bits.slice(i, (i += 4)));
+    nibbles.push(bits.slice(i, (i += 4)));
   }
-  values.push(bits.slice(i, (i += 4)));
-  return [parseInt(values.join(''), 2), i];
+  nibbles.push(bits.slice(i, (i += 4)));
+  return [parseInt(nibbles.join(''), 2), i];
 }
 
 function parsePacket(bits, versions) {
@@ -24,13 +24,12 @@ function parsePacket(bits, versions) {
   const version = parseInt(bits.slice(i, (i += 3)), 2);
   versions.push(version);
 
-  const packetTypeId = parseInt(bits.slice(i, (i += 3)), 2);
+  const packetType = parseInt(bits.slice(i, (i += 3)), 2);
 
   const values = [];
-  if (packetTypeId === 4) {
+  if (packetType === 4) {
     const [value, offset] = getValue(bits.slice(i));
-    values.push(value);
-    i += offset;
+    return [value, i + offset];
   } else {
     const lengthTypeId = parseInt(bits[i++], 2);
     if (lengthTypeId === 0) {
