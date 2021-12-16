@@ -24,8 +24,7 @@ function parsePacket(bits, versions) {
   }
 
   const values = [];
-
-  const lengthType = parseInt(bits[i++], 2);
+  const lengthType = +bits[i++];
   if (lengthType === 0) {
     const length = parseInt(bits.slice(i, (i += 15)), 2);
 
@@ -54,25 +53,21 @@ function parsePacket(bits, versions) {
     i += totalOffset;
   }
 
-  let result;
   if (packetType === 0) {
-    result = values.reduce((acc, v) => acc + v);
+    return [values.reduce((acc, v) => acc + v), i];
   } else if (packetType === 1) {
-    result = values.reduce((acc, v) => acc * v);
+    return [values.reduce((acc, v) => acc * v), i];
   } else if (packetType === 2) {
-    result = Math.min(...values);
+    return [Math.min(...values), i];
   } else if (packetType === 3) {
-    result = Math.max(...values);
+    return [Math.max(...values), i];
   } else if (packetType === 5) {
-    result = +(values[0] > values[1]);
+    return [+(values[0] > values[1]), i];
   } else if (packetType === 6) {
-    result = +(values[0] < values[1]);
-  } else if (packetType === 7) {
-    result = +(values[0] === values[1]);
-  } else {
-    throw new Error('Invalid packetType:', packetType);
+    return [+(values[0] < values[1]), i];
+  } /* if (packetType === 7) */ else {
+    return [+(values[0] === values[1]), i];
   }
-  return [result, i];
 }
 
 function solve(input) {
