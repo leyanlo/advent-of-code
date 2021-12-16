@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
 
-function getValue(bits) {
+function parseValue(bits) {
   let i = 0;
   const nibbles = [];
   while (bits[i++] === '1') {
@@ -12,20 +12,10 @@ function getValue(bits) {
   return [parseInt(nibbles.join(''), 2), i];
 }
 
-function parsePacket(bits, versions) {
+function parseValues(bits, versions) {
   let i = 0;
-  const version = parseInt(bits.slice(i, (i += 3)), 2);
-  versions.push(version);
-
-  const packetType = parseInt(bits.slice(i, (i += 3)), 2);
-  if (packetType === 4) {
-    const [value, offset] = getValue(bits.slice(i));
-    return [value, i + offset];
-  }
-
   const values = [];
-  const lengthType = bits[i++];
-  if (lengthType === '0') {
+  if (bits[i++] === '0') {
     const length = parseInt(bits.slice(i, (i += 15)), 2);
 
     let totalOffset = 0;
@@ -37,7 +27,7 @@ function parsePacket(bits, versions) {
       values.push(value);
       totalOffset += offset;
     }
-    i += length;
+    return [values, i + length];
   } else {
     const nSubPackets = parseInt(bits.slice(i, (i += 11)), 2);
 
@@ -50,8 +40,23 @@ function parsePacket(bits, versions) {
       values.push(value);
       totalOffset += offset;
     }
-    i += totalOffset;
+    return [values, i + totalOffset];
   }
+}
+
+function parsePacket(bits, versions) {
+  let i = 0;
+  const version = parseInt(bits.slice(i, (i += 3)), 2);
+  versions.push(version);
+
+  const packetType = parseInt(bits.slice(i, (i += 3)), 2);
+  if (packetType === 4) {
+    const [value, offset] = parseValue(bits.slice(i));
+    return [value, i + offset];
+  }
+
+  const [values, offset] = parseValues(bits.slice(i), versions);
+  i += offset;
 
   if (packetType === 0) {
     return [values.reduce((acc, v) => acc + v), i];
