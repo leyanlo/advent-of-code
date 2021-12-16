@@ -21,7 +21,7 @@ function parseValues(bits, versions) {
     let totalOffset = 0;
     while (totalOffset < length) {
       const [value, offset] = parsePacket(
-        bits.slice(i + totalOffset, i + length),
+        bits.slice(i + totalOffset),
         versions
       );
       values.push(value);
