@@ -58,20 +58,21 @@ function parsePacket(bits, versions) {
   const [values, offset] = parseValues(bits.slice(i), versions);
   i += offset;
 
-  if (type === 0) {
-    return [values.reduce((acc, v) => acc + v), i];
-  } else if (type === 1) {
-    return [values.reduce((acc, v) => acc * v), i];
-  } else if (type === 2) {
-    return [Math.min(...values), i];
-  } else if (type === 3) {
-    return [Math.max(...values), i];
-  } else if (type === 5) {
-    return [+(values[0] > values[1]), i];
-  } else if (type === 6) {
-    return [+(values[0] < values[1]), i];
-  } /* if (packetType === 7) */ else {
-    return [+(values[0] === values[1]), i];
+  switch (type) {
+    case 0:
+      return [values.reduce((acc, v) => acc + v), i];
+    case 1:
+      return [values.reduce((acc, v) => acc * v), i];
+    case 2:
+      return [Math.min(...values), i];
+    case 3:
+      return [Math.max(...values), i];
+    case 5:
+      return [+(values[0] > values[1]), i];
+    case 6:
+      return [+(values[0] < values[1]), i];
+    case 7:
+      return [+(values[0] === values[1]), i];
   }
 }
 
