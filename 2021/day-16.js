@@ -19,19 +19,19 @@ function getValue(bits) {
   return [parseInt(values.join(''), 2), i];
 }
 
-function parsePacket(bits, packetVersions) {
+function parsePacket(bits, versions) {
   let i = 0;
-  const packetVersion = parseInt(bits.slice(i, (i += 3)), 2);
-  console.log({ packetVersion });
-  packetVersions.push(packetVersion);
+  const version = parseInt(bits.slice(i, (i += 3)), 2);
+  console.log({ version });
+  versions.push(version);
 
   const packetTypeId = parseInt(bits.slice(i, (i += 3)), 2);
   console.log({ packetTypeId });
 
-  const versions = [];
+  const values = [];
   if (packetTypeId === 4) {
-    const [version, offset] = getValue(bits.slice(i));
-    versions.push(version);
+    const [value, offset] = getValue(bits.slice(i));
+    values.push(value);
     i += offset;
   } else {
     const lengthTypeId = parseInt(bits[i++], 2);
@@ -42,12 +42,12 @@ function parsePacket(bits, packetVersions) {
 
       let totalOffset = 0;
       while (totalOffset < lengthOfBits) {
-        const [version, offset] = parsePacket(
+        const [value, offset] = parsePacket(
           bits.slice(i + totalOffset, i + lengthOfBits),
-          packetVersions
+          versions
         );
-        console.log({ version, offset });
-        versions.push(version);
+        console.log({ value, offset });
+        values.push(value);
         totalOffset += offset;
       }
       i += lengthOfBits;
@@ -57,19 +57,19 @@ function parsePacket(bits, packetVersions) {
 
       let totalOffset = 0;
       for (let j = 0; j < nSubPackets; j++) {
-        const [version, offset] = parsePacket(
+        const [value, offset] = parsePacket(
           bits.slice(i + totalOffset),
-          packetVersions
+          versions
         );
-        console.log({ version, offset: totalOffset });
-        versions.push(version);
+        console.log({ value, offset: totalOffset });
+        values.push(value);
         totalOffset += offset;
       }
       i += totalOffset;
     }
   }
-  console.log({ versions });
-  return [versions.reduce((acc, v) => acc + v, 0), i];
+  console.log({ values });
+  return [values.reduce((acc, v) => acc + v, 0), i];
 }
 
 function solve(input) {
@@ -79,8 +79,8 @@ function solve(input) {
   }
   const bits = nibbles.join('');
   console.log({ bits });
-  const packetVersions = [];
-  const [versionSum] = parsePacket(bits, packetVersions);
-  console.log(packetVersions.reduce((acc, v) => acc + v));
+  const versions = [];
+  const [versionSum] = parsePacket(bits, versions);
+  console.log(versions.reduce((acc, v) => acc + v));
 }
 solve(input);
