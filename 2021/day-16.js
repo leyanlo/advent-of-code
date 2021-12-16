@@ -24,8 +24,8 @@ function parsePacket(bits, versions) {
   }
 
   const values = [];
-  const lengthType = +bits[i++];
-  if (lengthType === 0) {
+  const lengthType = bits[i++];
+  if (lengthType === '0') {
     const length = parseInt(bits.slice(i, (i += 15)), 2);
 
     let totalOffset = 0;
