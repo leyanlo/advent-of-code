@@ -2,16 +2,18 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd();
 
+// min vx to reach target
 function getMinVx(xMin) {
   let x = 0;
   let vx = 0;
-  while (x <= xMin) {
+  while (x < xMin) {
     vx++;
     x += vx;
   }
   return vx;
 }
 
+// max y of arc or null if miss
 function getMaxY([vx, vy], [[xMin, xMax], [yMin, yMax]]) {
   let [x, y] = [0, 0];
   let maxY = 0;
