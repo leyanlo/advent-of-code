@@ -23,14 +23,10 @@ function explode(line, match) {
   let left = line.slice(0, match.index);
   let right = line.slice(match.index + match[0].length);
 
-  left = left
-    .split(',')
-    .reverse()
-    .join()
-    .replace(/(\d+)/, (n) => +n + +match[1])
-    .split(',')
-    .reverse()
-    .join();
+  left = left.replace(
+    /(\d+)(\D+)$/,
+    (_, n, rest) => `${+n + +match[1]}${rest}`
+  );
   right = right.replace(/(\d+)/, (n) => +n + +match[2]);
 
   return `${left}0${right}`;
