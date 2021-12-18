@@ -88,5 +88,21 @@ function solve(input) {
       )
     )
   );
+
+  const lines = input.split('\n');
+  let max = 0;
+  for (let i = 0; i < lines.length - 1; i++) {
+    for (let j = i + 1; j < lines.length; j++) {
+      max = Math.max(
+        max,
+        magnitude(JSON.parse(reduce(`[${lines[i]},${lines[j]}]`)))
+      );
+      max = Math.max(
+        max,
+        magnitude(JSON.parse(reduce(`[${lines[j]},${lines[i]}]`)))
+      );
+    }
+  }
+  console.log(max);
 }
 solve(input);
