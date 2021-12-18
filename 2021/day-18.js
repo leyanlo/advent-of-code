@@ -7,16 +7,16 @@ function magnitude(pair) {
   return 3 * a + 2 * b;
 }
 
-function getLevel(line, index) {
-  let level = 0;
+function getDepth(line, index) {
+  let depth = 0;
   for (let i = 0; i < index; i++) {
     if (line[i] === '[') {
-      level++;
+      depth++;
     } else if (line[i] === ']') {
-      level--;
+      depth--;
     }
   }
-  return level;
+  return depth;
 }
 
 function explode(line, match) {
@@ -46,8 +46,8 @@ function split(line, match) {
 function reduce(line) {
   outer: while (true) {
     for (const match of line.matchAll(/\[(\d+),(\d+)]/g)) {
-      const level = getLevel(line, match.index);
-      if (level >= 4) {
+      const depth = getDepth(line, match.index);
+      if (depth >= 4) {
         line = explode(line, match);
         continue outer;
       }
