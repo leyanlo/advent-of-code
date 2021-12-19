@@ -256,5 +256,29 @@ function solve(input) {
   }
   console.log(beacons);
   console.log(beacons.size);
+
+  const actualCoords = [[0, 0, 0]];
+  for (let i = 1; i < scanners.length; i++) {
+    let scanner = [[0, 0, 0]];
+    for (const { rotIdx, dist } of transformations[i][0] ?? []) {
+      scanner = convert(scanner, rots[rotIdx], dist);
+    }
+    scanner = convert(scanner, rots[scannerRots[i][0]], scannerDists[i][0]);
+    actualCoords.push(scanner[0]);
+  }
+  console.log(actualCoords);
+
+  let maxDist = 0;
+  for (let i = 0; i < actualCoords.length - 1; i++) {
+    const [x1, y1, z1] = actualCoords[i];
+    for (let j = 1; j < actualCoords.length; j++) {
+      const [x2, y2, z2] = actualCoords[j];
+      maxDist = Math.max(
+        maxDist,
+        Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z2 - z1)
+      );
+    }
+  }
+  console.log(maxDist);
 }
 solve(input);
