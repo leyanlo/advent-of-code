@@ -29,8 +29,12 @@ const rots = [
   ([x, y, z]) => [-y, -x, -z],
 ];
 
-function transform(beacons, rot, dists) {
-  return beacons.map((b) => rot(b).map((coord, i) => coord + dists[i]));
+function transform(scanner, rot, dist) {
+  return scanner.map((beacon) => {
+    return rot(beacon).map((coord, i) => {
+      return coord + dist[i];
+    });
+  });
 }
 
 function solve(input) {
@@ -41,30 +45,40 @@ function solve(input) {
       .map((line) => line.split(',').map(Number));
   });
 
-  const scannerRots = [{ 0: 0 }];
-  const scannerDists = [{ 0: [0, 0, 0] }];
+  // figure out all overlapping detection cubes
+  const transforms = scanners.map(() => ({}));
+  transforms[0] = {
+    0: [
+      {
+        rot: rots[0],
+        dist: [0, 0, 0],
+      },
+    ],
+  };
   for (let i = 1; i < scanners.length; i++) {
-    s2Loop: for (let j = 0; j < scanners.length; j++) {
+    const scanner1 = scanners[i];
+
+    scanner2Loop: for (let j = 0; j < scanners.length; j++) {
       if (i === j) {
         continue;
       }
 
-      const scanner1 = scanners[i];
-      for (let rotIdx = 0; rotIdx < rots.length; rotIdx++) {
-        const rot = rots[rotIdx];
-        const dists = {};
-        for (const s1 of scanner1) {
-          const [x1, y1, z1] = rot(s1);
-          for (const [x2, y2, z2] of scanners[j]) {
+      const scanner2 = scanners[j];
+      for (const rot of rots) {
+        const distCounts = {};
+        for (const beacon1 of scanner1) {
+          const [x1, y1, z1] = rot(beacon1);
+          for (const [x2, y2, z2] of scanner2) {
             const dist = [x2 - x1, y2 - y1, z2 - z1].join();
-            dists[dist] = (dists[dist] ?? 0) + 1;
-            if (dists[dist] === 12) {
-              scannerRots[i] = { ...(scannerRots[i] ?? {}), [j]: rotIdx };
-              scannerDists[i] = {
-                ...(scannerDists[i] ?? {}),
-                [j]: dist.split(',').map(Number),
-              };
-              continue s2Loop;
+            distCounts[dist] = (distCounts[dist] ?? 0) + 1;
+            if (distCounts[dist] === 12) {
+              transforms[i][j] = [
+                {
+                  rot,
+                  dist: dist.split(',').map(Number),
+                },
+              ];
+              continue scanner2Loop;
             }
           }
         }
@@ -72,62 +86,51 @@ function solve(input) {
     }
   }
 
-  const transformations = scanners.map(() => ({}));
-  while (!scannerRots.map((r) => Object.keys(r).includes('0')).every(Boolean)) {
-    for (let i = 1; i < scannerRots.length; i++) {
-      if (scannerRots[i][0]) {
+  // make sure all scanners can be transformed relative to scanner 0
+  while (!transforms.map((t) => Object.keys(t).includes('0')).every(Boolean)) {
+    for (let i = 1; i < transforms.length; i++) {
+      if (transforms[i][0]) {
         continue;
       }
 
-      for (const j of Object.keys(scannerRots[i])) {
-        if (!scannerRots[j][0]) {
+      for (const j of Object.keys(transforms[i])) {
+        if (!transforms[j][0]) {
           continue;
         }
 
-        const rotIdx2 = scannerRots[i][j];
-        const dist2 = scannerDists[i][j];
-
-        transformations[i][0] = [
-          {
-            rotIdx: rotIdx2,
-            dist: dist2,
-          },
-          ...(transformations[j][0] ?? []),
-        ];
-        scannerRots[i][0] = scannerRots[j][0];
-        scannerDists[i][0] = scannerDists[j][0];
+        transforms[i][0] = transforms[i][j].concat(transforms[j][0]);
       }
     }
   }
 
-  const beacons = new Set(scanners[0].map((b) => b.join()));
+  // find unique beacons
+  const beacons = new Set(scanners[0].map((beacon) => beacon.join()));
   for (let i = 1; i < scanners.length; i++) {
     let scanner = scanners[i];
-    for (const { rotIdx, dist } of transformations[i][0] ?? []) {
-      scanner = transform(scanner, rots[rotIdx], dist);
+    for (const { rot, dist } of transforms[i][0]) {
+      scanner = transform(scanner, rot, dist);
     }
-    scanner = transform(scanner, rots[scannerRots[i][0]], scannerDists[i][0]);
-    for (const b of scanner) {
-      beacons.add(b.join());
+    for (const beacon of scanner) {
+      beacons.add(beacon.join());
     }
   }
   console.log(beacons.size);
 
-  const actualCoords = [[0, 0, 0]];
+  // find max distance
+  const scannerCoords = [[0, 0, 0]];
   for (let i = 1; i < scanners.length; i++) {
     let scanner = [[0, 0, 0]];
-    for (const { rotIdx, dist } of transformations[i][0] ?? []) {
-      scanner = transform(scanner, rots[rotIdx], dist);
+    for (const { rot, dist } of transforms[i][0]) {
+      scanner = transform(scanner, rot, dist);
     }
-    scanner = transform(scanner, rots[scannerRots[i][0]], scannerDists[i][0]);
-    actualCoords.push(scanner[0]);
+    scannerCoords.push(scanner[0]);
   }
 
   let maxDist = 0;
-  for (let i = 0; i < actualCoords.length - 1; i++) {
-    const [x1, y1, z1] = actualCoords[i];
-    for (let j = 1; j < actualCoords.length; j++) {
-      const [x2, y2, z2] = actualCoords[j];
+  for (let i = 0; i < scannerCoords.length - 1; i++) {
+    const [x1, y1, z1] = scannerCoords[i];
+    for (let j = 1; j < scannerCoords.length; j++) {
+      const [x2, y2, z2] = scannerCoords[j];
       maxDist = Math.max(
         maxDist,
         Math.abs(x2 - x1) + Math.abs(y2 - y1) + Math.abs(z2 - z1)
