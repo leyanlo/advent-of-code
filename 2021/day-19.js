@@ -197,9 +197,12 @@ function solve(input) {
             const dist = [x2 - x1, y2 - y1, z2 - z1].join();
             dists[dist] = (dists[dist] ?? 0) + 1;
             if (dists[dist] === 12) {
-              scannerRots.push({ [j]: rotIdx });
-              scannerDists.push({ [j]: dist.split(',').map(Number) });
-              break s2Loop;
+              scannerRots[i] = { ...(scannerRots[i] ?? {}), [j]: rotIdx };
+              scannerDists[i] = {
+                ...(scannerDists[i] ?? {}),
+                [j]: dist.split(',').map(Number),
+              };
+              continue s2Loop;
             }
           }
         }
@@ -229,7 +232,7 @@ function solve(input) {
       newScanners[i] = convert(newScanners[i], rots[rotIdx2], dist2);
       for (const { rot, dist } of transformations[j]) {
         newScanners[i] = convert(newScanners[i], rot, dist);
-        transformations[i].unshift({ rot, dist });
+        transformations[i].push({ rot, dist });
       }
       scannerRots[i] = scannerRots[j];
       scannerDists[i] = scannerDists[j];
