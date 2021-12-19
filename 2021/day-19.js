@@ -209,52 +209,50 @@ function solve(input) {
       }
     }
   }
-  console.log(scannerRots);
-  console.log(scannerDists);
+  console.log('scannerRots:', scannerRots);
+  console.log('scannerDists:', scannerDists);
 
-  const newScanners = [...scanners];
-  const transformations = scanners.map(() => []);
-  while (scannerRots.map((r) => Object.keys(r)[0]).some((k) => k !== '0')) {
+  const transformations = scanners.map(() => ({}));
+  while (!scannerRots.map((r) => Object.keys(r).includes('0')).every(Boolean)) {
     for (let i = 1; i < scannerRots.length; i++) {
-      // 3
       if (scannerRots[i][0]) {
         continue;
       }
 
-      const j = Object.keys(scannerRots[i])[0]; // 1
-      if (!scannerRots[j][0]) {
-        continue;
-      }
+      for (const j of Object.keys(scannerRots[i])) {
+        if (!scannerRots[j][0]) {
+          continue;
+        }
 
-      const rotIdx2 = scannerRots[i][j]; // 0
-      const dist2 = scannerDists[i][j]; // [ 160, -1134, -23 ]
+        const rotIdx2 = scannerRots[i][j];
+        const dist2 = scannerDists[i][j];
 
-      newScanners[i] = convert(newScanners[i], rots[rotIdx2], dist2);
-      for (const { rot, dist } of transformations[j]) {
-        newScanners[i] = convert(newScanners[i], rot, dist);
-        transformations[i].push({ rot, dist });
+        transformations[i][0] = [
+          {
+            rotIdx: rotIdx2,
+            dist: dist2,
+          },
+          ...(transformations[j][0] ?? []),
+        ];
+        scannerRots[i][0] = scannerRots[j][0];
+        scannerDists[i][0] = scannerDists[j][0];
       }
-      scannerRots[i] = scannerRots[j];
-      scannerDists[i] = scannerDists[j];
-      transformations[i].unshift({
-        rot: rots[rotIdx2],
-        dist: dist2,
-      });
     }
   }
-  console.log(newScanners);
-  console.log(scannerRots);
-  console.log(scannerDists);
+  console.log('transformations:', JSON.stringify(transformations, null, 2));
+  console.log('scannerRots:', scannerRots);
+  console.log('scannerDists:', scannerDists);
 
-  const beacons = new Set(newScanners[0].map((b) => b.join()));
-  for (let i = 1; i < newScanners.length; i++) {
-    convert(
-      newScanners[i],
-      rots[scannerRots[i][0]],
-      scannerDists[i][0]
-    ).forEach((b) => {
+  const beacons = new Set(scanners[0].map((b) => b.join()));
+  for (let i = 1; i < scanners.length; i++) {
+    let scanner = scanners[i];
+    for (const { rotIdx, dist } of transformations[i][0] ?? []) {
+      scanner = convert(scanner, rots[rotIdx], dist);
+    }
+    scanner = convert(scanner, rots[scannerRots[i][0]], scannerDists[i][0]);
+    for (const b of scanner) {
       beacons.add(b.join());
-    });
+    }
   }
   console.log(beacons);
   console.log(beacons.size);
