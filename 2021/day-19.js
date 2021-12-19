@@ -68,7 +68,8 @@ function solve(input) {
         const distCounts = {};
         for (const beacon1 of scanner1) {
           const [x1, y1, z1] = rot(beacon1);
-          for (const [x2, y2, z2] of scanner2) {
+          for (const beacon2 of scanner2) {
+            const [x2, y2, z2] = beacon2;
             const dist = [x2 - x1, y2 - y1, z2 - z1].join();
             distCounts[dist] = (distCounts[dist] ?? 0) + 1;
             if (distCounts[dist] === 12) {
@@ -87,18 +88,19 @@ function solve(input) {
   }
 
   // make sure all scanners can be transformed relative to scanner 0
-  while (!transforms.map((t) => Object.keys(t).includes('0')).every(Boolean)) {
+  while (transforms.some((t) => !t[0])) {
     for (let i = 1; i < transforms.length; i++) {
       if (transforms[i][0]) {
         continue;
       }
 
-      for (const j of Object.keys(transforms[i])) {
+      for (const j in transforms[i]) {
         if (!transforms[j][0]) {
           continue;
         }
 
         transforms[i][0] = transforms[i][j].concat(transforms[j][0]);
+        break;
       }
     }
   }
