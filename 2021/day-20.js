@@ -17,7 +17,7 @@ function solve(input, times) {
         const pixels = [];
         for (let di = -1; di <= 1; di++) {
           for (let dj = -1; dj <= 1; dj++) {
-            pixels.push(img[i + di]?.[j + dj] ?? alg[0] & t);
+            pixels.push(img[i + di]?.[j + dj] ?? (alg[0] && t % 2));
           }
         }
         const num = parseInt(pixels.join(''), 2);
