@@ -10,9 +10,9 @@ function solve(input, times) {
     .map((row) => row.split('').map((char) => +(char === '#')));
 
   for (let t = 0; t < times; t++) {
-    const newImg = [];
+    const nextImg = [];
     for (let i = -1; i < img.length + 1; i++) {
-      const newImgRow = [];
+      const nextImgRow = [];
       for (let j = -1; j < img.length + 1; j++) {
         const pixels = [];
         for (let di = -1; di <= 1; di++) {
@@ -21,11 +21,11 @@ function solve(input, times) {
           }
         }
         const num = parseInt(pixels.join(''), 2);
-        newImgRow.push(alg[num]);
+        nextImgRow.push(alg[num]);
       }
-      newImg.push(newImgRow);
+      nextImg.push(nextImgRow);
     }
-    img = newImg;
+    img = nextImg;
   }
   console.log(img.flat().filter(Boolean).length);
 }
