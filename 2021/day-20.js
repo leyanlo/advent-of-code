@@ -28,7 +28,7 @@ function solve(input, times) {
       for (let j = -1; j < img.length + 1; j++) {
         const pixels = [];
         for (const [di, dj] of neighbors) {
-          pixels.push(img[i + di]?.[j + dj] ?? t % 2);
+          pixels.push(img[i + di]?.[j + dj] ?? alg[0] & t % 2);
         }
         const num = parseInt(pixels.join(''), 2);
         newImgRow.push(alg[num]);
