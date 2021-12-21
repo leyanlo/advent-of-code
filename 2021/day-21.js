@@ -8,17 +8,17 @@ function solve1(input) {
   const positions = input.split('\n').map((line) => +line.split(': ')[1]);
   const scores = [0, 0];
 
-  let nRolls = 0;
+  let rollCount = 0;
   while (true) {
     for (const i of [0, 1]) {
       for (const r of rolls) {
-        nRolls++;
-        const roll = ((nRolls - 1) % 100) + 1;
+        rollCount++;
+        const roll = ((rollCount - 1) % 100) + 1;
         positions[i] = ((positions[i] + roll - 1) % 10) + 1;
       }
       scores[i] += positions[i];
       if (scores[i] >= 1000) {
-        console.log(scores[(i + 1) % 2] * nRolls);
+        console.log(scores[(i + 1) % 2] * rollCount);
         return;
       }
     }
