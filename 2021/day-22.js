@@ -16,50 +16,50 @@ function intersect(a, b) {
 }
 
 function solve(input, part) {
-  const prisms = [];
+  const cuboids = [];
   lineLoop: for (const line of input.split('\n')) {
-    let [on1, prism1] = line.split(' ');
+    let [on1, cuboid1] = line.split(' ');
     on1 = on1 === 'on';
-    prism1 = prism1
+    cuboid1 = cuboid1
       .match(/-?\d+\.\.-?\d+/g)
       .map((range) => range.split('..').map(Number));
 
     if (part === 1) {
       for (const i of [0, 1, 2]) {
-        const [min, max] = prism1[i];
+        const [min, max] = cuboid1[i];
         const nextMin = Math.max(-50, min);
         const nextMax = Math.min(50, max);
         if (nextMin >= nextMax) {
           continue lineLoop;
         }
-        prism1[i] = [nextMin, nextMax];
+        cuboid1[i] = [nextMin, nextMax];
       }
     }
 
-    for (const { on: on2, prism: prism2 } of [...prisms]) {
-      const prism3 = intersect(prism1, prism2);
-      if (prism3) {
-        prisms.push({
+    for (const { on: on2, cuboid: cuboid2 } of [...cuboids]) {
+      const cuboid3 = intersect(cuboid1, cuboid2);
+      if (cuboid3) {
+        cuboids.push({
           on: !on2,
-          prism: prism3,
+          cuboid: cuboid3,
         });
       }
     }
 
     if (on1) {
-      prisms.push({
+      cuboids.push({
         on: on1,
-        prism: prism1,
+        cuboid: cuboid1,
       });
     }
   }
 
   console.log(
-    prisms
+    cuboids
       .map(
-        ({ on, prism }) =>
+        ({ on, cuboid }) =>
           (on ? 1 : -1) *
-          prism.map(([min, max]) => max + 1 - min).reduce((acc, n) => acc * n)
+          cuboid.map(([min, max]) => max + 1 - min).reduce((acc, n) => acc * n)
       )
       .reduce((acc, n) => acc + n)
   );
