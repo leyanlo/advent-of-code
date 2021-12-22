@@ -29,7 +29,7 @@ function solve(input, part) {
         Math.max(-50, min),
         Math.min(50, max),
       ]);
-      if (cuboid1.some(([min, max]) => min >= max)) {
+      if (cuboid1.some(([min, max]) => min > max)) {
         continue;
       }
     }
