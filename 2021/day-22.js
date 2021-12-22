@@ -17,7 +17,7 @@ function intersect(a, b) {
 
 function solve(input, part) {
   const cuboids = [];
-  lineLoop: for (const line of input.split('\n')) {
+  for (const line of input.split('\n')) {
     let [on1, cuboid1] = line.split(' ');
     on1 = on1 === 'on';
     cuboid1 = cuboid1
@@ -25,14 +25,12 @@ function solve(input, part) {
       .map((range) => range.split('..').map(Number));
 
     if (part === 1) {
-      for (const i of [0, 1, 2]) {
-        const [min, max] = cuboid1[i];
-        const nextMin = Math.max(-50, min);
-        const nextMax = Math.min(50, max);
-        if (nextMin >= nextMax) {
-          continue lineLoop;
-        }
-        cuboid1[i] = [nextMin, nextMax];
+      cuboid1 = cuboid1.map(([min, max]) => [
+        Math.max(-50, min),
+        Math.min(50, max),
+      ]);
+      if (cuboid1.some(([min, max]) => min >= max)) {
+        continue;
       }
     }
 
