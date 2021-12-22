@@ -3,14 +3,12 @@ const fs = require('fs');
 const input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd();
 
 function intersect(a, b) {
-  const c = [];
-  for (const i of [0, 1, 2]) {
-    const min = Math.max(a[i][0], b[i][0]);
-    const max = Math.min(a[i][1], b[i][1]);
-    if (min > max) {
-      return null;
-    }
-    c.push([min, max]);
+  const c = [0, 1, 2].map((i) => [
+    Math.max(a[i][0], b[i][0]),
+    Math.min(a[i][1], b[i][1]),
+  ]);
+  if (c.some(([min, max]) => min > max)) {
+    return null;
   }
   return c;
 }
