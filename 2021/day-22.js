@@ -4,6 +4,7 @@ const input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd();
 
 function solve(input, part) {
   let prisms = [];
+
   for (const line of input.split('\n')) {
     let [on, prism1] = line.split(' ');
     on = on === 'on';
@@ -67,11 +68,13 @@ function solve(input, part) {
           for (let k = 0; k < zPoints.length - 1; k++) {
             const nextZMin = zPoints[k];
             const nextZMax = zPoints[k + 1];
+
             const nextPrism = [
               [nextXMin, nextXMax],
               [nextYMin, nextYMax],
               [nextZMin, nextZMax],
             ];
+
             // if nextPrism extends beyond prism1
             if (
               nextXMin < xMin1 ||
@@ -92,11 +95,10 @@ function solve(input, part) {
 
   console.log(
     prisms
-      .map(
-        ([[xMin, xMax], [yMin, yMax], [zMin, zMax]]) =>
-          (xMax - xMin) * (yMax - yMin) * (zMax - zMin)
+      .map((prism) =>
+        prism.map(([min, max]) => max - min).reduce((acc, n) => acc * n)
       )
-      .reduce((acc, v) => acc + v)
+      .reduce((acc, n) => acc + n)
   );
 }
 solve(input, 1);
