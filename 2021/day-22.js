@@ -1,45 +1,35 @@
 const fs = require('fs');
 
-var input = `on x=10..12,y=10..12,z=10..12
-on x=11..13,y=11..13,z=11..13
-off x=9..11,y=9..11,z=9..11
-on x=10..10,y=10..10,z=10..10`;
-var input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd();
 
-// function solve(input) {
-//   const map = {};
-//   for (const line of input.split('\n')) {
-//     let [on, ranges] = line.split(' ');
-//     on = +(on === 'on');
-//     const [[xMin, xMax], [yMin, yMax], [zMin, zMax]] = ranges
-//       .match(/-?\d+..-?\d+/g)
-//       .map((range) => range.split('..').map(Number));
-//
-//     for (let x = Math.max(-50, xMin); x <= Math.min(50, xMax); x++) {
-//       for (let y = Math.max(-50, yMin); y <= Math.min(50, yMax); y++) {
-//         for (let z = Math.max(-50, zMin); z <= Math.min(50, zMax); z++) {
-//           map[[x, y, z].join()] = on;
-//         }
-//       }
-//     }
-//   }
-//   console.log(Object.values(map).filter(Boolean).length);
-// }
-// solve(input);
-function solve(input) {
+function solve(input, part) {
   let prisms = [];
   for (const line of input.split('\n')) {
     let [on, prism1] = line.split(' ');
     on = on === 'on';
 
     prism1 = prism1
-      .match(/-?\d+..-?\d+/g)
+      .match(/-?\d+\.\.-?\d+/g)
       .map((range) => range.split('..').map((s, i) => +s + i));
+
+    if (part === 1) {
+      prism1 = prism1.map(([min, max]) => [
+        Math.max(-50, min),
+        Math.min(51, max),
+      ]);
+      if (prism1.some(([min, max]) => min >= max)) {
+        continue;
+      }
+    }
+
     const [[xMin1, xMax1], [yMin1, yMax1], [zMin1, zMax1]] = prism1;
 
     const nextPrisms = on ? [prism1] : [];
+
+    // break up or remove any prisms that intersect with prism1
     for (const prism2 of prisms) {
       const [[xMin2, xMax2], [yMin2, yMax2], [zMin2, zMax2]] = prism2;
+
       // if prism2 does not intersect prism1
       if (
         xMin2 > xMax1 ||
@@ -99,6 +89,7 @@ function solve(input) {
     }
     prisms = nextPrisms;
   }
+
   console.log(
     prisms
       .map(
@@ -108,4 +99,5 @@ function solve(input) {
       .reduce((acc, v) => acc + v)
   );
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
