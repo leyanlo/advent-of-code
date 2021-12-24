@@ -11,22 +11,18 @@ function solve(input, part) {
     terms.push([4, 5, 15].map((j) => +lines[18 * i + j].split(' ')[2]));
   }
 
-  const idxStack = [];
-  const idxMap = {};
-  for (let i = 0; i < 14; i++) {
-    if (terms[i][0] === 1) {
-      idxStack.push(i);
-    } else {
-      idxMap[i] = idxStack.pop();
-    }
-  }
-
+  const prevs = [];
   const digits = [];
-  for (const [i, j] of Object.entries(idxMap)) {
-    const complement = terms[j][2] + terms[i][1];
-    digits[j] =
-      part === 1 ? Math.min(9, 9 - complement) : Math.max(1, 1 - complement);
-    digits[i] = digits[j] + complement;
+  for (const [i, [a, b, c]] of Object.entries(terms)) {
+    if (a === 1) {
+      prevs.push([i, c]);
+    } else {
+      const [prevI, prevC] = prevs.pop();
+      const complement = prevC + b;
+      digits[prevI] =
+        part === 1 ? Math.min(9, 9 - complement) : Math.max(1, 1 - complement);
+      digits[i] = digits[prevI] + complement;
+    }
   }
   console.log(digits.join(''));
 }
