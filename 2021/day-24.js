@@ -6,9 +6,9 @@ function solve(input, part) {
   const lines = input.split('\n');
 
   const terms = [];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < lines.length; i += 18) {
     // terms [a, b, c] such that z'(a, b, c, w, z) = ~~(z / a) * (25 * +(w !== (z % 26) + b) + 1) + (w + c) * +(w !== (z % 26) + b)
-    terms.push([4, 5, 15].map((j) => +lines[18 * i + j].split(' ')[2]));
+    terms.push([4, 5, 15].map((j) => +lines[i + j].split(' ')[2]));
   }
 
   const prevs = [];
