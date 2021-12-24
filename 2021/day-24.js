@@ -21,6 +21,7 @@ function* solve(input, vars) {
     switch (cmd) {
       case 'inp':
         vars[a] = yield null;
+        vars[a] = +vars[a];
         break;
       case 'add':
         vars[a] += b;
