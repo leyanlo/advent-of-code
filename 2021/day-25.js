@@ -5,10 +5,12 @@ const input = fs.readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 function solve(input) {
   let map = input.split('\n').map((row) => row.split(''));
   let step = 0;
-  while (true) {
+  let hasMoved = true;
+  while (hasMoved) {
     step++;
+    hasMoved = false;
 
-    const nextMap = map.map((row) => row.map((c) => c));
+    let nextMap = map.map((row) => row.map((c) => c));
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
         const char = map[i][j];
@@ -17,33 +19,28 @@ function solve(input) {
           if (map[i][nextJ] === '.') {
             nextMap[i][nextJ] = '>';
             nextMap[i][j] = '.';
+            hasMoved = true;
           }
         }
       }
     }
+    map = nextMap;
 
-    const nextNextMap = nextMap.map((row) => row.map((c) => c));
-    for (let i = 0; i < nextMap.length; i++) {
-      for (let j = 0; j < nextMap[i].length; j++) {
-        const char = nextMap[i][j];
+    nextMap = map.map((row) => row.map((c) => c));
+    for (let i = 0; i < map.length; i++) {
+      for (let j = 0; j < map[i].length; j++) {
+        const char = map[i][j];
         if (char === 'v') {
-          const nextI = (i + 1) % nextMap.length;
-          if (nextMap[nextI][j] === '.') {
-            nextNextMap[nextI][j] = 'v';
-            nextNextMap[i][j] = '.';
+          const nextI = (i + 1) % map.length;
+          if (map[nextI][j] === '.') {
+            nextMap[nextI][j] = 'v';
+            nextMap[i][j] = '.';
+            hasMoved = true;
           }
         }
       }
     }
-
-    if (
-      map.map((row) => row.join('')).join('\n') ===
-      nextNextMap.map((row) => row.join('')).join('\n')
-    ) {
-      break;
-    }
-
-    map = nextNextMap;
+    map = nextMap;
   }
   console.log(step);
 }
