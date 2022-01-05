@@ -1,49 +1,12 @@
 const fs = require('fs');
 
-var input = `Step C must be finished before step A can begin.
-Step C must be finished before step F can begin.
-Step A must be finished before step B can begin.
-Step A must be finished before step D can begin.
-Step B must be finished before step E can begin.
-Step D must be finished before step E can begin.
-Step F must be finished before step E can begin.`;
-var input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
-// function getNextStep(requirements) {
-//   console.log({ requirements });
-//   const unavailableSteps = new Set(Object.values(requirements).flat());
-//   console.log({ unavailableSteps });
-//   const nextStep = Object.keys(requirements)
-//     .filter((step) => !unavailableSteps.has(step))
-//     .sort()[0];
-//   console.log({ nextStep });
-//   return nextStep;
-// }
-//
-// function solve(input) {
-//   const instructions = input
-//     .split('\n')
-//     .map((line) => [...line.matchAll(/step (\w)/gi)].map((match) => match[1]));
-//   const requirements = {};
-//   for (const [start, end] of instructions) {
-//     requirements[start] = requirements[start] ?? [];
-//     requirements[start].push(end);
-//   }
-//   const steps = [];
-//   while (Object.keys(requirements).length > 1) {
-//     const nextStep = getNextStep(requirements);
-//     steps.push(nextStep);
-//     delete requirements[nextStep];
-//   }
-//   steps.push(...Object.entries(requirements)[0]);
-//   console.log(steps.join(''));
-// }
-// solve(input);
 function getNextStep(requirements, workers, steps) {
   const unavailableSteps = new Set([
     ...Object.keys(requirements)
-      .filter((s) => !steps.has(s))
-      .flatMap((s) => requirements[s]),
+      .filter((step) => !steps.has(step))
+      .flatMap((step) => requirements[step]),
     ...workers.map((worker) => worker.step),
     ...steps,
   ]);
@@ -55,10 +18,10 @@ function getNextStep(requirements, workers, steps) {
 
 const aCodePoint = 'A'.codePointAt(0);
 function nSeconds(step, offset) {
-  return step.codePointAt(0) - aCodePoint + offset + 1;
+  return step.codePointAt(0) - aCodePoint + 1 + offset;
 }
 
-function solve2(input, nWorkers, offset) {
+function solve(input, nWorkers, offset, part) {
   const instructions = input
     .split('\n')
     .map((line) => [...line.matchAll(/step (\w)/gi)].map((match) => match[1]));
@@ -99,7 +62,11 @@ function solve2(input, nWorkers, offset) {
       break;
     }
   }
-  console.log(t);
+  if (part === 1) {
+    console.log([...steps].join(''));
+  } else {
+    console.log(t);
+  }
 }
-// solve2(input, 2, 0);
-solve2(input, 5, 60);
+solve(input, 1, 0, 1);
+solve(input, 5, 60, 2);
