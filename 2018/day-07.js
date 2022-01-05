@@ -39,18 +39,18 @@ var input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 //   console.log(steps.join(''));
 // }
 // solve(input);
-function getNextStep(requirements, workers) {
-  // console.log({ requirements });
+function getNextStep(requirements, workers, steps) {
   const unavailableSteps = new Set([
-    ...Object.values(requirements).flat(),
+    ...Object.keys(requirements)
+      .filter((s) => !steps.has(s))
+      .flatMap((s) => requirements[s]),
     ...workers.map((worker) => worker.step),
+    ...steps,
   ]);
-  // console.log({ unavailableSteps });
-  const nextStep = Object.keys(requirements)
+  return Object.entries(requirements)
+    .flat(2)
     .filter((step) => !unavailableSteps.has(step))
     .sort()[0];
-  // console.log({ nextStep });
-  return nextStep;
 }
 
 const aCodePoint = 'A'.codePointAt(0);
@@ -67,54 +67,39 @@ function solve2(input, nWorkers, offset) {
     requirements[start] = requirements[start] ?? [];
     requirements[start].push(end);
   }
-  const steps = [];
-  const workers = [];
+  const steps = new Set();
+  const allSteps = new Set(Object.entries(requirements).flat(2));
+  const workers = [...Array(nWorkers)].map(() => ({
+    step: null,
+    end: 0,
+  }));
+  let nextStep = getNextStep(requirements, workers, steps);
   let t = -1;
-  while (Object.keys(requirements).length > 1) {
+  while (steps.size < allSteps.size) {
     t++;
-    for (let i = 0; i < workers.length; i++) {
-      const worker = workers[i];
-      worker.remaining--;
-      if (worker.remaining === 0) {
-        steps.push(worker.step);
-        delete requirements[worker.step];
-        workers.splice(i, 1);
-        i--;
+    checkWorkers: while (true) {
+      for (const worker of workers) {
+        if (t >= worker.end) {
+          let shouldRecheck = false;
+          if (worker.step && !steps.has(worker.step)) {
+            steps.add(worker.step);
+            shouldRecheck = true;
+          }
+          nextStep = getNextStep(requirements, workers, steps);
+          if (nextStep) {
+            worker.step = nextStep;
+            worker.end = t + nSeconds(nextStep, offset);
+            shouldRecheck = true;
+          }
+          if (shouldRecheck) {
+            continue checkWorkers;
+          }
+        }
       }
+      break;
     }
-    let nextStep = getNextStep(requirements, workers);
-    while (nextStep && workers.length < nWorkers) {
-      workers.push({
-        step: nextStep,
-        remaining: nSeconds(nextStep, offset),
-      });
-      nextStep = getNextStep(requirements, workers);
-    }
-    console.log(
-      t.toString(10).padStart(3, ' '),
-      [...Array(nWorkers).keys()].map((i) => workers[i]?.step ?? '.').join(' '),
-      steps.join('')
-    );
   }
-  t++;
-  steps.push(Object.keys(requirements)[0]);
-  const lastStep = Object.values(requirements)[0][0];
-  for (let i = 0; i < nSeconds(lastStep, offset); i++) {
-    console.log(
-      t.toString(10).padStart(3, ' '),
-      [lastStep, ...Array(nWorkers - 1).fill('.')].join(' '),
-      steps.join('')
-    );
-    t++;
-  }
-  steps.push(lastStep);
-  console.log(
-    t.toString(10).padStart(3, ' '),
-    Array(nWorkers).fill('.').join(' '),
-    steps.join('')
-  );
+  console.log(t);
 }
 // solve2(input, 2, 0);
 solve2(input, 5, 60);
-
-console.log(987);
