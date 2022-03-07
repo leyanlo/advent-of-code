@@ -1,9 +1,6 @@
 const fs = require('fs');
 
-var input = `9 players; last marble is worth 25 points`;
-var input = `10 players; last marble is worth 1618 points`;
-var input = fs.readFileSync('./day-09-input.txt', 'utf8').trimEnd();
-// 3245700548 too low
+const input = fs.readFileSync('./day-09-input.txt', 'utf8').trimEnd();
 
 // insert item into doubly-linked list
 function insert(prev, next, item) {
@@ -13,7 +10,7 @@ function insert(prev, next, item) {
   next.prev = item;
 }
 
-function solve(input) {
+function solve(input, part) {
   const [nPlayers, nMarbles] = input.match(/\d+/g).map(Number);
 
   let current = {
@@ -23,7 +20,7 @@ function solve(input) {
   current.prev = current;
 
   const scores = Array(nPlayers).fill(0);
-  for (let i = 1; i < nMarbles*100; i++) {
+  for (let i = 1; i < (part === 1 ? nMarbles : nMarbles * 100); i++) {
     let next;
     if (i % 23 !== 0) {
       const start = current.next;
@@ -41,4 +38,5 @@ function solve(input) {
   }
   console.log(Math.max(...scores));
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
