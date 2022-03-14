@@ -54,7 +54,9 @@ function solve(input) {
     for (const [x, y] of p) {
       map[y - minY][x - minX] = '#';
     }
+    console.log(t);
     console.log(map.map((line) => line.join('')).join('\n'));
+    console.log();
   }
 }
 solve(input);
