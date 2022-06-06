@@ -1,24 +1,8 @@
 const fs = require('fs');
 
-var input = `initial state: #..#.#..##......###...###
+const input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
 
-...## => #
-..#.. => #
-.#... => #
-.#.#. => #
-.#.## => #
-.##.. => #
-.#### => #
-#.#.# => #
-#.### => #
-##.#. => #
-##.## => #
-###.. => #
-###.# => #
-####. => #`;
-var input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
-
-function solve(input) {
+function solve(input, generations) {
   let [state, rules] = input.replace(/\./g, ' ').split('\n\n');
   state = state.split(': ')[1];
   rules = rules
@@ -43,11 +27,14 @@ function solve(input) {
       .map((c, idx) => (c === '#' ? idx - i - 1 : 0))
       .reduce((acc, n) => acc + n);
     const diff = nextSum - sum;
-    console.log(i, nextSum, diff, state);
+    if (i === generations) {
+      console.log(sum);
+      return;
+    }
     if (diff === prevDiff) {
       sameCount++;
       if (sameCount === 10) {
-        console.log(sum + diff * (50000000000 - i));
+        console.log(sum + diff * (generations - i));
         break;
       }
     } else {
@@ -57,4 +44,5 @@ function solve(input) {
     sum = nextSum;
   }
 }
-solve(input);
+solve(input, 20);
+solve(input, 50000000000);
