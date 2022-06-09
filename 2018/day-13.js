@@ -1,19 +1,6 @@
 const fs = require('fs');
 
-// var input = `/->-\\
-// |   |  /----\\
-// | /-+--+-\\  |
-// | | |  | v  |
-// \\-+-/  \\-+--/
-//   \\------/`;
-var input = `/>-<\\  
-|   |  
-| /<+-\\
-| | | v
-\\>+</ |
-  |   ^
-  \\<->/`;
-var input = fs.readFileSync('./day-13-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-13-input.txt', 'utf8').trimEnd();
 
 const dirs = ['^', '>', 'v', '<'];
 
@@ -65,7 +52,6 @@ function updateCart(cart, track) {
 }
 
 function solve(input, part) {
-  // console.log(input);
   const tracks = input.split('\n').map((row) => row.split(''));
   let carts = {};
   for (let r = 0; r < tracks.length; r++) {
@@ -82,14 +68,6 @@ function solve(input, part) {
     }
   }
   while (true) {
-    // console.log(carts);
-    // console.log(
-    //   tracks
-    //     .map((row, r) =>
-    //       row.map((char, c) => carts[coordsToKey(r, c)]?.dir ?? char).join('')
-    //     )
-    //     .join('\n')
-    // );
     for (const [key, cart] of Object.entries(carts).sort(([aKey], [bKey]) => {
       const [a, b] = [aKey, bKey].map(keyToCoords);
       return a[0] - b[0] || a[1] - b[1];
