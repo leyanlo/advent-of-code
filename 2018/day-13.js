@@ -1,11 +1,18 @@
 const fs = require('fs');
 
-var input = `/->-\\        
-|   |  /----\\
-| /-+--+-\\  |
-| | |  | v  |
-\\-+-/  \\-+--/
-  \\------/`;
+// var input = `/->-\\
+// |   |  /----\\
+// | /-+--+-\\  |
+// | | |  | v  |
+// \\-+-/  \\-+--/
+//   \\------/`;
+var input = `/>-<\\  
+|   |  
+| /<+-\\
+| | | v
+\\>+</ |
+  |   ^
+  \\<->/`;
 var input = fs.readFileSync('./day-13-input.txt', 'utf8').trimEnd();
 
 const dirs = ['^', '>', 'v', '<'];
@@ -57,7 +64,7 @@ function updateCart(cart, track) {
   }
 }
 
-function solve(input) {
+function solve(input, part) {
   // console.log(input);
   const tracks = input.split('\n').map((row) => row.split(''));
   let carts = {};
@@ -87,20 +94,30 @@ function solve(input) {
       const [a, b] = [aKey, bKey].map(keyToCoords);
       return a[0] - b[0] || a[1] - b[1];
     })) {
+      if (!carts[key]) continue;
       delete carts[key];
       const [r, c] = keyToCoords(key);
       const [dr, dc] = dirToDeltas[cart.dir];
       const [r2, c2] = [r + dr, c + dc];
       const nextKey = coordsToKey(r2, c2);
       if (carts[nextKey]) {
-        // collision
-        console.log(nextKey);
-        return;
-        // break outer;
+        if (part === 1) {
+          console.log(nextKey);
+          return;
+        }
+
+        delete carts[nextKey];
+        continue;
       }
       updateCart(cart, tracks[r2][c2]);
       carts[nextKey] = cart;
     }
+    const keys = Object.keys(carts);
+    if (keys.length === 1) {
+      console.log(keys[0]);
+      return;
+    }
   }
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
