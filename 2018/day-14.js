@@ -1,13 +1,17 @@
 const fs = require('fs');
 
-var input = `9`;
-var input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const nRecipes = +input;
   const scores = [3, 7];
   const elves = [0, 1];
-  while (scores.length <= nRecipes + 10) {
+  while (
+    !scores
+      .slice(-input.length - 1)
+      .join('')
+      .includes(input)
+  ) {
     scores.push(
       ...elves
         .map((i) => scores[i])
@@ -21,5 +25,6 @@ function solve(input) {
     });
   }
   console.log(scores.slice(nRecipes, nRecipes + 10).join(''));
+  console.log(scores.join('').indexOf(input));
 }
 solve(input);
