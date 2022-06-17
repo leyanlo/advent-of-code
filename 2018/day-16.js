@@ -1,9 +1,6 @@
 const fs = require('fs');
 
-var input = `Before: [3, 2, 1, 1]
-9 2 1 2
-After:  [3, 2, 2, 1]`;
-var input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
 
 const opcodes = {
   addr: (r, a, b, c) => {
@@ -56,29 +53,10 @@ const opcodes = {
   },
 };
 
-// function solve(input) {
-//   const part1 = input.split('\n\n\n')[0];
-//   const samples = part1.split('\n\n');
-//   let count = 0;
-//   for (const sample of samples) {
-//     let [before, instr, after] = sample.split('\n');
-//     before = before.match(/\d+/g).map(Number);
-//     instr = instr.split(' ').map(Number);
-//     after = after.match(/\d+/g).map(Number);
-//     console.log(before, instr, after);
-//     const possibles = Object.keys(opcodes).filter((opcode) => {
-//       const test = [...before];
-//       opcodes[opcode](test, ...instr.slice(1));
-//       return test.join() === after.join();
-//     });
-//     count += possibles.length >= 3;
-//   }
-//   console.log(count);
-// }
-// solve(input);
 function solve(input) {
   const [part1, part2] = input.split('\n\n\n');
   const samples = part1.split('\n\n');
+  let count = 0;
   const map = {};
   for (const sample of samples) {
     let [before, instr, after] = sample.split('\n');
@@ -90,12 +68,13 @@ function solve(input) {
       opcodes[opcode](test, ...instr.slice(1));
       return test.join() === after.join();
     });
+    count += possibles.length >= 3;
     const opcode = instr[0];
     map[opcode] = (map[opcode] ?? Object.keys(opcodes)).filter((o) =>
       possibles.includes(o)
     );
   }
-  console.log(map);
+  console.log(count);
   while (
     Object.values(map).filter((possibles) => possibles.length > 1).length
   ) {
@@ -115,9 +94,7 @@ function solve(input) {
   for (const key in map) {
     map[key] = map[key][0];
   }
-  console.log(map);
 
-  console.log(part2.split('\n'));
   const registers = [0, 0, 0, 0];
   for (const line of part2.split('\n')) {
     const [opcode, a, b, c] = line.split(' ').map(Number);
