@@ -1,39 +1,6 @@
 const fs = require('fs');
 
-// var input = `#######
-// #.E...#
-// #.....#
-// #...G.#
-// #######`;
-// var input = `#########
-// #G..G..G#
-// #.......#
-// #.......#
-// #G..E..G#
-// #.......#
-// #.......#
-// #G..G..G#
-// #########`;
-// var input = `#######
-// #E..G.#
-// #...#.#
-// #.G.#G#
-// #######`;
-var input = `#######
-#.G...#
-#...EG#
-#.#.#G#
-#..G#E#
-#.....#
-#######`;
-// var input = `#######
-// #G..#E#
-// #E#E.E#
-// #G.##.#
-// #...#E#
-// #...E.#
-// #######`;
-var input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd();
 
 const dirs = [
   [-1, 0],
@@ -195,7 +162,7 @@ function runCombat(input, elfPow, part) {
       break;
     }
   }
-  console.log(elfPow, nRounds * units.reduce((acc, unit) => acc + unit.hp, 0));
+  console.log(nRounds * units.reduce((acc, unit) => acc + unit.hp, 0));
   return true;
 }
 
