@@ -26,13 +26,13 @@ var input = `#######
 #..G#E#
 #.....#
 #######`;
-var input = `#######
-#G..#E#
-#E#E.E#
-#G.##.#
-#...#E#
-#...E.#
-#######`;
+// var input = `#######
+// #G..#E#
+// #E#E.E#
+// #G.##.#
+// #...#E#
+// #...E.#
+// #######`;
 var input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd();
 
 const dirs = [
@@ -119,7 +119,7 @@ function move(unit, enemies, map) {
   }
 }
 
-function solve(input) {
+function runCombat(input, elfPow, part) {
   const map = input.split('\n').map((row) => row.split(''));
   let units = [];
 
@@ -133,7 +133,7 @@ function solve(input) {
           units.push({
             coords: [i, j],
             type: char,
-            pow: 3,
+            pow: char === 'E' ? elfPow : 3,
             hp: 200,
           });
       }
@@ -142,10 +142,10 @@ function solve(input) {
 
   let nRounds = 0;
 
-  console.log(nRounds);
-  console.log(map.map((row) => row.join('')).join('\n'));
-  console.log(units);
-  console.log();
+  // console.log(nRounds);
+  // console.log(map.map((row) => row.join('')).join('\n'));
+  // console.log(units);
+  // console.log();
 
   while (true) {
     let isFullRound = true;
@@ -165,6 +165,9 @@ function solve(input) {
         adjacentEnemy.hp -= unit.pow;
         // remove dead unit
         if (adjacentEnemy.hp <= 0) {
+          if (adjacentEnemy.type === 'E' && part === 2) {
+            return false;
+          }
           units = units.filter((unit) => unit.hp > 0);
           map[adjacentEnemy.coords[0]][adjacentEnemy.coords[1]] = '.';
           if (new Set(units.map((unit) => unit.type)).size === 1) {
@@ -183,15 +186,29 @@ function solve(input) {
     );
     nRounds += isFullRound;
 
-    console.log(nRounds);
-    console.log(map.map((row) => row.join('')).join('\n'));
-    console.log(units);
-    console.log();
+    // console.log(nRounds);
+    // console.log(map.map((row) => row.join('')).join('\n'));
+    // console.log(units);
+    // console.log();
 
     if (new Set(units.map((unit) => unit.type)).size === 1) {
       break;
     }
   }
-  console.log(nRounds * units.reduce((acc, unit) => acc + unit.hp, 0));
+  console.log(elfPow, nRounds * units.reduce((acc, unit) => acc + unit.hp, 0));
+  return true;
 }
-solve(input);
+
+function solve1(input) {
+  runCombat(input, 3, 1);
+}
+
+function solve2(input) {
+  let pow = 4;
+  while (!runCombat(input, pow, 2)) {
+    pow++;
+  }
+}
+
+solve1(input);
+solve2(input);
