@@ -19,13 +19,13 @@ const fs = require('fs');
 // #...#.#
 // #.G.#G#
 // #######`;
-// var input = `#######
-// #.G...#
-// #...EG#
-// #.#.#G#
-// #..G#E#
-// #.....#
-// #######`;
+var input = `#######
+#.G...#
+#...EG#
+#.#.#G#
+#..G#E#
+#.....#
+#######`;
 var input = `#######
 #G..#E#
 #E#E.E#
@@ -33,9 +33,7 @@ var input = `#######
 #...#E#
 #...E.#
 #######`;
-// var input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd();
-// 204820 too high
-// 201932 too high
+var input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd();
 
 const dirs = [
   [-1, 0],
@@ -49,7 +47,10 @@ function getAdjacentEnemy(unit, enemies) {
   return enemies
     .filter((enemy) => {
       const [i2, j2] = enemy.coords;
-      return dirs.filter(([di, dj]) => i2 + di === i && j2 + dj === j).length;
+      return (
+        enemy.hp > 0 &&
+        dirs.filter(([di, dj]) => i2 + di === i && j2 + dj === j).length
+      );
     })
     .sort(({ coords: a }, { coords: b }) => a[0] - b[0] || a[1] - b[1])
     .sort(({ hp: a }, { hp: b }) => a - b)[0];
@@ -139,7 +140,6 @@ function solve(input) {
     }
   }
 
-  // game loop
   let nRounds = 0;
 
   console.log(nRounds);
@@ -147,7 +147,8 @@ function solve(input) {
   console.log(units);
   console.log();
 
-  while (new Set(units.map((unit) => unit.type)).size === 2) {
+  while (true) {
+    let isFullRound = true;
     for (const unit of units) {
       // dead unit
       if (unit.hp <= 0) continue;
@@ -162,27 +163,34 @@ function solve(input) {
       }
       if (adjacentEnemy) {
         adjacentEnemy.hp -= unit.pow;
+        // remove dead unit
+        if (adjacentEnemy.hp <= 0) {
+          units = units.filter((unit) => unit.hp > 0);
+          map[adjacentEnemy.coords[0]][adjacentEnemy.coords[1]] = '.';
+          if (new Set(units.map((unit) => unit.type)).size === 1) {
+            if (units.indexOf(unit) !== units.length - 1) {
+              isFullRound = false;
+            }
+            break;
+          }
+        }
       }
     }
 
-    // clean up dead units
-    const nextUnits = [];
-    for (const unit of units) {
-      if (unit.hp > 0) {
-        nextUnits.push(unit);
-      } else {
-        map[unit.coords[0]][unit.coords[1]] = '.';
-      }
-    }
-    units = nextUnits.sort(
+    // sort units by current positions
+    units = units.sort(
       ({ coords: a }, { coords: b }) => a[0] - b[0] || a[1] - b[1]
     );
-    nRounds++;
+    nRounds += isFullRound;
 
     console.log(nRounds);
     console.log(map.map((row) => row.join('')).join('\n'));
     console.log(units);
     console.log();
+
+    if (new Set(units.map((unit) => unit.type)).size === 1) {
+      break;
+    }
   }
   console.log(nRounds * units.reduce((acc, unit) => acc + unit.hp, 0));
 }
