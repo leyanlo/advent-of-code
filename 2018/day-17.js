@@ -99,5 +99,12 @@ function solve(input) {
       0
     )
   );
+  console.log(
+    map.reduce(
+      (acc, row, y) =>
+        acc + row.reduce((acc, char) => acc + /~/.test(char), 0),
+      0
+    )
+  );
 }
 solve(input);
