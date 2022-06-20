@@ -1,17 +1,6 @@
 const fs = require('fs');
 
-var input = `x=495, y=2..7
-y=7, x=495..501
-x=501, y=3..7
-x=498, y=2..4
-x=506, y=1..2
-x=498, y=10..13
-x=504, y=10..13
-y=13, x=498..504`;
-var input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd();
-// 18726 too low
-// 30389 too high
-// 30529 too high
+const input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const clayCoords = input.split('\n').map((row) =>
@@ -50,8 +39,6 @@ function solve(input) {
 
   let sources = [[500, yMin]];
   while (sources.length) {
-    // console.log(map.map((row) => row.join('')).join('\n'));
-    // console.log('\n\n\n');
     let [x, y] = sources.shift();
 
     // fall as far as possible
@@ -65,7 +52,6 @@ function solve(input) {
       continue;
     }
 
-    // TODO: fill container until overflows
     let hasOverflowed = false;
     while (!hasOverflowed) {
       y--;
@@ -89,9 +75,6 @@ function solve(input) {
     }
   }
 
-  console.log(map.map((row) => row.join('')).join('\n'));
-  console.log('\n\n\n');
-
   console.log(
     map.reduce(
       (acc, row, y) =>
@@ -101,8 +84,7 @@ function solve(input) {
   );
   console.log(
     map.reduce(
-      (acc, row, y) =>
-        acc + row.reduce((acc, char) => acc + /~/.test(char), 0),
+      (acc, row, y) => acc + row.reduce((acc, char) => acc + /~/.test(char), 0),
       0
     )
   );
