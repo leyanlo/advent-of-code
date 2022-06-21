@@ -23,30 +23,42 @@ const DIRS = [
   [-1, 1],
 ];
 
-function solve(input) {
+function solve(input, minutes) {
   let map = input.split('\n').map((row) => row.split(''));
-  for (let t = 0; t < 10; t++) {
-    console.log(t);
-    console.log(map.map((row) => row.join('')).join('\n'));
-    console.log('\n');
+  const values = [];
+  let cycleLength = 0;
+  for (let t = 0; t < minutes; t++) {
+    // console.log(t);
+    // console.log(map.map((row) => row.join('')).join('\n'));
+    // console.log('\n');
+
+    const counts = map.flat().reduce((acc, char) => {
+      acc[char] = (acc[char] ?? 0) + 1;
+      return acc;
+    }, {});
+    values[t] = counts['|'] * counts['#'];
+    if (t > 1000 && values.lastIndexOf(values[t], t - 1) !== -1) {
+      cycleLength = t - values.lastIndexOf(values[t], t - 1);
+      break;
+    }
 
     const nextMap = map.map((row) => [...row]);
     for (let i = 0; i < map.length; i++) {
       for (let j = 0; j < map[i].length; j++) {
-        const counts = DIRS.reduce((acc, [di, dj]) => {
+        const neighbors = DIRS.reduce((acc, [di, dj]) => {
           const char = map[i + di]?.[j + dj];
           char && (acc[char] = (acc[char] ?? 0) + 1);
           return acc;
         }, {});
         switch (map[i][j]) {
           case '.':
-            counts['|'] >= 3 && (nextMap[i][j] = '|');
+            neighbors['|'] >= 3 && (nextMap[i][j] = '|');
             break;
           case '|':
-            counts['#'] >= 3 && (nextMap[i][j] = '#');
+            neighbors['#'] >= 3 && (nextMap[i][j] = '#');
             break;
           case '#':
-            (!counts['#'] || !counts['|']) && (nextMap[i][j] = '.');
+            (!neighbors['#'] || !neighbors['|']) && (nextMap[i][j] = '.');
             break;
         }
       }
@@ -54,14 +66,19 @@ function solve(input) {
     map = nextMap;
   }
 
-  console.log(10);
-  console.log(map.map((row) => row.join('')).join('\n'));
-  console.log('\n');
+  // console.log(minutes);
+  // console.log(map.map((row) => row.join('')).join('\n'));
+  // console.log('\n');
 
   const counts = map.flat().reduce((acc, char) => {
     acc[char] = (acc[char] ?? 0) + 1;
     return acc;
   }, {});
   console.log(counts['|'] * counts['#']);
+
+  console.log(
+    values.slice(-cycleLength)[(minutes - values.length) % cycleLength]
+  );
 }
-solve(input);
+solve(input, 10);
+solve(input, 1000000000);
