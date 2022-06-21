@@ -1,16 +1,6 @@
 const fs = require('fs');
 
-var input = `.#.#...|#.
-.....#|##|
-.|..|...#.
-..|#.....#
-#.#|||#|#|
-...#.||...
-.|....|...
-||...#|.#|
-|.||||..|.
-...#.|..|.`;
-var input = fs.readFileSync('./day-18-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-18-input.txt', 'utf8').trimEnd();
 
 const DIRS = [
   [0, 1],
@@ -23,20 +13,20 @@ const DIRS = [
   [-1, 1],
 ];
 
+function getValue(map) {
+  const counts = map.flat().reduce((acc, char) => {
+    acc[char] = (acc[char] ?? 0) + 1;
+    return acc;
+  }, {});
+  return counts['|'] * counts['#'];
+}
+
 function solve(input, minutes) {
   let map = input.split('\n').map((row) => row.split(''));
   const values = [];
   let cycleLength = 0;
   for (let t = 0; t < minutes; t++) {
-    // console.log(t);
-    // console.log(map.map((row) => row.join('')).join('\n'));
-    // console.log('\n');
-
-    const counts = map.flat().reduce((acc, char) => {
-      acc[char] = (acc[char] ?? 0) + 1;
-      return acc;
-    }, {});
-    values[t] = counts['|'] * counts['#'];
+    values[t] = getValue(map);
     if (t > 1000 && values.lastIndexOf(values[t], t - 1) !== -1) {
       cycleLength = t - values.lastIndexOf(values[t], t - 1);
       break;
@@ -66,18 +56,10 @@ function solve(input, minutes) {
     map = nextMap;
   }
 
-  // console.log(minutes);
-  // console.log(map.map((row) => row.join('')).join('\n'));
-  // console.log('\n');
-
-  const counts = map.flat().reduce((acc, char) => {
-    acc[char] = (acc[char] ?? 0) + 1;
-    return acc;
-  }, {});
-  console.log(counts['|'] * counts['#']);
-
   console.log(
-    values.slice(-cycleLength)[(minutes - values.length) % cycleLength]
+    cycleLength
+      ? values.slice(-cycleLength)[(minutes - values.length) % cycleLength]
+      : getValue(map)
   );
 }
 solve(input, 10);
