@@ -1,14 +1,6 @@
 const fs = require('fs');
 
-var input = `#ip 0
-seti 5 0 1
-seti 6 0 2
-addi 0 1 0
-addr 1 2 3
-setr 1 0 0
-seti 8 0 4
-seti 9 0 5`;
-var input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
 
 const opcodes = {
   addr: (r, a, b, c) => {
@@ -61,7 +53,23 @@ const opcodes = {
   },
 };
 
-function solve(input) {
+function getFactors(n) {
+  const factors = [1];
+  let dividend = n;
+  let divisor = 2;
+  while (dividend >= 2) {
+    if (dividend % divisor) {
+      divisor++;
+    } else {
+      factors.push(divisor);
+      dividend /= divisor;
+    }
+  }
+  factors.push(n);
+  return factors;
+}
+
+function solve(input, part) {
   let [ipr, ...lines] = input.split('\n');
   ipr = +ipr.match(/\d/)[0];
   lines = lines.map((line) => {
@@ -70,14 +78,15 @@ function solve(input) {
     return { opcode, a, b, c };
   });
   const registers = Array(6).fill(0);
+  part === 2 && (registers[0] = 1);
   let ip = registers[ipr];
-  while (lines[ip]) {
+  while (ip !== 1) {
     const { opcode, a, b, c } = lines[ip];
     registers[ipr] = ip;
     opcodes[opcode](registers, a, b, c);
-    console.log(ip, registers);
     ip = registers[ipr] + 1;
   }
-  console.log(registers[0]);
+  console.log(getFactors(registers[5]).reduce((acc, n) => acc + n));
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
