@@ -1,7 +1,6 @@
 const fs = require('fs');
 
-var input = ``;
-var input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd();
 
 const opcodes = {
   addr: (r, a, b, c) => {
@@ -74,5 +73,22 @@ function solve(input) {
     opcodes[opcode](registers, a, b, c);
     ip = registers[ipr] + 1;
   }
+
+  let r2 = registers[2];
+  const prevs = [];
+  while (!prevs.includes(r2)) {
+    prevs.push(r2);
+    let r4 = r2 | 65536;
+    r2 = 6718165;
+    while (true) {
+      r2 += r4 & 255;
+      r2 &= 16777215;
+      r2 *= 65899;
+      r2 &= 16777215;
+      if (r4 < 256) break;
+      r4 = ~~(r4 / 256);
+    }
+  }
+  console.log(prevs[prevs.length - 1]);
 }
 solve(input);
