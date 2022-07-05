@@ -1,9 +1,6 @@
 const fs = require('fs');
 
-var input = `depth: 510
-target: 10,10`;
-var input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd();
-// 1070 is too high
+const input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd();
 
 const TYPE = {
   rocky: 0,
@@ -25,7 +22,7 @@ const DIRS = [
   [-1, 0],
 ];
 
-const padding = 10;
+const PADDING = 10;
 
 function solve(input) {
   let [depth, target] = input.split('\n');
@@ -37,16 +34,14 @@ function solve(input) {
   }
 
   const erosions = [];
-  // TODO: test higher bounds
-  for (let y = 0; y <= targetY + padding; y++) {
+  for (let y = 0; y <= targetY + PADDING; y++) {
     erosions[y] = [getErosion(y * 48271)];
   }
-  // TODO: test higher bounds
-  for (let x = 1; x <= targetX + padding; x++) {
+  for (let x = 1; x <= targetX + PADDING; x++) {
     erosions[0][x] = getErosion(x * 16807);
   }
-  for (let y = 1; y <= targetY + padding; y++) {
-    for (let x = 1; x <= targetX + padding; x++) {
+  for (let y = 1; y <= targetY + PADDING; y++) {
+    for (let x = 1; x <= targetX + PADDING; x++) {
       erosions[y][x] = getErosion(
         x === targetX && y === targetY
           ? 0
@@ -115,20 +110,5 @@ function solve(input) {
   console.log(
     Math.min(...possibilities[targetY][targetX].map(({ time }) => time))
   );
-  // console.log(
-  //   possibilities
-  //     .map((row) =>
-  //       row
-  //         .slice(0, targetX + 1)
-  //         .map((cell) =>
-  //           cell
-  //             .map((p) => Object.values(p).join())
-  //             .join('; ')
-  //             .padEnd(13, ' ')
-  //         )
-  //         .join('')
-  //     )
-  //     .join('\n')
-  // );
 }
 solve(input);
