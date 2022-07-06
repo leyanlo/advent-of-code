@@ -17,10 +17,11 @@ function dist(p1, p2) {
 
 function solve(input) {
   const nanobots = input.split('\n').map((line) => {
-    let [pos, r] = line.split(', ');
-    pos = pos.match(/[-\d]+/g).map(Number);
-    r = r.match(/[-\d]+/g).map(Number)[0];
-    return { pos, r };
+    const [x, y, z, r] = line
+      .match(/pos=<(.+),(.+),(.+)>, r=(.+)/)
+      .slice(1)
+      .map(Number);
+    return { pos: [x, y, z], r };
   });
   const strongest = nanobots.reduce((acc, nanobot) =>
     acc.r > nanobot.r ? acc : nanobot
