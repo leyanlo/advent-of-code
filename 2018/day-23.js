@@ -2,10 +2,12 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-23-input.txt', 'utf8').trimEnd();
 
+// manhattan distance between two points
 function getDist(p1, p2) {
   return p1.map((_, i) => Math.abs(p1[i] - p2[i])).reduce((acc, n) => acc + n);
 }
 
+// manhattan distance between origin and closest vertex of prism
 function getDistToOrigin(prism) {
   return getDist(
     prism.map((range) => Math.min(...range.map(Math.abs))),
@@ -13,6 +15,7 @@ function getDistToOrigin(prism) {
   );
 }
 
+// split prism into 8 pieces
 function split(prism) {
   const mids = prism.map(([min, max]) => Math.floor((max + min) / 2));
   return [...Array(8).keys()].map((i) =>
@@ -26,19 +29,17 @@ function split(prism) {
   );
 }
 
+// count how many bots are in range of prism
 function getInRange(prism, bots) {
   const prismVertices = [...Array(8).keys()].map((i) =>
     prism.map(([min, max], j) => ((i >> j) % 2 === 0 ? min : max))
   );
   let inRange = 0;
-  for (const { pos, r } of bots) {
-    // bot is in range if prism contains bot vertex or bot range contains prism vertex
-    const botVertices = [r, -r].flatMap((dp) =>
-      pos.map((_, i) => pos.map((p, j) => p + (i === j) * dp))
-    );
+  for (const { pos, r, vertices } of bots) {
+    // bot is in range if prism vertex is in bot range or bot vertex is in prism
     inRange +=
       prismVertices.some((v) => getDist(v, pos) <= r) ||
-      botVertices.some((v) =>
+      vertices.some((v) =>
         v.every((p, i) => {
           const [min, max] = prism[i];
           return min <= p && p <= max;
@@ -49,7 +50,7 @@ function getInRange(prism, bots) {
 }
 
 function solve(input) {
-  const bots = input.split('\n').map((line) => {
+  let bots = input.split('\n').map((line) => {
     const [x, y, z, r] = line
       .match(/pos=<(.+),(.+),(.+)>, r=(.+)/)
       .slice(1)
@@ -60,6 +61,14 @@ function solve(input) {
   console.log(
     bots.filter(({ pos }) => getDist(pos, strongest.pos) <= strongest.r).length
   );
+
+  bots = bots.map(({ pos, r }) => ({
+    pos,
+    r,
+    vertices: [r, -r].flatMap((dp) =>
+      pos.map((_, i) => pos.map((p, j) => p + (i === j) * dp))
+    ),
+  }));
 
   let prisms = [
     bots.slice(1).reduce(
@@ -72,41 +81,41 @@ function solve(input) {
     ),
   ];
 
-  const inRange = new Map();
+  const inRangeMap = new Map();
   const best = {};
   while (prisms.length) {
     const prism = prisms.pop();
     if (prism.some(([min, max]) => min < max)) {
-      const nextPrisms = split(prism);
-      for (const p of nextPrisms) {
-        inRange.set(p, getInRange(p, bots));
+      // prism has non-zero volume
+      for (const p of split(prism)) {
+        const inRange = getInRange(p, bots);
+        if (
+          inRange &&
+          (!best.inRange || inRange >= best.inRange) &&
+          (!best.distToOrigin || getDistToOrigin(p) <= best.distToOrigin)
+        ) {
+          prisms.push(p);
+          inRangeMap.set(p, inRange);
+        }
       }
-      prisms.push(
-        ...nextPrisms.filter(
-          (p) =>
-            inRange.get(p) &&
-            (!best.inRange || inRange.get(p) >= best.inRange) &&
-            (!best.distToOrigin || getDistToOrigin(p) <= best.distToOrigin)
-        )
-      );
-      prisms.sort((a, b) => inRange.get(a) - inRange.get(b));
+      prisms.sort((a, b) => inRangeMap.get(a) - inRangeMap.get(b));
     } else {
-      // evaluate point
+      // prism is a point
       best.prism = [best.prism, prism].sort(
         (a, b) =>
           !a ||
           -!b ||
-          inRange.get(b) - inRange.get(a) ||
+          inRangeMap.get(b) - inRangeMap.get(a) ||
           getDistToOrigin(a) - getDistToOrigin(b)
       )[0];
 
       if (best.prism === prism) {
         // remove all worse prisms if we have a new best
         best.distToOrigin = getDistToOrigin(best.prism);
-        best.inRange = inRange.get(best.prism);
+        best.inRange = inRangeMap.get(best.prism);
         prisms = prisms.filter(
           (p) =>
-            inRange.get(p) >= best.inRange &&
+            inRangeMap.get(p) >= best.inRange &&
             getDistToOrigin(p) <= best.distToOrigin
         );
       }
