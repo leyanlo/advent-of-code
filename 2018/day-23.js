@@ -34,19 +34,19 @@ function getInRange(prism, bots) {
   const prismVertices = [...Array(8).keys()].map((i) =>
     prism.map(([min, max], j) => ((i >> j) % 2 === 0 ? min : max))
   );
-  let inRange = 0;
-  for (const { pos, r, vertices } of bots) {
-    // bot is in range if prism vertex is in bot range or bot vertex is in prism
-    inRange +=
-      prismVertices.some((v) => getDist(v, pos) <= r) ||
-      vertices.some((v) =>
-        v.every((p, i) => {
-          const [min, max] = prism[i];
-          return min <= p && p <= max;
-        })
-      );
-  }
-  return inRange;
+  return bots.reduce(
+    (acc, { pos, r, vertices }) =>
+      acc +
+      // bot is in range if prism vertex is in bot range or bot vertex is in prism
+      (prismVertices.some((v) => getDist(v, pos) <= r) ||
+        vertices.some((v) =>
+          v.every((p, i) => {
+            const [min, max] = prism[i];
+            return min <= p && p <= max;
+          })
+        )),
+    0
+  );
 }
 
 function solve(input) {
@@ -94,6 +94,7 @@ function solve(input) {
           (!best.inRange || inRange >= best.inRange) &&
           (!best.distToOrigin || getDistToOrigin(p) <= best.distToOrigin)
         ) {
+          // p is a possible candidate
           prisms.push(p);
           inRangeMap.set(p, inRange);
         }
@@ -110,7 +111,7 @@ function solve(input) {
       )[0];
 
       if (best.prism === prism) {
-        // remove all worse prisms if we have a new best
+        // we have a new best prism
         best.distToOrigin = getDistToOrigin(best.prism);
         best.inRange = inRangeMap.get(best.prism);
         prisms = prisms.filter(
