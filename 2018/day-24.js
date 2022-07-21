@@ -8,7 +8,8 @@ Infection:
 801 units each with 4706 hit points (weak to radiation) with an attack that does 116 bludgeoning damage at initiative 1
 4485 units each with 2961 hit points (immune to radiation; weak to fire, cold) with an attack that does 12 slashing damage at initiative 4`;
 var input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
-// 22140 too high
+const debug = false;
+// 3491 too low
 
 function logArmies(armies) {
   console.log(
@@ -43,8 +44,8 @@ function getDamage(attacker, defender) {
   );
 }
 
-function solve(input, debug) {
-  const armies = input.split('\n\n').map((group, i) => {
+function getArmies(input, boost = 0) {
+  return input.split('\n\n').map((group, i) => {
     const lines = group.split('\n');
     return lines.slice(1).map((line, j) => ({
       armyName: lines[0].substring(0, lines[0].length - 1),
@@ -52,7 +53,7 @@ function solve(input, debug) {
       units: +line.match(/(\d+) units/)[1],
       hp: +line.match(/(\d+) hit points/)[1],
       attack: {
-        damage: +line.match(/attack that does (\d+)/)[1],
+        damage: +line.match(/attack that does (\d+)/)[1] + (!i && boost),
         type: line.match(/(\w+) damage/)[1],
       },
       initiative: +line.match(/initiative (\d+)/)[1],
@@ -60,8 +61,15 @@ function solve(input, debug) {
       immunities: line.match(/immune to ([\w, ]+)/)?.[1].split(', ') ?? null,
     }));
   });
+}
 
-  while (armies.every((army) => army.length)) {
+function fight(armies) {
+  let prevArmiesStr;
+  while (
+    prevArmiesStr !== JSON.stringify(armies) &&
+    armies.every((army) => army.length)
+  ) {
+    prevArmiesStr = JSON.stringify(armies);
     debug && logArmies(armies);
 
     // target selection
@@ -119,9 +127,6 @@ function solve(input, debug) {
           `${attacker.armyName} group ${attacker.number} attacks defending group ${defender.number}, killing ${kills} units`
         );
       defender.units -= kills;
-      if (defender.units === 0) {
-        console.log('FOOBAR');
-      }
     }
     debug && console.log('\n');
 
@@ -130,14 +135,32 @@ function solve(input, debug) {
       armies[i] = armies[i].filter((group) => group.units > 0);
     }
   }
-
   debug && logArmies(armies);
 
+  return armies;
+}
+
+function solve(input) {
+  let armies = getArmies(input);
   console.log(
-    armies
+    fight(armies)
+      .flat()
+      .map((group) => group.units)
+      .reduce((acc, n) => acc + n)
+  );
+
+  let boost = 1;
+  armies = fight(getArmies(input, boost));
+  while (!armies[0].length || armies[1].length) {
+    boost++;
+    armies = fight(getArmies(input, boost));
+  }
+  console.log(boost, armies);
+  console.log(
+    fight(armies)
       .flat()
       .map((group) => group.units)
       .reduce((acc, n) => acc + n)
   );
 }
-solve(input, true);
+solve(input);
