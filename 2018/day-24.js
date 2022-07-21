@@ -1,15 +1,7 @@
 const fs = require('fs');
 
-var input = `Immune System:
-17 units each with 5390 hit points (weak to radiation, bludgeoning) with an attack that does 4507 fire damage at initiative 2
-989 units each with 1274 hit points (immune to fire; weak to bludgeoning, slashing) with an attack that does 25 slashing damage at initiative 3
-
-Infection:
-801 units each with 4706 hit points (weak to radiation) with an attack that does 116 bludgeoning damage at initiative 1
-4485 units each with 2961 hit points (immune to radiation; weak to fire, cold) with an attack that does 12 slashing damage at initiative 4`;
-var input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
 const debug = false;
-// 3491 too low
 
 function logArmies(armies) {
   console.log(
@@ -44,8 +36,8 @@ function getDamage(attacker, defender) {
   );
 }
 
-function getArmies(input, boost = 0) {
-  return input.split('\n\n').map((group, i) => {
+function getFinalArmies(input, boost = 0) {
+  const armies = input.split('\n\n').map((group, i) => {
     const lines = group.split('\n');
     return lines.slice(1).map((line, j) => ({
       armyName: lines[0].substring(0, lines[0].length - 1),
@@ -61,10 +53,8 @@ function getArmies(input, boost = 0) {
       immunities: line.match(/immune to ([\w, ]+)/)?.[1].split(', ') ?? null,
     }));
   });
-}
 
-function fight(armies) {
-  let prevArmiesStr;
+  let prevArmiesStr = '';
   while (
     prevArmiesStr !== JSON.stringify(armies) &&
     armies.every((army) => army.length)
@@ -141,23 +131,21 @@ function fight(armies) {
 }
 
 function solve(input) {
-  let armies = getArmies(input);
   console.log(
-    fight(armies)
+    getFinalArmies(input)
       .flat()
       .map((group) => group.units)
       .reduce((acc, n) => acc + n)
   );
 
   let boost = 1;
-  armies = fight(getArmies(input, boost));
+  let armies = getFinalArmies(input, boost);
   while (!armies[0].length || armies[1].length) {
     boost++;
-    armies = fight(getArmies(input, boost));
+    armies = getFinalArmies(input, boost);
   }
-  console.log(boost, armies);
   console.log(
-    fight(armies)
+    armies
       .flat()
       .map((group) => group.units)
       .reduce((acc, n) => acc + n)
