@@ -1,16 +1,6 @@
 const fs = require('fs');
 
-var input = `1,-1,-1,-2
--2,-2,0,1
-0,2,1,3
--2,3,-2,1
-0,2,3,-2
--1,-1,1,-2
-0,-2,-1,0
--2,2,3,-1
-1,2,2,0
--1,-2,0,-2`;
-var input = fs.readFileSync('./day-25-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 
 function getDist(p1, p2) {
   return p1.map((_, i) => Math.abs(p1[i] - p2[i])).reduce((acc, n) => acc + n);
