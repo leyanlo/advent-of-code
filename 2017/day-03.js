@@ -1,13 +1,13 @@
 const fs = require('fs');
 
-var input = `1024`;
-var input = fs.readFileSync('./day-03-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-03-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const n = +input;
   const r = ~~((Math.sqrt(n - 1) + 1) / 2);
   const corner = (2 * r + 1) ** 2;
-  console.log(r + Math.abs(((corner - n) % (2 * r)) - r));
+  const arcLength = Math.abs(((corner - n) % (2 * r)) - r);
+  console.log(r + arcLength);
 }
 solve(input);
 
@@ -30,13 +30,13 @@ const dirs = [
 ];
 
 function* spiral() {
-  let step = 0;
+  let i = 0;
   while (true) {
     yield {
-      dir: dirs[step % dirs.length],
-      steps: ~~(step / 2) + 1,
+      dir: dirs[i % dirs.length],
+      steps: ~~(i / 2) + 1,
     };
-    step++;
+    i++;
   }
 }
 
@@ -44,15 +44,10 @@ function solve2(input) {
   const n = +input;
   const grid = { 0: { 0: 1 } };
   let [x, y] = [0, 0];
-  let foo = 0;
   for (const {
     dir: [dx, dy],
     steps,
   } of spiral()) {
-    foo++;
-    if (foo === 25) {
-      break;
-    }
     for (let i = 0; i < steps; i++) {
       x += dx;
       y += dy;
