@@ -1,31 +1,16 @@
 const fs = require('fs');
 
-var input = `0
-3
-0
-1
--3`;
-var input = fs.readFileSync('./day-05-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-05-input.txt', 'utf8').trimEnd();
 
-// function solve(input) {
-//   const offsets = input.split('\n').map(Number);
-//   let step = 0;
-//   let i = 0;
-//   while (0 <= i && i < offsets.length) {
-//     i += offsets[i]++;
-//     step++;
-//   }
-//   console.log(step, offsets);
-// }
-// solve(input);
-function solve(input) {
+function solve(input, part) {
   const offsets = input.split('\n').map(Number);
   let step = 0;
   let i = 0;
   while (0 <= i && i < offsets.length) {
-    i += offsets[i] >= 3 ? offsets[i]-- : offsets[i]++;
+    i += part === 2 && offsets[i] >= 3 ? offsets[i]-- : offsets[i]++;
     step++;
   }
-  console.log(step, offsets);
+  console.log(step);
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
