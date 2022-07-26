@@ -1,7 +1,6 @@
 const fs = require('fs');
 
-var input = `flqrgnkx`;
-var input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
 const listSize = 256;
 
 function getKnotHash(input) {
@@ -28,17 +27,6 @@ function getKnotHash(input) {
     .map((i) => list.slice(16 * i, 16 * (i + 1)).reduce((acc, n) => acc ^ n))
     .flatMap((n) => n.toString(2).padStart(8, '0').split('').map(Number));
 }
-
-// function solve(input) {
-//   console.log(input);
-//   console.log(getKnotHash(`${input}-0`));
-//   let squares = 0;
-//   for (let i = 0; i < 128; i++) {
-//     squares += getKnotHash(`${input}-${i}`).reduce((acc, n) => acc + n);
-//   }
-//   console.log(squares)
-// }
-// solve(input);
 
 const dirs = [
   [0, 1],
