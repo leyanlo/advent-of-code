@@ -10,10 +10,8 @@ function solve(input) {
   for (let i = 0; i < 40000000; i++) {
     a = (a * 16807) % 2147483647;
     b = (b * 48271) % 2147483647;
-    nMatches +=
-      a.toString(2).padStart(32, '0').slice(-16) ===
-      b.toString(2).padStart(32, '0').slice(-16);
+    nMatches += (a % 65536 === b % 65536);
   }
-  console.log(nMatches)
+  console.log(nMatches);
 }
 solve(input);
