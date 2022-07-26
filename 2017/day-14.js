@@ -29,13 +29,47 @@ function getKnotHash(input) {
     .flatMap((n) => n.toString(2).padStart(8, '0').split('').map(Number));
 }
 
+// function solve(input) {
+//   console.log(input);
+//   console.log(getKnotHash(`${input}-0`));
+//   let squares = 0;
+//   for (let i = 0; i < 128; i++) {
+//     squares += getKnotHash(`${input}-${i}`).reduce((acc, n) => acc + n);
+//   }
+//   console.log(squares)
+// }
+// solve(input);
+
+const dirs = [
+  [0, 1],
+  [1, 0],
+  [0, -1],
+  [-1, 0],
+];
+
 function solve(input) {
-  console.log(input);
-  console.log(getKnotHash(`${input}-0`));
-  let squares = 0;
-  for (let i = 0; i < 128; i++) {
-    squares += getKnotHash(`${input}-${i}`).reduce((acc, n) => acc + n);
+  const grid = [...Array(128).keys()].map((i) => getKnotHash(`${input}-${i}`));
+  console.log(grid.flat().reduce((acc, n) => acc + n));
+
+  const seen = grid.map((row) => row.map(() => false));
+  let nRegions = 0;
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[i].length; j++) {
+      if (!grid[i][j] || seen[i][j]) {
+        continue;
+      }
+      nRegions++;
+      const queue = [[i, j]];
+      while (queue.length) {
+        const [i2, j2] = queue.shift();
+        if (!grid[i2]?.[j2] || seen[i2][j2]) {
+          continue;
+        }
+        seen[i2][j2] = true;
+        queue.push(...dirs.map(([di, dj]) => [i2 + di, j2 + dj]));
+      }
+    }
   }
-  console.log(squares)
+  console.log(nRegions);
 }
 solve(input);
