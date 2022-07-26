@@ -1,31 +1,31 @@
 const fs = require('fs');
 
-var input = `0 <-> 2
-1 <-> 1
-2 <-> 0, 3, 4
-3 <-> 2, 4
-4 <-> 2, 3, 6
-5 <-> 6
-6 <-> 4, 5`;
-var input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const map = input
     .split('\n')
     .map((line) => line.split(' <-> ')[1].split(', ').map(Number));
-  console.log(map);
 
-  const group = new Set([0]);
-  const queue = [0];
-  while (queue.length) {
-    const id = queue.shift();
-    for (const next of map[id]) {
-      if (!group.has(next)) {
-        group.add(next);
-        queue.push(next);
+  const groups = map.map(() => null);
+  for (let i = 0; i < map.length; i++) {
+    if (groups[i]) {
+      continue;
+    }
+    const queue = [i];
+    const group = new Set(queue);
+    while (queue.length) {
+      const id = queue.shift();
+      groups[id] = group;
+      for (const nextId of map[id]) {
+        if (!group.has(nextId)) {
+          group.add(nextId);
+          queue.push(nextId);
+        }
       }
     }
   }
-  console.log(group.size);
+  console.log(groups[0].size);
+  console.log(new Set(groups).size);
 }
 solve(input);
