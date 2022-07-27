@@ -8,7 +8,6 @@ function solve(input) {
     String.fromCharCode('a'.charCodeAt(0) + i)
   );
   const seen = [programs.join('')];
-  let loopLength = null;
   while (true) {
     for (const move of moves) {
       switch (move[0]) {
@@ -36,15 +35,11 @@ function solve(input) {
     }
     const next = programs.join('');
     if (seen.includes(next)) {
-      loopLength = seen.length - seen.indexOf(next);
       break;
     }
     seen.push(next);
   }
   console.log(seen[0]);
-
-  console.log(
-    seen[(seen.length - loopLength + (1000000000 % loopLength)) % seen.length]
-  );
+  console.log(seen[1000000000 % seen.length]);
 }
 solve(input);
