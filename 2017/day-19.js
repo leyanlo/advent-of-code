@@ -1,20 +1,6 @@
 const fs = require('fs');
 
-var input = `     |          
-     |  +--+    
-     A  |  C    
- F---|----E|--+ 
-     |  |  |  D 
-     +B-+  +--+ 
-`;
-var input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
-
-const dirs = [
-  [0, 1],
-  [1, 0],
-  [0, -1],
-  [-1, 0],
-];
+const input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
 
 const validChars = /[|\-+A-Z]/;
 
@@ -23,7 +9,7 @@ function solve(input) {
   let [dy, dx] = [1, 0];
   let [y, x] = [0, map[0].indexOf('|')];
   const path = [];
-  let steps = 0;
+  let nSteps = 0;
   while (validChars.test(map[y]?.[x])) {
     switch (map[y][x]) {
       case '|':
@@ -48,9 +34,9 @@ function solve(input) {
     }
     y += dy;
     x += dx;
-    steps++;
+    nSteps++;
   }
   console.log(path.join(''));
-  console.log(steps);
+  console.log(nSteps);
 }
 solve(input);
