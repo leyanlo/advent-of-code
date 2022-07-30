@@ -20,10 +20,10 @@ const validChars = /[|\-+A-Z]/;
 
 function solve(input) {
   const map = input.split('\n').map((line) => line.split(''));
-  console.log(map);
   let [dy, dx] = [1, 0];
   let [y, x] = [0, map[0].indexOf('|')];
   const path = [];
+  let steps = 0;
   while (validChars.test(map[y]?.[x])) {
     switch (map[y][x]) {
       case '|':
@@ -48,7 +48,9 @@ function solve(input) {
     }
     y += dy;
     x += dx;
+    steps++;
   }
   console.log(path.join(''));
+  console.log(steps);
 }
 solve(input);
