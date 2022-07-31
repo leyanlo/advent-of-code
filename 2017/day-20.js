@@ -17,23 +17,23 @@ function validTime(t) {
   return t >= 0 && t === ~~t;
 }
 
-function getCollision(p1, p2) {
+function getCollision({ p: p1, v: v1, a: a1 }, { p: p2, v: v2, a: a2 }) {
   const timesMap = [0, 1, 2]
     .map((i) =>
-      p1.a[i] === p2.a[i]
-        ? p1.v[i] === p2.v[i]
-          ? p1.p[i] === p2.p[i]
+      a1[i] === a2[i]
+        ? v1[i] === v2[i]
+          ? p1[i] === p2[i]
             ? // always
               null
             : // never
               []
           : // linear
-            [-(p2.p[i] - p1.p[i]) / (p2.v[i] - p1.v[i])].filter(validTime)
+            [-(p2[i] - p1[i]) / (v2[i] - v1[i])].filter(validTime)
         : // quadratic
           quadratic(
-            (p2.a[i] - p1.a[i]) / 2,
-            p2.v[i] + p2.a[i] / 2 - p1.v[i] - p1.a[i] / 2,
-            p2.p[i] - p1.p[i]
+            (a2[i] - a1[i]) / 2,
+            v2[i] + a2[i] / 2 - v1[i] - a1[i] / 2,
+            p2[i] - p1[i]
           ).filter(validTime)
     )
     .filter(Boolean);
@@ -47,7 +47,7 @@ function getCollision(p1, p2) {
 function solve(input) {
   const particles = input.split('\n').map((line, id) => {
     const [px, py, pz, vx, vy, vz, ax, ay, az] = line
-      .match(/[\-\d]+/g)
+      .match(/[-\d]+/g)
       .map(Number);
     return { p: [px, py, pz], v: [vx, vy, vz], a: [ax, ay, az], id };
   });
