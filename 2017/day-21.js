@@ -1,8 +1,6 @@
 const fs = require('fs');
 
-var input = `../.# => ##./#../...
-.#./..#/### => #..#/..../..../#..#`;
-var input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd();
 
 function rot(img) {
   img = img.split('/');
@@ -20,25 +18,7 @@ function flip(img) {
   return img.split('/').reverse().join('/');
 }
 
-function split(img) {
-  img = img.split('/');
-  const size = img.length;
-  const divisor = size % 2 ? 2 : 3;
-  const imgs = [];
-  for (let i = 0; i < size; i += divisor) {
-    for (let j = 0; j < size; j += divisor) {
-      imgs.push(
-        img
-          .slice(i, i + divisor)
-          .map((row) => row.slice(j, j + divisor))
-          .join('/')
-      );
-    }
-  }
-  return imgs;
-}
-
-function solve(input) {
+function solve(input, iterations) {
   const rules = input.split('\n').reduce((acc, line) => {
     let [left, right] = line.split(' => ');
     right = right.split('/');
@@ -51,15 +31,13 @@ function solve(input) {
     }
     return acc;
   }, {});
-  console.log(rules);
 
   let img = `.#.
 ..#
 ###`
     .split('\n')
     .map((row) => row.split(''));
-  for (let i = 0; i < 5; i++) {
-    console.log(img);
+  for (let i = 0; i < iterations; i++) {
     const divisor = 2 + (img.length % 2);
     const nextLength = (img.length / divisor) * (divisor + 1);
 
@@ -91,4 +69,5 @@ function solve(input) {
       .reduce((acc, n) => acc + n)
   );
 }
-solve(input);
+solve(input, 5);
+solve(input, 18);
