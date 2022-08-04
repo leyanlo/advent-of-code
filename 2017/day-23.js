@@ -4,7 +4,6 @@ const input = fs.readFileSync('./day-23-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const instructions = input.split('\n').map((line) => line.split(' '));
-  console.log(instructions);
   const registers = {
     a: 0,
     b: 0,
@@ -41,3 +40,35 @@ function solve(input) {
   console.log(mulCount)
 }
 solve(input);
+
+function solve2(input) {
+  const registers = {
+    a: 1,
+    b: +input.split('\n')[0].split(' ')[2],
+    c: 0,
+    d: 0,
+    f: 0,
+    g: 0,
+    h: 0,
+  };
+  registers.b = registers.b * 100 + 100000;
+  registers.c = registers.b + 17000;
+  do {
+    registers.f = 1;
+    registers.d = 2;
+    for (let d = registers.d; d ** 2 < registers.b; d++) {
+      if (registers.b % d === 0) {
+        registers.f = 0;
+        break;
+      }
+    }
+    if (registers.f === 0) {
+      registers.h++;
+    }
+    registers.g = registers.b - registers.c;
+    registers.b += 17;
+  } while (registers.g !== 0);
+
+  console.log(registers.h);
+}
+solve2(input);
