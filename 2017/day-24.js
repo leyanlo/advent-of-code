@@ -1,14 +1,6 @@
 const fs = require('fs');
 
-var input = `0/2
-2/2
-2/3
-3/4
-3/5
-0/1
-10/1
-9/10`;
-var input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const components = input
@@ -33,13 +25,25 @@ function solve(input) {
       });
     }
   }
-  const strengths = [...bridgeKeys]
-    .map((key) => key.split(';').map((c) => c.split(',').map(Number)))
-    .map((bridge) => bridge.flat().reduce((acc, n) => acc + n));
+  const bridges = [...bridgeKeys].map((key) =>
+    key.split(';').map((c) => c.split(',').map(Number))
+  );
   let maxStrength = 0;
-  for (const s of strengths) {
-    maxStrength = Math.max(maxStrength, s);
+  let longest = { length: 0, strength: 0 };
+  for (const bridge of bridges) {
+    const strength = bridge.flat().reduce((acc, n) => acc + n);
+    maxStrength = Math.max(maxStrength, strength);
+    if (
+      bridge.length > longest.length ||
+      (bridge.length === longest.length && strength > longest.strength)
+    ) {
+      longest = {
+        length: bridge.length,
+        strength,
+      };
+    }
   }
   console.log(maxStrength);
+  console.log(longest.strength);
 }
 solve(input);
