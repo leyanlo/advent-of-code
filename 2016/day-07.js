@@ -1,14 +1,6 @@
 const fs = require('fs');
 
-var input = `abba[mnop]qrst
-abcd[bddb]xyyx
-aaaa[qwer]tyui
-ioxxoj[asdfgh]zxcvbn`;
-var input = `aba[bab]xyz
-xyx[xyx]xyx
-aaa[kek]eke
-zazbz[bzb]cdb`;
-var input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
 function hasAbba(str) {
   for (let i = 0; i <= str.length - 4; i++) {
@@ -20,21 +12,20 @@ function hasAbba(str) {
   return false;
 }
 
-// function solve(input) {
-//   console.log(input.split('\n'));
-//   let count = 0;
-//   for (const line of input.split('\n')) {
-//     const insides = line
-//       .match(/\[\w+]/g)
-//       .map((match) => match.substring(1, match.length - 1));
-//     const outsides = line.split(/\[\w+]/);
-//     if (outsides.some(hasAbba) && !insides.some(hasAbba)) {
-//       count++;
-//     }
-//   }
-//   console.log(count);
-// }
-// solve(input);
+function solve1(input) {
+  let count = 0;
+  for (const line of input.split('\n')) {
+    const insides = line
+      .match(/\[\w+]/g)
+      .map((match) => match.substring(1, match.length - 1));
+    const outsides = line.split(/\[\w+]/);
+    if (outsides.some(hasAbba) && !insides.some(hasAbba)) {
+      count++;
+    }
+  }
+  console.log(count);
+}
+solve1(input);
 
 function getAbas(str) {
   const abas = [];
@@ -52,15 +43,13 @@ function getBab(aba) {
   return `${aba[1]}${aba[0]}${aba[1]}`;
 }
 
-function solve(input) {
-  console.log(input.split('\n'));
+function solve2(input) {
   let count = 0;
   for (const line of input.split('\n')) {
     const insides = line
       .match(/\[\w+]/g)
       .map((match) => match.substring(1, match.length - 1));
     const outsides = line.split(/\[\w+]/);
-    console.log(outsides.flatMap(getAbas));
     if (
       outsides
         .flatMap(getAbas)
@@ -70,4 +59,4 @@ function solve(input) {
   }
   console.log(count);
 }
-solve(input);
+solve2(input);
