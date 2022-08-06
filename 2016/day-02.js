@@ -1,10 +1,6 @@
 const fs = require('fs');
 
-var input = `ULL
-RRDDD
-LURDL
-UUUUD`;
-var input = fs.readFileSync('./day-02-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-02-input.txt', 'utf8').trimEnd();
 
 const keypad = `1 2 3
 4 5 6
