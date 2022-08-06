@@ -12,11 +12,22 @@ const keypad = `1 2 3
   .split('\n')
   .map((line) => line.split(' '));
 
-function solve(input) {
-  console.log(keypad);
+const keypad2 = `    1
+  2 3 4
+5 6 7 8 9
+  A B C
+    D`
+  .split('\n')
+  .map((line) =>
+    line
+      .split('')
+      .filter((_, i) => i % 2 === 0)
+      .map((char) => (char !== ' ' ? char : undefined))
+  );
+
+function solve(input, keypad) {
   const instructions = input.split('\n').map((line) => line.split(''));
-  console.log(instructions);
-  let [y, x] = [1, 1];
+  let [y, x] = [(keypad.length + 1) / 2, (keypad[0].length + 1) / 2];
   const code = [];
   for (const line of instructions) {
     for (const char of line) {
@@ -35,4 +46,5 @@ function solve(input) {
   }
   console.log(code.join(''));
 }
-solve(input);
+solve(input, keypad);
+solve(input, keypad2);
