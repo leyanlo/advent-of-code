@@ -1,25 +1,8 @@
 const fs = require('fs');
 
-var input = `eedadn
-drvtee
-eandsr
-raavrd
-atevrs
-tsrnev
-sdttsa
-rasrtv
-nssdts
-ntnada
-svetve
-tesnvt
-vntsnd
-vrdear
-dvrsen
-enarar`;
-var input = fs.readFileSync('./day-06-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-06-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
-  console.log(input.split('\n').map((line) => line.split('')));
   const counts = [];
   for (const line of input.split('\n')) {
     for (let i = 0; i < line.length; i++) {
@@ -31,6 +14,11 @@ function solve(input) {
   console.log(
     counts
       .map((map) => Object.entries(map).sort((a, b) => b[1] - a[1])[0][0])
+      .join('')
+  );
+  console.log(
+    counts
+      .map((map) => Object.entries(map).sort((a, b) => a[1] - b[1])[0][0])
       .join('')
   );
 }
