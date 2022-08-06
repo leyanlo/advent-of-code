@@ -1,23 +1,23 @@
 const crypto = require('crypto');
 const fs = require('fs');
 
-var input = `abc`;
-var input = fs.readFileSync('./day-05-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-05-input.txt', 'utf8').trimEnd();
 
-// function solve(input) {
-//   const chars = [];
-//   let i = 0;
-//   while (chars.length < 8) {
-//     const hash = crypto.createHash('md5').update(`${input}${i}`).digest('hex');
-//     if (hash.startsWith('00000')) {
-//       chars.push(hash[5]);
-//     }
-//     i++;
-//   }
-//   console.log(chars.join(''));
-// }
-// solve(input);
-function solve(input) {
+function solve1(input) {
+  const chars = [];
+  let i = 0;
+  while (chars.length < 8) {
+    const hash = crypto.createHash('md5').update(`${input}${i}`).digest('hex');
+    if (hash.startsWith('00000')) {
+      chars.push(hash[5]);
+    }
+    i++;
+  }
+  console.log(chars.join(''));
+}
+solve1(input);
+
+function solve2(input) {
   const chars = [];
   let i = 0;
   let missing = new Set([...Array(8).keys()]);
@@ -34,4 +34,4 @@ function solve(input) {
   }
   console.log(chars.join(''));
 }
-solve(input);
+solve2(input);
