@@ -1,8 +1,6 @@
 const fs = require('fs');
 
-var input = `10`,
-  target = [7, 4];
-var input = fs.readFileSync('./day-13-input.txt', 'utf8').trimEnd(),
+const input = fs.readFileSync('./day-13-input.txt', 'utf8').trimEnd(),
   target = [31, 39];
 
 const dirs = [
@@ -12,9 +10,8 @@ const dirs = [
   [-1, 0],
 ];
 
-function solve(input) {
+function solve(input, part) {
   input = +input;
-  console.log(input);
   const seen = [];
   const queue = [{ steps: 0, coords: [1, 1] }];
   while (queue.length) {
@@ -22,29 +19,40 @@ function solve(input) {
       steps,
       coords: [x, y],
     } = queue.shift();
-    if (x === target[0] && y === target[1]) {
+
+    if (part === 1 && x === target[0] && y === target[1]) {
       console.log(steps);
       break;
     }
-    if (seen[y]?.[x]) {
-      continue;
+
+    if (part === 2 && steps > 50) {
+      console.log(seen.flat().length);
+      break;
     }
-    seen[y] = seen[y] ?? [];
-    seen[y][x] = true;
+
     if (
+      x < 0 ||
+      y < 0 ||
       (x * x + 3 * x + 2 * x * y + y + y * y + input)
         .toString(2)
         .split('')
         .filter((char) => char === '1').length %
         2 ===
-      1
+        1
     ) {
       // wall
       continue;
     }
+
+    if (seen[y]?.[x]) {
+      continue;
+    }
+    seen[y] = seen[y] ?? [];
+    seen[y][x] = true;
     for (const [dx, dy] of dirs) {
       queue.push({ steps: steps + 1, coords: [x + dx, y + dy] });
     }
   }
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
