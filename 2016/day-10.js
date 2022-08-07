@@ -39,7 +39,6 @@ function solve(input) {
     const chips = bots[bot].sort((a, b) => a - b);
     if (chips[0] === low && chips[1] === high) {
       console.log(bot);
-      return;
     }
     const instruction = instructions[bot];
     for (let i = 0; i < 2; i++) {
@@ -60,5 +59,6 @@ function solve(input) {
     }
     bots[bot].length = 0;
   }
+  console.log([0, 1, 2].map((i) => outputs[i]).reduce((acc, n) => acc * n));
 }
 solve(input);
