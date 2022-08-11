@@ -45,13 +45,20 @@ function chineseRemainder(a, n) {
   return sm % prod;
 }
 
-function solve(input) {
+function solve(input, part) {
   const discs = input.split('\n').map((line) => {
     const [, n, total, pos] = line.match(
       /Disc #(\d+) has (\d+) positions; at time=0, it is at position (\d+)./
     );
     return { n: +n, total: +total, pos: +pos };
   });
+  if (part === 2) {
+    discs.push({
+      n: discs[discs.length - 1].n + 1,
+      total: 11,
+      pos: 0,
+    });
+  }
   console.log(discs);
   console.log(
     chineseRemainder(
@@ -60,4 +67,5 @@ function solve(input) {
     )
   );
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
