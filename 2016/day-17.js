@@ -1,9 +1,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 
-var input = `hijkl`;
-var input = `ihgpwlah`;
-var input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd();
 
 const dirChars = ['U', 'D', 'L', 'R'];
 
@@ -14,17 +12,22 @@ const dirs = [
   [1, 0],
 ];
 
-function solve(input) {
-  console.log(input);
+function solve(input, part) {
   const queue = [{ code: input, coords: [0, 0] }];
+  let longest = 0;
   while (queue.length) {
     const {
       code,
       coords: [x, y],
     } = queue.shift();
     if (x === 3 && y === 3) {
-      console.log(code.slice(input.length));
-      break;
+      if (part === 1) {
+        console.log(code.slice(input.length));
+        return;
+      } else {
+        longest = code.length - input.length;
+        continue;
+      }
     }
     const hash = crypto.createHash('md5').update(code).digest('hex');
     const isOpenArr = hash
@@ -42,5 +45,7 @@ function solve(input) {
       }
     }
   }
+  console.log(longest);
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
