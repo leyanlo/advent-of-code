@@ -1,19 +1,7 @@
 const fs = require('fs');
 
-var input = `swap position 4 with position 0
-swap letter d with letter b
-reverse positions 0 through 4
-rotate left 1 step
-move position 1 to position 4
-move position 3 to position 0
-rotate based on position of letter b
-rotate based on position of letter d`,
-  start = 'abcde',
-  end = 'decab',
-  invMap = [4, -1, 1, -2, 0];
-var input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd(),
+const input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd(),
   start = 'abcdefgh',
-  end = 'cbeghdaf',
   end = 'fbgdceah',
   invMap = [7, -1, 2, -2, 1, -3, 0, -4];
 
@@ -112,9 +100,9 @@ function solve(input, start) {
     for (const { re, fn } of ops) {
       if (re.test(instruction)) {
         arr = fn(arr, instruction.match(re), true);
-        console.log(instruction, '-', arr.join(''));
       }
     }
   }
+  console.log(arr.join(''));
 }
 solve(input, start);
