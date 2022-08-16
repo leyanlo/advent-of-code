@@ -6,7 +6,6 @@ function solve(input) {
   let a = -1;
   outer: while (true) {
     a++;
-    console.log('trying ', a);
     const registers = {
       a,
       b: 0,
@@ -18,7 +17,9 @@ function solve(input) {
     }
     const instructions = input.split('\n').map((line) => line.split(' '));
     let prevOut;
+    let nLoops = 0;
     for (let i = 0; i < instructions.length; i++) {
+      nLoops++;
       let [cmd, x, y] = instructions[i];
       switch (cmd) {
         case 'cpy': // x y copies x (either an integer or the value of a register) into register y.
@@ -51,6 +52,8 @@ function solve(input) {
           const out = get(x);
           if (out === prevOut) {
             continue outer;
+          } else if (nLoops > 100000) {
+            break outer;
           } else {
             prevOut = out;
           }
@@ -58,5 +61,6 @@ function solve(input) {
       }
     }
   }
+  console.log(a);
 }
 solve(input);
