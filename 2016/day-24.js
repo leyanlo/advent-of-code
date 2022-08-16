@@ -1,3 +1,5 @@
+require = require('esm')(module);
+const $C = require('js-combinatorics');
 const fs = require('fs');
 
 var input = `###########
@@ -24,23 +26,15 @@ function solve(input) {
       }
     }
   }
-  const completePaths = [];
-  const paths = [{ path: ['0'], coords: numCoords[0], steps: 0 }];
-  while (paths.length) {
-    const {
-      path,
-      coords: [i0, j0],
-      steps: steps0,
-    } = paths.shift();
-    if (new Set(path).size === numCoords.length) {
-      completePaths.push({ path, steps: steps0 });
-      continue;
-    }
+
+  const matrix = numCoords.map(() => numCoords.map(() => 0));
+  for (let num = 0; num < numCoords.length; num++) {
+    const [i0, j0] = numCoords[num];
     const seen = map.map((row) => row.map(() => false));
     seen[i0][j0] = true;
     const queue = dirs.map(([di, dj]) => ({
       coords: [i0 + di, j0 + dj],
-      steps: steps0 + 1,
+      steps: 1,
     }));
     while (queue.length) {
       const {
@@ -51,13 +45,14 @@ function solve(input) {
         continue;
       }
       seen[i][j] = true;
-      if (/\d/.test(map[i][j]) && !path.includes(map[i][j])) {
-        paths.push({
-          path: [...path, map[i][j]],
-          coords: [i, j],
-          steps,
-        });
-        continue;
+      if (/\d/.test(map[i][j])) {
+        matrix[num][map[i][j]] = steps;
+        matrix[map[i][j]][num] = steps;
+        if (matrix[num].every(Boolean)) {
+          break;
+        } else {
+          continue;
+        }
       }
       queue.push(
         ...dirs.map(([di, dj]) => ({
@@ -67,7 +62,25 @@ function solve(input) {
       );
     }
   }
-  console.log(completePaths)
-  console.log(completePaths.sort((a, b) => a.steps - b.steps)[0].steps);
+  console.log(matrix);
+
+  const permutations = [
+    ...new $C.Permutation(
+      [...Array(numCoords.length - 1).keys()].map((i) => i + 1)
+    ),
+  ];
+  const steps = permutations.map((p) => {
+    return p
+      .map((num, i) => matrix[num][p[i - 1] ?? 0])
+      .reduce((acc, n) => acc + n);
+  });
+  console.log(Math.min(...steps));
+
+  const steps2 = permutations.map((p) => {
+    return [...p, 0]
+      .map((num, i) => matrix[num][p[i - 1] ?? 0])
+      .reduce((acc, n) => acc + n);
+  });
+  console.log(Math.min(...steps2));
 }
 solve(input);
