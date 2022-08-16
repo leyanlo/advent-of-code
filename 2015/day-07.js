@@ -1,16 +1,8 @@
 const fs = require('fs');
 
-var input = `123 -> x
-456 -> y
-x AND y -> d
-x OR y -> e
-x LSHIFT 2 -> f
-y RSHIFT 2 -> g
-NOT x -> h
-NOT y -> i`;
-var input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
-function solve(input) {
+function run(input, override) {
   const wires = {};
   function get(s) {
     return /\d+/.test(s) ? +s : wires[s];
@@ -21,7 +13,10 @@ function solve(input) {
     const instruction = instructions.shift();
     const [left, right] = instruction.split(' -> ');
     const [cmd] = left.match(/[A-Z]+/) ?? [];
-    const [x, y] = left.split(/ ?[A-Z]+ /).map(get);
+    let [x, y] = left.split(/ ?[A-Z]+ /).map(get);
+    if (override && right === 'b') {
+      x = override;
+    }
 
     switch (cmd) {
       case 'AND':
@@ -63,6 +58,11 @@ function solve(input) {
     }
     instructions.push(instruction);
   }
-  console.log(wires.a);
+  return wires.a;
+}
+function solve(input) {
+  const result = run(input);
+  console.log(result);
+  console.log(run(input, result));
 }
 solve(input);
