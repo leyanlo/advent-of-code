@@ -2,12 +2,7 @@ require = require('esm')(module);
 const $C = require('js-combinatorics');
 const fs = require('fs');
 
-var input = `###########
-#0.1.....2#
-#.#######.#
-#4.......3#
-###########`;
-var input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
 
 const dirs = [
   [0, 1],
@@ -62,25 +57,30 @@ function solve(input) {
       );
     }
   }
-  console.log(matrix);
 
   const permutations = [
     ...new $C.Permutation(
       [...Array(numCoords.length - 1).keys()].map((i) => i + 1)
     ),
   ];
-  const steps = permutations.map((p) => {
-    return p
-      .map((num, i) => matrix[num][p[i - 1] ?? 0])
-      .reduce((acc, n) => acc + n);
-  });
-  console.log(Math.min(...steps));
+  console.log(
+    Math.min(
+      ...permutations.map((p) => {
+        return p
+          .map((num, i) => matrix[num][p[i - 1] ?? 0])
+          .reduce((acc, n) => acc + n);
+      })
+    )
+  );
 
-  const steps2 = permutations.map((p) => {
-    return [...p, 0]
-      .map((num, i) => matrix[num][p[i - 1] ?? 0])
-      .reduce((acc, n) => acc + n);
-  });
-  console.log(Math.min(...steps2));
+  console.log(
+    Math.min(
+      ...permutations.map((p) => {
+        return [...p, 0]
+          .map((num, i) => matrix[num][p[i - 1] ?? 0])
+          .reduce((acc, n) => acc + n);
+      })
+    )
+  );
 }
 solve(input);
