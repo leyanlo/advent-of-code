@@ -1,11 +1,6 @@
 const fs = require('fs');
 
-var input = `H => HO
-H => OH
-O => HH
-
-HOH`;
-var input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const [replacements, medicine] = input.split('\n\n');
@@ -22,5 +17,11 @@ function solve(input) {
     }
   }
   console.log(molecules.size);
+  console.log(
+    medicine.match(/[A-Z]/g).length -
+      medicine.match(/(Rn|Ar)/g).length -
+      2 * medicine.match(/Y/g).length -
+      1
+  );
 }
 solve(input);
