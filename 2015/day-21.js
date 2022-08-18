@@ -48,7 +48,7 @@ function solve(input) {
   const boss = process(input);
 
   const weaponCombos = weapons.map((w) => [w]);
-  const armorCombos = [[]].concat(armors.map((a) => [a]));
+  const armorCombos = [[], ...armors.map((a) => [a])];
   const ringCombos = [
     [],
     ...rings.map((r) => [r]),
