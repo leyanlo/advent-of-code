@@ -62,7 +62,7 @@ function solve(input) {
 
   outer: for (const config of configs) {
     const players = [{ hp, ...equip(config) }, { ...boss }];
-    while (players.every((p) => p.hp > 0)) {
+    while (true) {
       for (let i = 0; i < players.length; i++) {
         const p1 = players[i];
         const p2 = players[(i + 1) % 2];
@@ -72,7 +72,7 @@ function solve(input) {
             console.log(cost(config));
             break outer;
           }
-          break;
+          continue outer;
         }
       }
     }
@@ -80,7 +80,7 @@ function solve(input) {
 
   outer: for (const config of configs.reverse()) {
     const players = [{ hp, ...equip(config) }, { ...boss }];
-    while (players.every((p) => p.hp > 0)) {
+    while (true) {
       for (let i = 0; i < players.length; i++) {
         const p1 = players[i];
         const p2 = players[(i + 1) % 2];
@@ -90,7 +90,7 @@ function solve(input) {
             console.log(cost(config));
             break outer;
           }
-          break;
+          continue outer;
         }
       }
     }
