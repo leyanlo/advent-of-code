@@ -2,11 +2,7 @@ require = require('esm')(module);
 const $C = require('js-combinatorics');
 const fs = require('fs');
 
-var input = `Hit Points: 12
-Damage: 7
-Armor: 2`,
-  hp = 8;
-var input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd(),
+const input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd(),
   hp = 100;
 
 const weapons = [
@@ -50,7 +46,6 @@ function equip(config) {
 
 function solve(input) {
   const boss = process(input);
-  console.log(boss);
 
   const weaponCombos = weapons.map((w) => [w]);
   const armorCombos = [[]].concat(armors.map((a) => [a]));
@@ -64,16 +59,38 @@ function solve(input) {
       armorCombos.flatMap((a) => ringCombos.map((r) => [...w, ...a, ...r]))
     )
     .sort((a, b) => cost(a) - cost(b));
-  for (const config of configs) {
+
+  outer: for (const config of configs) {
     const players = [{ hp, ...equip(config) }, { ...boss }];
     while (players.every((p) => p.hp > 0)) {
       for (let i = 0; i < players.length; i++) {
         const p1 = players[i];
         const p2 = players[(i + 1) % 2];
         p2.hp -= Math.max(1, p1.damage - p2.armor);
-        if (i === 0 && p2.hp <= 0) {
-          console.log(cost(config));
-          return
+        if (p2.hp <= 0) {
+          if (i === 0) {
+            console.log(cost(config));
+            break outer;
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  outer: for (const config of configs.reverse()) {
+    const players = [{ hp, ...equip(config) }, { ...boss }];
+    while (players.every((p) => p.hp > 0)) {
+      for (let i = 0; i < players.length; i++) {
+        const p1 = players[i];
+        const p2 = players[(i + 1) % 2];
+        p2.hp -= Math.max(1, p1.damage - p2.armor);
+        if (p2.hp <= 0) {
+          if (i === 1) {
+            console.log(cost(config));
+            break outer;
+          }
+          break;
         }
       }
     }
