@@ -1,12 +1,6 @@
 const fs = require('fs');
 
-var input = `Hit Points: 13
-Damage: 8`,
-  player = { hp: 10, mana: 250 };
-var input = `Hit Points: 14
-Damage: 8`,
-  player = { hp: 10, mana: 250 };
-var input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd(),
+const input = fs.readFileSync('./day-22-input.txt', 'utf8').trimEnd(),
   player = {
     hp: 50,
     mana: 500,
@@ -29,13 +23,17 @@ function parseInput(input) {
   return { hp, damage };
 }
 
-function solve(input) {
+function solve(input, part) {
   const boss = parseInput(input);
-  const states = Object.keys(costs).map((spell) => ({
-    players: [{ ...player }, { ...boss }],
+  let states = Object.keys(costs).map((spell) => ({
+    players: [
+      { ...player, ...(part === 2 ? { hp: player.hp - 1 } : {}) },
+      { ...boss },
+    ],
     effectTimers: { shield: 0, poison: 0, recharge: 0 },
     spells: [spell],
   }));
+  let minCost = null;
   while (states.length) {
     const {
       players: [p1, p2],
@@ -44,9 +42,6 @@ function solve(input) {
     } = states.shift();
     const nextSpell = spells[spells.length - 1];
     const cost = getCost(spells);
-    if (effectTimers[nextSpell] > 0 || costs[nextSpell] > p1.mana) {
-      continue;
-    }
     p1.mana -= costs[nextSpell];
     switch (nextSpell) {
       case 'missile':
@@ -67,6 +62,12 @@ function solve(input) {
         break;
     }
     for (const p of [p2, p1]) {
+      if (part === 2 && p === p1) {
+        p1.hp--;
+        if (p1.hp <= 0) {
+          break;
+        }
+      }
       for (const spell of Object.keys(effectTimers)) {
         effectTimers[spell] = Math.max(0, effectTimers[spell] - 1);
       }
@@ -78,8 +79,9 @@ function solve(input) {
         p1.mana += 101;
       }
       if (p2.hp <= 0) {
-        console.log(cost);
-        return;
+        minCost = cost;
+        states = states.filter((state) => getCost(state.spells) < minCost);
+        break;
       }
       if (p === p2) {
         p1.hp -= p2.damage - (p1.shield ?? 0);
@@ -88,14 +90,25 @@ function solve(input) {
         }
       } else {
         states.push(
-          ...Object.keys(costs).map((spell) => ({
-            players: [{ ...p1 }, { ...p2 }],
-            effectTimers: { ...effectTimers },
-            spells: [...spells, spell],
-          }))
+          ...Object.keys(costs)
+            .map((spell) => ({
+              players: [{ ...p1 }, { ...p2 }],
+              effectTimers: { ...effectTimers },
+              spells: [...spells, spell],
+            }))
+            .filter((state) => {
+              const nextSpell = state.spells[state.spells.length - 1];
+              return (
+                (!effectTimers[nextSpell] || effectTimers[nextSpell] <= 1) &&
+                costs[nextSpell] <= p1.mana &&
+                (!minCost || getCost(state.spells) < minCost)
+              );
+            })
         );
       }
     }
   }
+  console.log(minCost);
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
