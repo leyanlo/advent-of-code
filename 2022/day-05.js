@@ -3,7 +3,7 @@ const fs = require('fs');
 const input = fs.readFileSync('./day-05-input.txt', 'utf8').trimEnd();
 
 function parseDiagram(diagram) {
-  let stacks = [];
+  const stacks = [];
   for (const line of diagram.split('\n').slice(0, -1)) {
     for (let i = 0; i < line.length; i += 4) {
       if (line[i + 1] !== ' ') {
@@ -16,8 +16,8 @@ function parseDiagram(diagram) {
 }
 
 function solve1(input) {
-  let [diagram, moves] = input.split('\n\n');
-  let stacks = parseDiagram(diagram);
+  const [diagram, moves] = input.split('\n\n');
+  const stacks = parseDiagram(diagram);
   for (const move of moves.split('\n')) {
     const [n, from, to] = move.match(/\d+/g).map(Number);
     for (let i = 0; i < n; i++) {
@@ -29,8 +29,8 @@ function solve1(input) {
 solve1(input);
 
 function solve2(input) {
-  let [diagram, moves] = input.split('\n\n');
-  let stacks = parseDiagram(diagram);
+  const [diagram, moves] = input.split('\n\n');
+  const stacks = parseDiagram(diagram);
   for (const move of moves.split('\n')) {
     const [n, from, to] = move.match(/\d+/g).map(Number);
     stacks[to - 1].push(...stacks[from - 1].slice(-n));
