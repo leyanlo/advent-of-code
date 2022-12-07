@@ -15,9 +15,9 @@ function calcSizes(tree) {
   return tree._size;
 }
 
-function sumAll(tree) {
+function sumAll(tree, maxSize = 100000) {
   let sum = 0;
-  if (tree._size <= 100000) {
+  if (tree._size <= maxSize) {
     sum += tree._size;
   }
   for (const key in tree) {
