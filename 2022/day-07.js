@@ -37,9 +37,9 @@ function solve(input) {
   );
 
   console.log(
-    Object.values(sizes)
-      .filter((size) => size >= sizes['/'] - 40000000)
-      .sort((a, b) => a - b)[0]
+    Math.min(
+      ...Object.values(sizes).filter((size) => size >= sizes['/'] - 40000000)
+    )
   );
 }
 solve(input);
