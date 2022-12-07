@@ -30,20 +30,16 @@ function solve(input) {
     }
   }
 
-  let sum = 0;
-  for (const size of Object.values(sizes)) {
-    if (size <= 100000) {
-      sum += size;
-    }
-  }
-  console.log(sum);
+  console.log(
+    Object.values(sizes)
+      .filter((size) => size <= 100000)
+      .reduce((acc, size) => acc + size)
+  );
 
-  let smallest = sizes['/'];
-  for (const size of Object.values(sizes)) {
-    if (size >= sizes['/'] - 40000000 && size <= smallest) {
-      smallest = size;
-    }
-  }
-  console.log(smallest);
+  console.log(
+    Object.values(sizes)
+      .filter((size) => size >= sizes['/'] - 40000000)
+      .sort((a, b) => a - b)[0]
+  );
 }
 solve(input);
