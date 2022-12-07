@@ -17,8 +17,7 @@ function solve(input) {
         }
         if (parts[0] !== 'dir') {
           for (const path of paths) {
-            sizes[path] = sizes[path] ?? 0;
-            sizes[path] += +parts[0];
+            sizes[path] = (sizes[path] ?? 0) + +parts[0];
           }
         }
       }
