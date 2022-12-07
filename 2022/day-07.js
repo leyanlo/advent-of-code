@@ -2,75 +2,49 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
-function calcSizes(tree) {
-  tree._size = 0;
-  for (const key in tree) {
-    tree._size +=
-      key[0] === '_'
-        ? 0
-        : typeof tree[key] === 'object'
-        ? calcSizes(tree[key])
-        : tree[key];
-  }
-  return tree._size;
-}
-
-function sumAll(tree, maxSize = 100000) {
-  let sum = 0;
-  if (tree._size <= maxSize) {
-    sum += tree._size;
-  }
-  for (const key in tree) {
-    if (key[0] !== '_' && typeof tree[key] === 'object') {
-      sum += sumAll(tree[key]);
-    }
-  }
-  return sum;
-}
-
-function findSmallest(
-  tree,
-  minDelete = tree._size - 40000000,
-  smallest = tree._size
-) {
-  if (tree._size >= minDelete && tree._size < smallest) {
-    smallest = tree._size;
-  }
-  for (const key in tree) {
-    if (key[0] !== '_' && typeof tree[key] === 'object') {
-      smallest = findSmallest(tree[key], minDelete, smallest);
-    }
-  }
-  return smallest;
-}
-
 function solve(input) {
-  const tree = {};
-  let currTree = tree;
+  const sizes = { '/': 0 };
+  const paths = ['/'];
   const lines = input.split('\n');
   for (let i = 1; i < lines.length; i++) {
-    const line = lines[i];
-    const [, cmd, dir] = line.split(' ');
+    const [, cmd, dir] = lines[i].split(' ');
     if (cmd === 'ls') {
       for (i++; i < lines.length; i++) {
         const parts = lines[i].split(' ');
         if (parts[0] === '$') {
           i--;
           break;
-        } else if (parts[0] === 'dir') {
-          currTree[parts[1]] = {
-            _parent: currTree,
-          };
-        } else {
-          currTree[parts[1]] = +parts[0];
+        }
+        if (parts[0] !== 'dir') {
+          for (const path of paths) {
+            sizes[path] = sizes[path] ?? 0;
+            sizes[path] += +parts[0];
+          }
         }
       }
     } else {
-      currTree = dir === '..' ? currTree._parent : currTree[dir];
+      if (dir === '..') {
+        paths.pop();
+      } else {
+        paths.push(`${paths[paths.length - 1]}${dir}/`);
+      }
     }
   }
-  calcSizes(tree);
-  console.log(sumAll(tree));
-  console.log(findSmallest(tree));
+
+  let sum = 0;
+  for (const size of Object.values(sizes)) {
+    if (size <= 100000) {
+      sum += size;
+    }
+  }
+  console.log(sum);
+
+  let smallest = sizes['/'];
+  for (const size of Object.values(sizes)) {
+    if (size >= sizes['/'] - 40000000 && size <= smallest) {
+      smallest = size;
+    }
+  }
+  console.log(smallest);
 }
 solve(input);
