@@ -25,7 +25,7 @@ function solve(input) {
       if (dir === '..') {
         paths.pop();
       } else {
-        paths.push(`${paths[paths.length - 1]}${dir}/`);
+        paths.push(`${paths.at(-1)}${dir}/`);
       }
     }
   }
