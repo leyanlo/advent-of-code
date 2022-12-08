@@ -16,11 +16,7 @@ function solve1(input) {
     for (let j = 0; j < map[i].length; j++) {
       outer: for (const [di, dj] of dirs) {
         let [i2, j2] = [i + di, j + dj];
-        for (
-          ;
-          i2 >= 0 && j2 >= 0 && i2 < map.length && j2 < map[i2].length;
-          i2 += di, j2 += dj
-        ) {
+        for (; map[i2]?.[j2] !== undefined; i2 += di, j2 += dj) {
           if (map[i2][j2] >= map[i][j]) {
             continue outer;
           }
@@ -41,11 +37,7 @@ function solve2(input) {
     for (let j = 0; j < map[i].length; j++) {
       for (const [di, dj] of dirs) {
         let [i2, j2] = [i + di, j + dj];
-        for (
-          ;
-          i2 >= 0 && j2 >= 0 && i2 < map.length && j2 < map[i2].length;
-          i2 += di, j2 += dj
-        ) {
+        for (; map[i2]?.[j2] !== undefined; i2 += di, j2 += dj) {
           if (map[i2][j2] >= map[i][j]) {
             i2 += di;
             j2 += dj;
