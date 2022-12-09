@@ -24,7 +24,7 @@ function solve(input, part) {
       for (let j = 1; j < dists.length; j++) {
         const dist2 = dists[j];
         if (dist.some((x) => Math.abs(x) >= 2)) {
-          const dir2 = dist.map((x) => x && x / Math.abs(x));
+          const dir2 = dist.map((x) => x && Math.sign(x));
           dist2[0] += dir2[0];
           dist2[1] += dir2[1];
           dist[0] -= dir2[0];
