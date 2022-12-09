@@ -23,21 +23,8 @@ function solve(input, part) {
       dist[1] += dir[1];
       for (let j = 1; j < dists.length; j++) {
         const dist2 = dists[j];
-        if (
-          dist.filter((x) => Math.abs(x) === 2).length === 1 &&
-          dist.filter((x) => !x).length === 1
-        ) {
-          const dir2 = dist.map((x) => x / 2);
-          dist2[0] += dir2[0];
-          dist2[1] += dir2[1];
-          dist[0] -= dir2[0];
-          dist[1] -= dir2[1];
-          if (j === dists.length - 1) {
-            visited[dist2[0]] = visited[dist2[0]] ?? {};
-            visited[dist2[0]][dist2[1]] = 1;
-          }
-        } else if (dist.reduce((acc, n) => acc + Math.abs(n), 0) >= 3) {
-          const dir2 = dist.map((x) => x / Math.abs(x));
+        if (dist.some((x) => Math.abs(x) >= 2)) {
+          const dir2 = dist.map((x) => x && x / Math.abs(x));
           dist2[0] += dir2[0];
           dist2[1] += dir2[1];
           dist[0] -= dir2[0];
