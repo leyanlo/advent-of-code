@@ -10,8 +10,7 @@ const toDir = {
 };
 
 function solve(input, part) {
-  const dists = [...Array(part === 2 ? 10 : 2)].map(() => [0, 0]);
-  const tail = dists.at(-1);
+  const knots = [...Array(part === 2 ? 10 : 2)].map(() => [0, 0]);
   const visited = { 0: { 0: 1 } };
 
   for (const line of input.split('\n')) {
@@ -20,20 +19,20 @@ function solve(input, part) {
     n = +n;
 
     for (let i = 0; i < n; i++) {
-      let dist = dists[0];
-      dist[0] += dir[0];
-      dist[1] += dir[1];
+      let head = knots[0];
+      let tail;
+      head[0] += dir[0];
+      head[1] += dir[1];
 
-      for (let j = 1; j < dists.length; j++) {
-        const dist2 = dists[j];
-        if (dist.some((x) => Math.abs(x) >= 2)) {
+      for (let j = 1; j < knots.length; j++) {
+        tail = knots[j];
+        const dist = head.map((_, i) => head[i] - tail[i]);
+        if (dist.some((x) => Math.abs(x) > 1)) {
           const dir2 = dist.map(Math.sign);
-          dist2[0] += dir2[0];
-          dist2[1] += dir2[1];
-          dist[0] -= dir2[0];
-          dist[1] -= dir2[1];
+          tail[0] += dir2[0];
+          tail[1] += dir2[1];
         }
-        dist = dist2;
+        head = tail;
       }
       visited[tail[0]] = visited[tail[0]] ?? {};
       visited[tail[0]][tail[1]] = 1;
