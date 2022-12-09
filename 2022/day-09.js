@@ -11,7 +11,9 @@ const toDir = {
 
 function solve(input, part) {
   const dists = [...Array(part === 2 ? 10 : 2)].map(() => [0, 0]);
+  const tail = dists.at(-1);
   const visited = { 0: { 0: 1 } };
+
   for (const line of input.split('\n')) {
     let [char, n] = line.split(' ');
     const dir = toDir[char];
@@ -21,6 +23,7 @@ function solve(input, part) {
       let dist = dists[0];
       dist[0] += dir[0];
       dist[1] += dir[1];
+
       for (let j = 1; j < dists.length; j++) {
         const dist2 = dists[j];
         if (dist.some((x) => Math.abs(x) >= 2)) {
@@ -29,13 +32,11 @@ function solve(input, part) {
           dist2[1] += dir2[1];
           dist[0] -= dir2[0];
           dist[1] -= dir2[1];
-          if (j === dists.length - 1) {
-            visited[dist2[0]] = visited[dist2[0]] ?? {};
-            visited[dist2[0]][dist2[1]] = 1;
-          }
         }
         dist = dist2;
       }
+      visited[tail[0]] = visited[tail[0]] ?? {};
+      visited[tail[0]][tail[1]] = 1;
     }
   }
   console.log(
