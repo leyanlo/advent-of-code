@@ -31,9 +31,9 @@ solve1(input);
 function solve2(input) {
   function tick() {
     cycle++;
-    const pos = (cycle - 1) % 40;
+    const cursor = (cycle - 1) % 40;
     crt[~~((cycle - 1) / 40)][(cycle - 1) % 40] =
-      pos >= x - 1 && pos <= x + 1 ? '#' : '.';
+      cursor >= x - 1 && cursor <= x + 1 ? '#' : '.';
   }
 
   const lines = input.split('\n');
