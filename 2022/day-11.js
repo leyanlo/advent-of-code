@@ -24,7 +24,7 @@ function solve(input, part) {
       let item = items.shift();
       while (item) {
         nInspected[i]++;
-        const nextItem = op(item) % mod;
+        const nextItem = part === 2 ? op(item) % mod : Math.floor(op(item) / 3);
         monkeys[toMonkey[+!!(nextItem % divisibleBy)]].items.push(nextItem);
         item = items.shift();
       }
