@@ -8,24 +8,24 @@ function solve(input, part) {
     const lines = section.split('\n');
     const items = lines[1].match(/\d+/g).map(Number);
     const op = (old) => eval(lines[2].split('= ')[1]);
-    const divisible = +lines[3].match(/\d+/g)[0];
+    const divisibleBy = +lines[3].match(/\d+/g)[0];
     const toMonkey = [4, 5].map((i) => +lines[i].match(/\d+/g)[0]);
-    const monkey = { items, op, divisible, toMonkey };
+    const monkey = { items, op, divisibleBy, toMonkey };
     monkeys.push(monkey);
   }
   const mod = monkeys
-    .map(({ divisible }) => divisible)
+    .map(({ divisibleBy }) => divisibleBy)
     .reduce((acc, n) => acc * n);
 
   let nInspected = monkeys.map(() => 0);
   for (let round = 0; round < (part === 2 ? 10000 : 20); round++) {
     for (let i = 0; i < monkeys.length; i++) {
-      const { items, op, divisible, toMonkey } = monkeys[i];
+      const { items, op, divisibleBy, toMonkey } = monkeys[i];
       let item = items.shift();
       while (item) {
         nInspected[i]++;
         const nextItem = op(item) % mod;
-        monkeys[toMonkey[+!!(nextItem % divisible)]].items.push(nextItem);
+        monkeys[toMonkey[+!!(nextItem % divisibleBy)]].items.push(nextItem);
         item = items.shift();
       }
     }
