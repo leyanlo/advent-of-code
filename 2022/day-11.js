@@ -13,7 +13,7 @@ function solve(input, part) {
     const monkey = { items, op, divisibleBy, toMonkey };
     monkeys.push(monkey);
   }
-  const lcm = monkeys
+  const product = monkeys
     .map(({ divisibleBy }) => divisibleBy)
     .reduce((acc, n) => acc * n);
 
@@ -24,7 +24,8 @@ function solve(input, part) {
       let item = items.shift();
       while (item) {
         nInspected[i]++;
-        const nextItem = part === 2 ? op(item) % lcm : Math.floor(op(item) / 3);
+        const nextItem =
+          part === 2 ? op(item) % product : Math.floor(op(item) / 3);
         monkeys[toMonkey[+!!(nextItem % divisibleBy)]].items.push(nextItem);
         item = items.shift();
       }
