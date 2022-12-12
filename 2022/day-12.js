@@ -30,13 +30,17 @@ function solve(input, part) {
 
   const queue = starts.map((start) => ({ pos: start, steps: 0 }));
   const seen = [];
-  while (queue[0].pos[0] !== end[0] || queue[0].pos[1] !== end[1]) {
+  while (queue.length) {
     const {
       pos: [i, j],
       steps,
     } = queue.shift();
     if (seen[i]?.[j]) {
       continue;
+    }
+    if (i === end[0] && j === end[1]) {
+      console.log(steps);
+      break;
     }
     for (const [di, dj] of dirs) {
       if (
@@ -51,7 +55,6 @@ function solve(input, part) {
     seen[i] = seen[i] ?? [];
     seen[i][j] = 1;
   }
-  console.log(queue[0].steps);
 }
 solve(input, 1);
 solve(input, 2);
