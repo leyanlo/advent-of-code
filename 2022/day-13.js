@@ -44,6 +44,7 @@ function solve2(input) {
     .flat();
   const dividers = [[[2]], [[6]]];
   pairs.push(...dividers);
+  pairs.sort(compare);
   console.log(
     dividers.map((d) => pairs.indexOf(d) + 1).reduce((acc, n) => acc * n)
   );
