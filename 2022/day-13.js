@@ -30,7 +30,7 @@ function solve1(input) {
   const pairs = input
     .split('\n\n')
     .map((group) => group.split('\n').map(JSON.parse));
-  const corrects = pairs.map(([a, b]) => +(compare(a, b) < 0));
+  const corrects = pairs.map(([a, b]) => +(compare(a, b) <= 0));
   console.log(
     corrects.map((correct, i) => correct * (i + 1)).reduce((acc, n) => acc + n)
   );
