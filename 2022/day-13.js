@@ -38,15 +38,15 @@ function solve1(input) {
 solve1(input);
 
 function solve2(input) {
-  const pairs = input
+  const dividers = [[[2]], [[6]]];
+  const packets = input
     .split('\n\n')
     .map((group) => group.split('\n').map(JSON.parse))
-    .flat();
-  const dividers = [[[2]], [[6]]];
-  pairs.push(...dividers);
-  pairs.sort(compare);
+    .flat()
+    .concat(dividers)
+    .sort(compare);
   console.log(
-    dividers.map((d) => pairs.indexOf(d) + 1).reduce((acc, n) => acc * n)
+    dividers.map((d) => packets.indexOf(d) + 1).reduce((acc, n) => acc * n)
   );
 }
 solve2(input);
