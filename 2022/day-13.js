@@ -7,9 +7,9 @@ function compare(a, b) {
     return a - b;
   }
 
-  if (typeof a === 'number' && typeof b === 'object') {
+  if (typeof a === 'number') {
     a = [a];
-  } else if (typeof a === 'object' && typeof b === 'number') {
+  } else if (typeof b === 'number') {
     b = [b];
   }
 
