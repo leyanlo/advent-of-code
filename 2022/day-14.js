@@ -9,28 +9,28 @@ function solve(input, part) {
       line.split(' -> ').map((coords) => coords.split(',').map(Number))
     );
 
-  let xMin = Math.min(...paths.flat().map(([x, y]) => x));
-  let xMax = Math.max(...paths.flat().map(([x, y]) => x));
-  const yMin = 0;
+  let minX = Math.min(...paths.flat().map(([x, y]) => x));
+  let maxX = Math.max(...paths.flat().map(([x, y]) => x));
+  const minY = 0;
   // add 2 rows for part 2
-  const yMax = Math.max(...paths.flat().map(([x, y]) => y)) + (part === 2) * 2;
+  const maxY = Math.max(...paths.flat().map(([x, y]) => y)) + (part === 2) * 2;
 
   if (part === 2) {
     // part 2 will be isosceles triangle centered at 500
-    const yRange = yMax - yMin;
-    xMin = 500 - yRange;
-    xMax = 500 + yRange;
+    const yRange = maxY - minY;
+    minX = 500 - yRange;
+    maxX = 500 + yRange;
   }
 
   // make x start from zero
-  const startX = 500 - xMin;
-  paths = paths.map((path) => path.map(([x, y]) => [x - xMin, y]));
-  xMax -= xMin;
-  xMin = 0;
+  const startX = 500 - minX;
+  paths = paths.map((path) => path.map(([x, y]) => [x - minX, y]));
+  maxX -= minX;
+  minX = 0;
 
   // add bottom row for part 2
-  const map = [...Array(yMax + 1).keys()].map((y) =>
-    [...Array(xMax + 1)].fill(+(part === 2 && y === yMax))
+  const map = [...Array(maxY + 1).keys()].map((y) =>
+    [...Array(maxX + 1)].fill(+(part === 2 && y === maxY))
   );
 
   // draw paths
