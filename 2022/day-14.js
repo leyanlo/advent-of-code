@@ -1,144 +1,55 @@
 const fs = require('fs');
 
-var input = `498,4 -> 498,6 -> 496,6
-503,4 -> 502,4 -> 502,9 -> 494,9`;
-var input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
 
-function printMap(map) {
-  console.log(
-    map
-      .map((row) =>
-        row.map((char) => (char === 0 ? '.' : char === 1 ? '#' : 'o')).join('')
-      )
-      .join('\n')
-  );
-}
-
-// function solve(input) {
-//   console.log(input);
-//   let coords = input
-//     .split('\n')
-//     .map((line) =>
-//       line.split(' -> ').map((coords) => coords.split(',').map(Number))
-//     );
-//   let start = 500;
-//   console.log(coords);
-//   let minX = Math.min(...coords.flat().map(([x, y]) => x));
-//   let maxX = Math.max(...coords.flat().map(([x, y]) => x));
-//   const minY = 0;
-//   const maxY = Math.max(...coords.flat().map(([x, y]) => y));
-//   console.log([minX, maxX, minY, maxY]);
-//
-//   coords = coords.map((line) => line.map(([x, y]) => [x - minX, y]));
-//   console.log(coords);
-//
-//   maxX -= minX;
-//   start -= minX;
-//   minX = 0;
-//
-//   console.log([minX, maxX, minY, maxY, start]);
-//   const map = [...Array(maxY + 1)].map(() => [...Array(maxX + 1)].fill(0));
-//   for (const row of coords) {
-//     for (let i = 0; i < row.length - 1; i++) {
-//       const dir = [
-//         Math.sign(row[i + 1][0] - row[i][0]),
-//         Math.sign(row[i + 1][1] - row[i][1]),
-//       ];
-//       for (
-//         let [x, y] = row[i];
-//         x !== row[i + 1][0] || y !== row[i + 1][1];
-//         x += dir[0], y += dir[1]
-//       ) {
-//         map[y][x] = 1;
-//       }
-//       map[row[i + 1][1]][row[i + 1][0]] = 1;
-//     }
-//   }
-//   console.log(map.map((row) => row.join('')).join('\n'));
-//   printMap(map);
-//
-//   let count = 0;
-//   outer: do {
-//     let [x, y] = [start, 0];
-//     do {
-//       if (map[y]?.[x] === undefined) {
-//         break outer;
-//       }
-//       if (!map[y + 1]?.[x]) {
-//         y++;
-//         continue;
-//       }
-//       if (!map[y + 1]?.[x - 1]) {
-//         y++;
-//         x--;
-//         continue;
-//       }
-//       if (!map[y + 1]?.[x + 1]) {
-//         y++;
-//         x++;
-//         continue;
-//       }
-//       map[y][x] = 2;
-//       break;
-//     } while (true);
-//     count++;
-//   } while (true);
-//   console.log(count);
-// }
-// solve(input);
-function solve(input) {
-  console.log(input);
-  let coords = input
+function solve(input, part) {
+  let paths = input
     .split('\n')
     .map((line) =>
       line.split(' -> ').map((coords) => coords.split(',').map(Number))
     );
-  let start = 500;
-  console.log(coords);
-  let minX = Math.min(...coords.flat().map(([x, y]) => x));
-  let maxX = Math.max(...coords.flat().map(([x, y]) => x));
+
   const minY = 0;
-  const maxY = Math.max(...coords.flat().map(([x, y]) => y)) + 2;
-  console.log([minX, maxX, minY, maxY]);
+  // add 2 rows for part 2
+  const maxY = Math.max(...paths.flat().map(([x, y]) => y)) + 2;
+  const yRange = maxY - minY;
+  // part 2 will be isosceles triangle centered at 500
+  let minX = 500 - yRange;
+  let maxX = 500 + yRange;
 
-  const range = maxY - minY;
-  minX = 500 - range;
-  maxX = 500 + range;
-  coords = coords.map((line) => line.map(([x, y]) => [x - minX, y]));
-  console.log(coords);
-
+  // shift x for debuggability
+  const startX = 500 - minX;
+  paths = paths.map((path) => path.map(([x, y]) => [x - minX, y]));
   maxX -= minX;
-  start -= minX;
   minX = 0;
 
-  console.log([minX, maxX, minY, maxY, start]);
+  // add bottom row for part 2
   const map = [...Array(maxY + 1).keys()].map((y) =>
-    [...Array(maxX + 1)].fill(+(y === maxY))
+    [...Array(maxX + 1)].fill(+(part === 2 && y === maxY))
   );
-  for (const row of coords) {
-    for (let i = 0; i < row.length - 1; i++) {
+
+  // draw paths
+  for (const path of paths) {
+    for (let i = 0; i < path.length - 1; i++) {
       const dir = [
-        Math.sign(row[i + 1][0] - row[i][0]),
-        Math.sign(row[i + 1][1] - row[i][1]),
+        Math.sign(path[i + 1][0] - path[i][0]),
+        Math.sign(path[i + 1][1] - path[i][1]),
       ];
       for (
-        let [x, y] = row[i];
-        x !== row[i + 1][0] || y !== row[i + 1][1];
+        let [x, y] = path[i];
+        x !== path[i + 1][0] + dir[0] || y !== path[i + 1][1] + dir[1];
         x += dir[0], y += dir[1]
       ) {
         map[y][x] = 1;
       }
-      map[row[i + 1][1]][row[i + 1][0]] = 1;
     }
   }
-  console.log(map.map((row) => row.join('')).join('\n'));
-  printMap(map);
 
   let count = 0;
   outer: do {
-    let [x, y] = [start, 0];
+    let [x, y] = [startX, 0];
     do {
-      if (map[y][x] === 2) {
+      if (map[y]?.[x] === undefined || map[y][x] === 2) {
         break outer;
       }
       if (!map[y + 1]?.[x]) {
@@ -160,7 +71,7 @@ function solve(input) {
     } while (true);
     count++;
   } while (true);
-  printMap(map);
   console.log(count);
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
