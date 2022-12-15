@@ -46,14 +46,9 @@ function intersect(p1, p2, p3, p4) {
 
   const determinant = a1 * b2 - a2 * b1;
 
-  if (determinant === 0) {
-    // The lines are parallel
-    return [Infinity, Infinity];
-  } else {
-    const x = (b2 * c1 - b1 * c2) / determinant;
-    const y = (a1 * c2 - a2 * c1) / determinant;
-    return [x, y].map(Math.round);
-  }
+  const x = (b2 * c1 - b1 * c2) / determinant;
+  const y = (a1 * c2 - a2 * c1) / determinant;
+  return [x, y].map(Math.round);
 }
 
 function solve2(input) {
