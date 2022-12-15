@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd(),
   targetY = 2000000,
-  max = 4000000;
+  maxCoord = 4000000;
 
 function dist(x, y, x2, y2) {
   return Math.abs(x2 - x) + Math.abs(y2 - y);
@@ -84,7 +84,7 @@ function solve2(input) {
             d2[j2],
             d2[(j2 + 1) % 4]
           );
-          if (int?.every((x) => x >= 0 && x <= max)) {
+          if (int?.every((x) => x >= 0 && x <= maxCoord)) {
             intersections[int.join()] = 1;
           }
         }
