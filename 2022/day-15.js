@@ -1,128 +1,64 @@
 const fs = require('fs');
 
-var input = `Sensor at x=2, y=18: closest beacon is at x=-2, y=15
-Sensor at x=9, y=16: closest beacon is at x=10, y=16
-Sensor at x=13, y=2: closest beacon is at x=15, y=3
-Sensor at x=12, y=14: closest beacon is at x=10, y=16
-Sensor at x=10, y=20: closest beacon is at x=10, y=16
-Sensor at x=14, y=17: closest beacon is at x=10, y=16
-Sensor at x=8, y=7: closest beacon is at x=2, y=10
-Sensor at x=2, y=0: closest beacon is at x=2, y=10
-Sensor at x=0, y=11: closest beacon is at x=2, y=10
-Sensor at x=20, y=14: closest beacon is at x=25, y=17
-Sensor at x=17, y=20: closest beacon is at x=21, y=22
-Sensor at x=16, y=7: closest beacon is at x=15, y=3
-Sensor at x=14, y=3: closest beacon is at x=15, y=3
-Sensor at x=20, y=1: closest beacon is at x=15, y=3`,
-  max = 20;
-var input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd(),
+const input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd(),
+  targetY = 2000000,
   max = 4000000;
-// 13106454697879 wrong
-// 12111578718336 too low
 
 function dist(x, y, x2, y2) {
   return Math.abs(x2 - x) + Math.abs(y2 - y);
 }
 
-// function solve(input) {
-//   console.log(input);
-//   const target = 2000000;
-//   const targetLine = {};
-//   for (const line of input.split('\n')) {
-//     const [x, y, bx, by] = line.match(/[-\d]+/g).map(Number);
-//     const d = dist(x, y, bx, by);
-//     console.log(x, y, bx, by, d);
-//     if (by === target) {
-//       targetLine[bx] = 0;
-//     }
-//     let dx = 0;
-//     do {
-//       if (dist(x, y, x + dx, target) > d) {
-//         break;
-//       }
-//       for (const x2 of [-1, 1].map((i) => x + dx * i)) {
-//         if (targetLine[x2] !== 0 && dist(x, y, x2, target) <= d) {
-//           targetLine[x2] = 1;
-//         }
-//       }
-//       dx++;
-//     } while (true);
-//   }
-//   console.log(Object.values(targetLine).reduce((acc, n) => acc + n));
-// }
-// solve(input);
+function solve1(input) {
+  const targetRow = {};
+  for (const line of input.split('\n')) {
+    const [x, y, xb, yb] = line.match(/[-\d]+/g).map(Number);
+    const d = dist(x, y, xb, yb);
+    if (yb === targetY) {
+      targetRow[xb] = 0;
+    }
+    let dx = 0;
+    do {
+      if (dist(x, y, x + dx, targetY) > d) {
+        break;
+      }
+      for (const x2 of [-1, 1].map((sign) => x + sign * dx)) {
+        if (targetRow[x2] !== 0 && dist(x, y, x2, targetY) <= d) {
+          targetRow[x2] = 1;
+        }
+      }
+      dx++;
+    } while (true);
+  }
+  console.log(Object.values(targetRow).reduce((acc, n) => acc + n));
+}
+solve1(input);
 
-// function solve(input) {
-//   const targetMap = {};
-//   for (const line of input.split('\n')) {
-//     const [x, y, bx, by] = line.match(/[-\d]+/g).map(Number);
-//     const d = dist(x, y, bx, by);
-//     console.log(x, y, bx, by, d);
-//     for (let target = 0; target < max; target++) {
-//       targetMap[target] = targetMap[target] ?? {};
-//       const targetLine = targetMap[target];
-//       if (by === target) {
-//         targetLine[bx] = 0;
-//       }
-//       let dx = 0;
-//       do {
-//         if (dist(x, y, x + dx, target) > d) {
-//           break;
-//         }
-//         for (const x2 of [-1, 1].map((i) => x + dx * i)) {
-//           if (
-//             targetLine[x2] !== 0 &&
-//             dist(x, y, x2, target) <= d &&
-//             x2 >= 0 &&
-//             x2 <= max
-//           ) {
-//             targetLine[x2] = 1;
-//           }
-//         }
-//         dx++;
-//       } while (true);
-//     }
-//   }
-//   outer: for (const y in targetMap) {
-//     if (Object.keys(targetMap[y]).length < max + 1) {
-//       for (let x = 0; x < max; x++) {
-//         if (!targetMap[y][x]) {
-//           console.log(x * 4000000 + y);
-//           break outer;
-//         }
-//       }
-//     }
-//   }
-// }
-// solve(input);
+function intersect(p1, p2, p3, p4) {
+  // Line p1-p2 represented as a1x + b1y = c1
+  const a1 = p2[1] - p1[1];
+  const b1 = p1[0] - p2[0];
+  const c1 = a1 * p1[0] + b1 * p1[1];
 
-function intersect(A, B, C, D) {
-  // Line AB represented as a1x + b1y = c1
-  var a1 = B[1] - A[1];
-  var b1 = A[0] - B[0];
-  var c1 = a1 * A[0] + b1 * A[1];
+  // Line p3-p4 represented as a2x + b2y = c2
+  const a2 = p4[1] - p3[1];
+  const b2 = p3[0] - p4[0];
+  const c2 = a2 * p3[0] + b2 * p3[1];
 
-  // Line CD represented as a2x + b2y = c2
-  var a2 = D[1] - C[1];
-  var b2 = C[0] - D[0];
-  var c2 = a2 * C[0] + b2 * C[1];
-
-  var determinant = a1 * b2 - a2 * b1;
+  const determinant = a1 * b2 - a2 * b1;
 
   if (determinant === 0) {
-    // The lines are parallel. This is simplified
-    // by returning a pair of FLT_MAX
+    // The lines are parallel
     return null;
   } else {
-    var x = (b2 * c1 - b1 * c2) / determinant;
-    var y = (a1 * c2 - a2 * c1) / determinant;
+    const x = (b2 * c1 - b1 * c2) / determinant;
+    const y = (a1 * c2 - a2 * c1) / determinant;
     return [x, y].map(Math.round);
   }
 }
 
-function solve(input) {
-  const diamonds = [];
+function solve2(input) {
   const sensors = [];
+  const diamonds = [];
   for (const line of input.split('\n')) {
     const [x, y, bx, by] = line.match(/[-\d]+/g).map(Number);
     const d = dist(x, y, bx, by);
@@ -134,7 +70,6 @@ function solve(input) {
       [x, y - (d + 1)],
     ]);
   }
-  console.log(diamonds);
 
   const intersections = {};
   for (let i = 0; i < diamonds.length - 1; i++) {
@@ -149,28 +84,20 @@ function solve(input) {
             d2[j2],
             d2[(j2 + 1) % 4]
           );
-          if (
-            int &&
-            int[0] >= 0 &&
-            int[0] <= max &&
-            int[1] >= 0 &&
-            int[1] <= max
-          ) {
-            intersections[int.join()] = (intersections[int.join()] ?? 0) + 1;
+          if (int?.every((x) => x >= 0 && x <= max)) {
+            intersections[int.join()] = 1;
           }
         }
       }
     }
   }
-  console.log(intersections);
 
-  outer: for (const intersection of Object.keys(intersections)) {
+  for (const intersection of Object.keys(intersections)) {
     const [xi, yi] = intersection.split(',').map(Number);
     if (sensors.every(([x, y, d]) => dist(x, y, xi, yi) > d)) {
-      console.log(xi, yi);
       console.log(4000000 * xi + yi);
-      break outer;
+      break;
     }
   }
 }
-solve(input);
+solve2(input);
