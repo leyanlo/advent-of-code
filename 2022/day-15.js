@@ -64,7 +64,7 @@ function solve2(input) {
     const d1 = diamonds[i];
     for (let j = i + 1; j < diamonds.length; j++) {
       const d2 = diamonds[j];
-      for (let i2 = 0; i2 < 4; i2++) {
+      for (const i2 of [0, 1, 2, 3]) {
         for (const j2 of [i2 + 1, i2 + 3]) {
           const [xi, yi] = intersect(
             d1[i2],
