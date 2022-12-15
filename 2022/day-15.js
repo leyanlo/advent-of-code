@@ -16,18 +16,12 @@ function solve1(input) {
     if (yb === targetY) {
       targetRow[xb] = 0;
     }
-    let dx = 0;
-    do {
-      if (dist(x, y, x + dx, targetY) > d) {
-        break;
+    const dx = d - Math.abs(y - targetY);
+    for (let x2 = x - dx; x2 <= x + dx; x2++) {
+      if (targetRow[x2] !== 0) {
+        targetRow[x2] = 1;
       }
-      for (const x2 of [-1, 1].map((sign) => x + sign * dx)) {
-        if (targetRow[x2] !== 0 && dist(x, y, x2, targetY) <= d) {
-          targetRow[x2] = 1;
-        }
-      }
-      dx++;
-    } while (true);
+    }
   }
   console.log(Object.values(targetRow).reduce((acc, n) => acc + n));
 }
