@@ -48,7 +48,7 @@ function intersect(p1, p2, p3, p4) {
 
   if (determinant === 0) {
     // The lines are parallel
-    return null;
+    return [Infinity, Infinity];
   } else {
     const x = (b2 * c1 - b1 * c2) / determinant;
     const y = (a1 * c2 - a2 * c1) / determinant;
@@ -71,32 +71,27 @@ function solve2(input) {
     ]);
   }
 
-  const intersections = {};
-  for (let i = 0; i < diamonds.length - 1; i++) {
+  outer: for (let i = 0; i < diamonds.length - 1; i++) {
     const d1 = diamonds[i];
     for (let j = i + 1; j < diamonds.length; j++) {
       const d2 = diamonds[j];
       for (let i2 = 0; i2 < 4; i2++) {
         for (let j2 = 0; j2 < 4; j2++) {
-          const int = intersect(
+          const [xi, yi] = intersect(
             d1[i2],
             d1[(i2 + 1) % 4],
             d2[j2],
             d2[(j2 + 1) % 4]
           );
-          if (int?.every((x) => x >= 0 && x <= maxCoord)) {
-            intersections[int.join()] = 1;
+          if (
+            [xi, yi].every((x) => x >= 0 && x <= maxCoord) &&
+            sensors.every(([x, y, d]) => dist(x, y, xi, yi) > d)
+          ) {
+            console.log(4000000 * xi + yi);
+            break outer;
           }
         }
       }
-    }
-  }
-
-  for (const intersection of Object.keys(intersections)) {
-    const [xi, yi] = intersection.split(',').map(Number);
-    if (sensors.every(([x, y, d]) => dist(x, y, xi, yi) > d)) {
-      console.log(4000000 * xi + yi);
-      break;
     }
   }
 }
