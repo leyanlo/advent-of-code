@@ -29,12 +29,11 @@ function solve(input) {
 
     while (queue.length) {
       const to = queue.shift();
-      const dist = dists[from][to];
 
       for (const next of map[to].to) {
         if (!seen.has(next)) {
           seen.add(next);
-          dists[from][next] = dist + 1;
+          dists[from][next] = dists[from][to] + 1;
           queue.push(next);
         }
       }
