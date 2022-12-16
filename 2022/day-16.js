@@ -1,35 +1,24 @@
 const fs = require('fs');
 
-var input = `Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
-Valve BB has flow rate=13; tunnels lead to valves CC, AA
-Valve CC has flow rate=2; tunnels lead to valves DD, BB
-Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
-Valve EE has flow rate=3; tunnels lead to valves FF, DD
-Valve FF has flow rate=0; tunnels lead to valves EE, GG
-Valve GG has flow rate=0; tunnels lead to valves FF, HH
-Valve HH has flow rate=22; tunnel leads to valve GG
-Valve II has flow rate=0; tunnels lead to valves AA, JJ
-Valve JJ has flow rate=21; tunnel leads to valve II`;
-var input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
+const input = fs.readFileSync('./day-16-input.txt', 'utf8').trimEnd();
+
+function getRate(mask, map, valves) {
+  let rate = 0;
+  for (let i = 0; i < valves.length; i++) {
+    if ((2 ** i) & mask) {
+      rate += map[valves[i]].rate;
+    }
+  }
+  return rate;
+}
 
 function solve(input) {
-  function getRate(mask) {
-    let rate = 0;
-    for (let i = 0; i < valves.length; i++) {
-      if ((2 ** i) & mask) {
-        rate += map[valves[i]].rate;
-      }
-    }
-    return rate;
-  }
-
   const map = {};
   for (const line of input.split('\n')) {
     let [from, rate, ...to] = line.match(/[A-Z]{2}|\d+/g);
     rate = +rate;
     map[from] = { rate, to };
   }
-  console.log(map);
 
   const dists = {};
   for (const from of Object.keys(map)) {
@@ -50,10 +39,8 @@ function solve(input) {
       }
     }
   }
-  console.log(dists);
 
   const valves = Object.keys(map).filter((key) => map[key].rate);
-  console.log(valves);
 
   // pressure at valve given mask and time
   const pressures = valves.map(() =>
@@ -73,7 +60,7 @@ function solve(input) {
           continue;
         }
 
-        const rate = getRate(mask);
+        const rate = getRate(mask, map, valves);
         pressures[i][mask][t] = Math.max(
           pressures[i][mask][t],
           pressures[i][mask][t - 1] + rate
