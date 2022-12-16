@@ -20,6 +20,7 @@ function solve(input) {
     map[from] = { rate, to };
   }
 
+  // build distance map
   const dists = {};
   for (const from of Object.keys(map)) {
     dists[from] = { [from]: 0 };
@@ -40,22 +41,26 @@ function solve(input) {
     }
   }
 
+  // filter out valves with rates of zero
   const valves = Object.keys(map).filter((key) => map[key].rate);
 
-  // pressure at valve given mask and time
+  // DP map of pressure at valve given mask and time
   const pressures = valves.map(() =>
     [...Array(2 ** valves.length)].map(() => [...Array(31)].fill(-Infinity))
   );
 
+  // initialize DP for all starting points
   for (let i = 0; i < valves.length; i++) {
     const dist = dists.AA[valves[i]];
     pressures[i][2 ** i][dist + 1] = 0;
   }
 
+  // part 1 and build DP
   let max = 0;
   for (let t = 1; t < 31; t++) {
     for (let mask = 0; mask < 2 ** valves.length; mask++) {
       for (let i = 0; i < valves.length; i++) {
+        // skip if valve marked closed in mask
         if (!((2 ** i) & mask)) {
           continue;
         }
@@ -68,11 +73,13 @@ function solve(input) {
         max = Math.max(max, pressures[i][mask][t]);
 
         for (let j = 0; j < valves.length; j++) {
+          // skip if next valve already open
           if ((2 ** j) & mask) {
             continue;
           }
 
           const dist = dists[valves[i]][valves[j]];
+          // skip if too far away
           if (t + dist + 1 >= 31) {
             continue;
           }
@@ -90,6 +97,7 @@ function solve(input) {
   max = 0;
   for (let i = 0; i < 2 ** valves.length; i++) {
     for (let j = 0; j < i; j++) {
+      // skip if j is not a subset of i
       if ((i & j) !== j) {
         continue;
       }
