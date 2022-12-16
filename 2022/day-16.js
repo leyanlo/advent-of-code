@@ -95,8 +95,8 @@ function solve(input) {
 
   // part 2
   max = 0;
-  for (let mask = 1; mask < 2 ** valves.length; mask++) {
-    for (let submask = 0; submask < mask; submask++) {
+  for (let mask = 0; mask < 2 ** valves.length; mask++) {
+    for (let submask = 0; submask < mask / 2; submask++) {
       // skip if not a submask
       if ((mask & submask) !== submask) {
         continue;
