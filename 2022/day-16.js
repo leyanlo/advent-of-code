@@ -89,7 +89,7 @@ function solve(input) {
 
   max = 0;
   for (let i = 0; i < 2 ** valves.length; i++) {
-    for (let j = 0; j < 2 ** valves.length; j++) {
+    for (let j = 0; j < i; j++) {
       if ((i & j) !== j) {
         continue;
       }
