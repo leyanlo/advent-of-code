@@ -93,16 +93,17 @@ function solve(input) {
   }
   console.log(max);
 
+  // part 2
   max = 0;
-  for (let i = 0; i < 2 ** valves.length; i++) {
-    for (let j = 0; j < i; j++) {
-      // skip if j is not a subset of i
-      if ((i & j) !== j) {
+  for (let mask = 1; mask < 2 ** valves.length; mask++) {
+    for (let submask = 0; submask < mask; submask++) {
+      // skip if not a submask
+      if ((mask & submask) !== submask) {
         continue;
       }
 
-      const a = Math.max(...pressures.map((p) => p[j][26]));
-      const b = Math.max(...pressures.map((p) => p[i & ~j][26]));
+      const a = Math.max(...pressures.map((p) => p[submask][26]));
+      const b = Math.max(...pressures.map((p) => p[mask & ~submask][26]));
 
       max = Math.max(max, a + b);
     }
