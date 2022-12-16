@@ -30,11 +30,11 @@ function solve(input) {
     while (queue.length) {
       const to = queue.shift();
 
-      for (const next of map[to].to) {
-        if (!seen.has(next)) {
-          seen.add(next);
-          dists[from][next] = dists[from][to] + 1;
-          queue.push(next);
+      for (const nextTo of map[to].to) {
+        if (!seen.has(nextTo)) {
+          seen.add(nextTo);
+          dists[from][nextTo] = dists[from][to] + 1;
+          queue.push(nextTo);
         }
       }
     }
