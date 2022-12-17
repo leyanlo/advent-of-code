@@ -120,8 +120,8 @@ function solve(input) {
   let charIdx = 0;
   let bottom = -1;
   const chamber = [];
-  let heights = [];
-  for (let i = 0; i < 50000; i++) {
+  const heights = [-1];
+  for (let i = 0; i < 10000; i++) {
     const [width, shape] = shapes[i % shapes.length];
     let x = 2;
     chamber.length = bottom + 1 + shape.length + 3;
@@ -171,14 +171,11 @@ function solve(input) {
         for (let j = 0; j < shape.length; j++) {
           chamber[y - j] |= shape[j] << (7 - width - x);
         }
-        heights.push(Math.max(bottom, y) + 1 - (bottom + 1));
         bottom = Math.max(bottom, y);
+        heights.push(bottom + 1);
         break;
       }
     } while (true);
-    if (i === 34900 || i === 34900 + 1010) {
-      console.log(i, bottom + 1);
-    }
   }
   // console.log(
   //   [...chamber]
@@ -198,38 +195,23 @@ function solve(input) {
   //     .map((row) => row.toString(2).match(/1/g).length)
   //     .reduce((acc, n) => acc + n) / 4.4
   // );
-
-  heights = heights.slice(250);
-  outer: for (let pattern = 250; pattern < heights.length / 2; pattern++) {
-    for (let i = 0; i < pattern; i++) {
-      if (heights[i] !== heights[i + pattern]) {
+  let period;
+  outer: for (period = 20; period < heights.length / 2; period++) {
+    for (let i = 0; i < period; i++) {
+      if (
+        heights[100 + i + 1] - heights[100 + i] !==
+        heights[100 + i + period + 1] - heights[100 + i + period]
+      ) {
         continue outer;
       }
     }
-    // console.log(pattern);
+    break;
   }
-  // console.log(bottom + 1);
+  console.log(heights[2022]);
+  console.log(
+    (heights[100 + period] - heights[100]) *
+      ((~~(1000000000000 / period) * period - period) / period) +
+      heights[period + (1000000000000 % period)]
+  );
 }
 solve(input);
-
-/*
-1000000000000 / 35
-28571428571.42857
-1000000000000 % 35
-15
-
-height = 53 * ((i - 4900) / 35) + 7428
-*/
-// console.log(53 * ((28571428571 * 35 - 4900) / 35) + 7428 + 7446 - 7428 - 1);
-
-/*
-1000000000000 / 1745
-573065902.5787965
-1000000000000 % 1745
-1010
-
-*/
-console.log(53 * ((28571428571 * 35 - 4900) / 35) + 7428 + 7446 - 7428 - 1);
-console.log(
-  2738 * ((573065902 * 1745 - 34900) / 1745) + 54752 + 56328 - 54752 - 1
-);
