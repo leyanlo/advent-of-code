@@ -74,7 +74,7 @@ function solve(input) {
   console.log(heights[2022]);
 
   let period;
-  outer: for (period = 10; period < heights.length / 2; period++) {
+  outer: for (period = 10; period < (heights.length - 100) / 2; period++) {
     for (let i = 0; i < period; i++) {
       if (
         heights[100 + i + 1] - heights[100 + i] !==
