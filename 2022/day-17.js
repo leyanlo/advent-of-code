@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd();
 
-const shapes = `####
+const rocks = `####
 
 .#.
 ###
@@ -20,8 +20,8 @@ const shapes = `####
 ##
 ##`
   .split('\n\n')
-  .map((shape) =>
-    shape.split('\n').map((line) =>
+  .map((rock) =>
+    rock.split('\n').map((line) =>
       line
         .split('')
         .map((char) => +(char === '#'))
@@ -31,22 +31,21 @@ const shapes = `####
   .map((lines) => [lines[0].length, lines.map((line) => parseInt(line, 2))]);
 
 function solve(input) {
-  let charIdx = 0;
-  let bottom = -1;
+  let inputIdx = 0;
   const chamber = [];
-  const heights = [-1];
-  for (let i = 0; i < 10000; i++) {
-    const [width, shape] = shapes[i % shapes.length];
+  const heights = [0];
+  for (let rockIdx = 0; rockIdx < 10000; rockIdx++) {
+    const [width, rock] = rocks[rockIdx % rocks.length];
     let x = 2;
-    chamber.length = bottom + 1 + shape.length + 3;
+    chamber.length = heights.at(-1) + rock.length + 3;
 
     let y = chamber.length - 1;
     do {
-      const dx = input[charIdx++ % input.length] === '>' ? 1 : -1;
+      const dx = input[inputIdx++ % input.length] === '>' ? 1 : -1;
       if (
         x + dx >= 0 &&
         x + dx <= 7 - width &&
-        shape.every(
+        rock.every(
           (mask, i) =>
             (mask & (chamber[y - i] >> (7 - width - (x + dx))) % 2 ** width) ===
             0
@@ -56,19 +55,18 @@ function solve(input) {
       }
 
       if (
-        y - shape.length >= 0 &&
-        shape.every(
+        y - rock.length >= 0 &&
+        rock.every(
           (mask, i) =>
             (mask & (chamber[y - 1 - i] >> (7 - width - x)) % 2 ** width) === 0
         )
       ) {
         y--;
       } else {
-        for (let j = 0; j < shape.length; j++) {
-          chamber[y - j] |= shape[j] << (7 - width - x);
+        for (let i = 0; i < rock.length; i++) {
+          chamber[y - i] |= rock[i] << (7 - width - x);
         }
-        bottom = Math.max(bottom, y);
-        heights.push(bottom + 1);
+        heights.push(Math.max(heights.at(-1), y + 1));
         break;
       }
     } while (true);
