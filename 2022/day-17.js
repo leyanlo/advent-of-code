@@ -87,8 +87,7 @@ function solve(input) {
   }
 
   console.log(
-    (heights[100 + period] - heights[100]) *
-      ((~~(1000000000000 / period) * period - period) / period) +
+    (heights[100 + period] - heights[100]) * (~~(1000000000000 / period) - 1) +
       heights[period + (1000000000000 % period)]
   );
 }
