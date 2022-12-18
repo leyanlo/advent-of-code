@@ -25,7 +25,7 @@ function solve2(input) {
   const bits = input.split('\n').map((line) => line.split('').map(Number));
 
   let o2Rating = [...bits];
-  let {gamma} = getRates(o2Rating);
+  let { gamma } = getRates(o2Rating);
   for (let i = 0; i < gamma.length; i++) {
     o2Rating = o2Rating.filter((row) => row[i] === +gamma[i]);
     ({ gamma } = getRates(o2Rating));
@@ -33,7 +33,7 @@ function solve2(input) {
   }
 
   let co2Rating = [...bits];
-  let {epsilon} = getRates(o2Rating);
+  let { epsilon } = getRates(o2Rating);
   for (let i = 0; i < epsilon.length; i++) {
     co2Rating = co2Rating.filter((row) => row[i] === +epsilon[i]);
     ({ epsilon } = getRates(co2Rating));

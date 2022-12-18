@@ -146,11 +146,7 @@ function solve1(input) {
     curr = next;
   }
 
-  console.log(
-    curr
-      .flat(2)
-      .reduce((count, active) => count + active, 0)
-  );
+  console.log(curr.flat(2).reduce((count, active) => count + active, 0));
 }
 
 function solve2(input) {
@@ -193,11 +189,7 @@ function solve2(input) {
     curr = next;
   }
 
-  console.log(
-    curr
-      .flat(3)
-      .reduce((count, active) => count + active, 0)
-  );
+  console.log(curr.flat(3).reduce((count, active) => count + active, 0));
 }
 
 let inputs = [];

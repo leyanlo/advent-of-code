@@ -11,7 +11,7 @@ function solve1(input) {
     }
     return hasValueMap;
   }, {});
-  console.log({hasValueMap})
+  console.log({ hasValueMap });
 
   const invalidValues = nearbyTickets
     .match(/\d+/g)

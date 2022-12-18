@@ -37,7 +37,7 @@ function solve(input) {
         break;
     }
   }
-  console.log(mulCount)
+  console.log(mulCount);
 }
 solve(input);
 

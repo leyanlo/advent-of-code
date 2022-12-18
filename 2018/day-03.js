@@ -50,7 +50,7 @@ function solve(input) {
       }
     }
     if (!hasOverlap) {
-      console.log(id)
+      console.log(id);
       break;
     }
   }

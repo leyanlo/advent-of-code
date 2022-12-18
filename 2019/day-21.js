@@ -125,9 +125,7 @@ function solve2(puzzleInput) {
   console.log(output[output.length - 1]);
 }
 
-const puzzleInput = input
-  .split(',')
-  .map(Number);
+const puzzleInput = input.split(',').map(Number);
 
 solve1(puzzleInput);
 solve2(puzzleInput);
