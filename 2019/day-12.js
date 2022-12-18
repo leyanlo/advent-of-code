@@ -1,7 +1,17 @@
 require = require('esm')(module);
-const math = require('mathjs');
 
 const inputIdx = 2;
+
+function gcd(...nums) {
+  function _gcd(a, b) {
+    return !b ? a : gcd(b, a % b);
+  }
+  return nums.reduce((acc, n) => _gcd(acc, n));
+}
+
+function lcm(...nums) {
+  return nums.reduce((acc, n) => (acc * n) / gcd(acc, n));
+}
 
 function solve1(input) {
   let positions = input.split('\n').map((line) => {
@@ -68,7 +78,7 @@ function solve2(input) {
       posByDim[i] = posByDim[i].map((pos, j) => pos + velByDim[i][j]);
     }
   }
-  console.log(math.lcm(...stepByDim));
+  console.log(lcm(...stepByDim));
 }
 
 const inputs = [];
