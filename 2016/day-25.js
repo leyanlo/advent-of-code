@@ -12,9 +12,7 @@ function solve(input) {
       c: 0,
       d: 0,
     };
-    function get(n) {
-      return /[a-d]/.test(n) ? registers[n] : +n;
-    }
+    const get = (n) => (/[a-d]/.test(n) ? registers[n] : +n);
     const instructions = input.split('\n').map((line) => line.split(' '));
     let prevOut;
     let nLoops = 0;
@@ -48,7 +46,7 @@ function solve(input) {
             instructions[x][0] = cmd === 'jnz' ? 'cpy' : 'jnz';
           }
           break;
-        case 'out': // x transmits x (either an integer or the value of a register) as the next value for the clock signal.
+        case 'out': { // x transmits x (either an integer or the value of a register) as the next value for the clock signal.
           const out = get(x);
           if (out === prevOut) {
             continue outer;
@@ -58,6 +56,7 @@ function solve(input) {
             prevOut = out;
           }
           break;
+        }
       }
     }
   }

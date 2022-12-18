@@ -7,7 +7,7 @@ function solve(input, part) {
   const instructions = input.split('\n').map((line) => {
     const cmd = line.substring(0, 3);
     const [r] = line.match(/[ab]/) ?? [];
-    const [offset] = line.match(/[+\-]\d+/) ?? [];
+    const [offset] = line.match(/[+-]\d+/) ?? [];
     return { cmd, r, offset: offset && +offset };
   });
   for (let i = 0; i >= 0 && i < instructions.length; i++) {

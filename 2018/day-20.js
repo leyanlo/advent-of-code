@@ -19,7 +19,7 @@ function solve(input) {
       case ')':
         [x, y] = prevCoords.pop();
         break;
-      default:
+      default: {
         const dy = char === 'N' ? -1 : char === 'S' ? 1 : 0;
         const dx = char === 'E' ? 1 : char === 'W' ? -1 : 0;
         map[y + dy] = map[y + dy] ?? {};
@@ -29,6 +29,7 @@ function solve(input) {
         );
         x += dx;
         y += dy;
+      }
     }
   }
   const lengths = Object.values(map).flatMap((row) => Object.values(row));

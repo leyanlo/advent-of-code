@@ -15,6 +15,9 @@
   "rules": {
     "import/order": ["error", { "newlines-between": "always" }],
     "no-constant-condition": ["error", { "checkLoops": false }],
-    "no-global-assign": ["error", { "exceptions": ["require"] }]
+    "no-global-assign": ["error", { "exceptions": ["require"] }],
+    "no-redeclare": "off",
+    "no-regex-spaces": "off",
+    "no-unused-vars": "off"
   }
 }
