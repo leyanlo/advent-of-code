@@ -30,12 +30,15 @@ const rocks = `####
   )
   .map((lines) => [lines[0].length, lines.map((line) => parseInt(line, 2))]);
 
-function solve(input) {
+function solve(input, part) {
+  let rockIdx = 0;
   let inputIdx = 0;
   const chamber = [];
   const heights = [0];
-  for (let rockIdx = 0; rockIdx < 10000; rockIdx++) {
-    const [width, rock] = rocks[rockIdx % rocks.length];
+  const skylines = [];
+  let cycleStart, cycleLength;
+  do {
+    const [width, rock] = rocks[rockIdx++ % rocks.length];
     let x = 2;
     chamber.length = heights.at(-1) + rock.length + 3;
 
@@ -70,25 +73,22 @@ function solve(input) {
         break;
       }
     } while (true);
-  }
-  console.log(heights[2022]);
 
-  let period;
-  outer: for (period = 10; period < (heights.length - 100) / 2; period++) {
-    for (let i = 0; i < period; i++) {
-      if (
-        heights[100 + i + 1] - heights[100 + i] !==
-        heights[100 + i + period + 1] - heights[100 + i + period]
-      ) {
-        continue outer;
-      }
+    const skyline = chamber.slice(-100).join();
+    if (skylines.includes(skyline)) {
+      cycleStart = skylines.indexOf(skyline);
+      cycleLength = skylines.length - cycleStart;
+      break;
     }
-    break;
-  }
+    skylines.push(skyline);
+  } while (true);
 
+  const t = part === 2 ? 1000000000000 : 2022;
   console.log(
-    (heights[100 + period] - heights[100]) * (~~(1000000000000 / period) - 1) +
-      heights[period + (1000000000000 % period)]
+    ~~((t - cycleStart) / cycleLength) *
+      (heights[cycleStart + cycleLength] - heights[cycleStart]) +
+      heights[cycleStart + ((t - cycleStart) % cycleLength)]
   );
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
