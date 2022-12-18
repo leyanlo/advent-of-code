@@ -1,10 +1,37 @@
 require = require('esm')(module);
-const { rotate: rotate2d } = require('2d-array-rotation');
 
-const inputIdx = 0;
-const debug = true;
+const inputIdx = 1;
+const debug = false;
 const part1 = true;
 const part2 = true;
+
+function rotate2d(img, deg) {
+  const height = img.length;
+  const width = img[0].length;
+  const newImg =
+    deg % 180
+      ? [...Array(width)].map(() => [...Array(height)])
+      : [...Array(height)].map(() => [...Array(width)]);
+  for (let i = 0; i < img.length; i++) {
+    for (let j = 0; j < img[i].length; j++) {
+      switch (deg) {
+        case 0:
+          newImg[i][j] = img[i][j];
+          break;
+        case 90:
+          newImg[j][height - i - 1] = img[i][j];
+          break;
+        case 180:
+          newImg[height - i - 1][width - j - 1] = img[i][j];
+          break;
+        case 270:
+          newImg[width - j - 1][i] = img[i][j];
+          break;
+      }
+    }
+  }
+  return newImg;
+}
 
 function getEdges(tile) {
   const top = tile[0];
