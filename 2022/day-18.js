@@ -47,7 +47,7 @@ function solve(input) {
 
     outer: {
       while (queue.length) {
-        const [x, y, z] = queue.shift().split(',').map(Number);
+        const [x, y, z] = toCoords(queue.shift());
         for (const [dx, dy, dz] of dirs) {
           const [x2, y2, z2] = [x + dx, y + dy, z + dz];
           const key2 = [x2, y2, z2].join();
