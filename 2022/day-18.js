@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { isIndex } = require('mathjs');
 
 var input = `2,2,2
 1,2,2
@@ -68,71 +69,80 @@ function toFaces([x, y, z]) {
 
 function solve(input) {
   const cubes = input.split('\n').map((line) => line.split(',').map(Number));
-  let faces = cubes.map(toFaces);
-  console.log(faces);
-  console.log(faces.flat().length);
-  faces = Object.keys(
-    faces.flat().reduce((acc, face) => {
-      if (acc[face]) {
-        delete acc[face];
-      } else {
-        acc[face] = 1;
+  const cubeSet = new Set(cubes.map((cube) => cube.join()));
+  const emptySet = new Set();
+  let nFaces = 0;
+  for (const [x, y, z] of cubes) {
+    for (const [dx, dy, dz] of dirs) {
+      const key = [x + dx, y + dy, z + dz].join();
+      if (!cubeSet.has(key)) {
+        nFaces++;
+        emptySet.add(key);
       }
-      return acc;
-    }, {})
-  );
-
-  const faceSet = new Set(faces);
-  console.log(faceSet.size);
+    }
+  }
+  console.log(nFaces);
 
   const [[xMin, xMax], [yMin, yMax], [zMin, zMax]] = [0, 1, 2].map((i) =>
     [Math.min, Math.max].map((f) => f(...cubes.map((coords) => coords[i])))
   );
 
-  const valids = new Set(cubes.map((cube) => cube.join()));
-  const invalids = new Set();
-
-  function checkValid([x, y, z]) {
-    const queue = dirs.map(([dx, dy, dz]) => [x + dx, y + dy, z + dz]);
-    while (queue.length) {
-      const [x2,y2,z2] = queue.shift();
-      const key = [x2, y2, z2].join();
-      if (valids.has(key)) {
-        continue;
-      }
-      if (x < xMin || x > xMax || y < yMin || y > yMax || z < zMin || z > zMax) {
-        return true;
-      }
-      if (invalids.has(key)) {
-        return false;
-      }
-
-
+  const interiorSet = new Set(cubeSet);
+  for (const key of [...emptySet]) {
+    if (interiorSet.has(key)) {
+      continue;
     }
 
+    const seen = new Set([key]);
+    const queue = [key];
+    let isTrapped = true;
+
+    outer: while (queue.length) {
+      const [x, y, z] = queue.shift().split(',').map(Number);
+      for (const [dx, dy, dz] of dirs) {
+        const [x2, y2, z2] = [x + dx, y + dy, z + dz];
+        const key2 = [x2, y2, z2].join();
+        if (
+          x2 < xMin ||
+          x2 > xMax ||
+          y2 < yMin ||
+          y2 > yMax ||
+          z2 < zMin ||
+          z2 > zMax
+        ) {
+          isTrapped = false;
+          break outer;
+        }
+
+        if (interiorSet.has(key2)) {
+          continue;
+        }
+
+        if (!seen.has(key2)) {
+          seen.add(key2);
+          queue.push(key2);
+        }
+      }
+    }
+
+    if (isTrapped) {
+      for (const key of [...seen]) {
+        interiorSet.add(key);
+      }
+    }
   }
 
-  for (const [x, y, z] of cubes) {
+  nFaces = 0;
+  for (const [x, y, z] of [...interiorSet].map((key) =>
+    key.split(',').map(Number)
+  )) {
     for (const [dx, dy, dz] of dirs) {
-      const [x2, y2, z2] = [x + dx, y + dy, z + dz];
-      const key = [x2, y2, z2].join();
-      if (valids.has(key) || invalids.has(key)) {
-        continue;
-      }
-
-      if (checkValid([x2, y2, z2])) {
-        valids.add(key);
-      } else {
-        invalids.add(key);
+      const key = [x + dx, y + dy, z + dz].join();
+      if (!interiorSet.has(key)) {
+        nFaces++;
       }
     }
   }
-  for (const invalid of [...invalids]) {
-    const [x, y, z] = invalid.split(',');
-    for (const face of toFaces([x, y, z])) {
-      faceSet.delete(face);
-    }
-  }
-  console.log(faceSet.size);
+  console.log(nFaces);
 }
 solve(input);
