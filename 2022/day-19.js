@@ -9,7 +9,7 @@ function getMaxGeodes(costs, tMax) {
   let maxGeodes = 0;
   const queue = [[[1, 0, 0, 0], [0, 0, 0, 0], 0]];
   const seen = new Set();
-  while (queue.length) {
+  outer: while (queue.length) {
     const state = queue.shift();
     const [robots, collected, t] = state;
 
@@ -28,16 +28,19 @@ function getMaxGeodes(costs, tMax) {
     if (seen.has(JSON.stringify(state))) continue;
     seen.add(JSON.stringify(state));
 
-    queue.push([robots, collected.map((c, i) => c + robots[i]), t + 1]);
-    costs.forEach((cost, i) => {
+    for (let i = 3; i >= 0; i--) {
+      const cost = costs[i];
       if (cost.every((c, j) => c <= collected[j])) {
         queue.push([
           robots.map((r, j) => r + (j === i)),
           collected.map((c, j) => c - (cost[j] ?? 0) + robots[j]),
           t + 1,
         ]);
+        // skip other branches if we can make a geode or obsidian robot
+        if (i >= 2) continue outer;
       }
-    });
+    }
+    queue.push([robots, collected.map((c, i) => c + robots[i]), t + 1]);
   }
   return maxGeodes;
 }
