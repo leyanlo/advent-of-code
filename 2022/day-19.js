@@ -3,6 +3,9 @@ const fs = require('fs');
 const input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
 
 function getMaxGeodes(costs, tMax) {
+  const maxCosts = [...Array(3)].map((_, i) =>
+    Math.max(...costs.map((cost) => cost[i] ?? 0))
+  );
   let maxGeodes = 0;
   const queue = [[[1, 0, 0, 0], [0, 0, 0, 0], 0]];
   const seen = new Set();
@@ -15,14 +18,10 @@ function getMaxGeodes(costs, tMax) {
 
     // cap robots and resources to reduce search space
     for (let i = 0; i < 3; i++) {
-      robots[i] = Math.min(
-        robots[i],
-        Math.max(...costs.map((cost) => cost[i] ?? 0))
-      );
+      robots[i] = Math.min(robots[i], maxCosts[i]);
       collected[i] = Math.min(
         collected[i],
-        (tMax - t) * Math.max(...costs.map((cost) => cost[i] ?? 0)) -
-          robots[i] * (tMax - t - 1)
+        (tMax - t) * maxCosts[i] - robots[i] * (tMax - t - 1)
       );
     }
 
