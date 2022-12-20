@@ -7,7 +7,7 @@ var input = `1
 -2
 0
 4`;
-// var input = fs.readFileSync('./day-20-input.txt', 'utf8').trimEnd();
+var input = fs.readFileSync('./day-20-input.txt', 'utf8').trimEnd();
 
 function swap(nums, i, j) {
   const len = nums.length;
@@ -18,25 +18,18 @@ function swap(nums, i, j) {
 
 function solve(input) {
   const nums = input.split('\n').map(Number);
-  console.log(nums);
-  const idxes = [...Array(nums.length).keys()];
-  for (let i = 0; i < idxes.length; i++) {
-    let state = idxes.map((j) => nums[j]);
-    const n = nums[i];
-    const dn = Math.sign(n);
-    const start = idxes[i];
-    for (let j = start; j !== start + n; j += dn) {
-      swap(idxes, j, j + dn);
-      state = idxes.map((j) => nums[j]);
-    }
-    if (start + n < 0) {
-      idxes.push(idxes.shift())
-      state = idxes.map((j) => nums[j]);
-    } else if (start + n >= idxes.length) {
-      idxes.unshift(idxes.pop())
-      state = idxes.map((j) => nums[j]);
-    }
-    console.log(i, n, state.join(', '));
+  const file = nums.map((n, idx) => ({ n, idx }));
+  for (let i = 0; i < file.length; i++) {
+    const idx = file.findIndex(({ idx }) => idx === i);
+    const [line] = file.splice(idx, 1);
+    file.splice((idx + line.n) % file.length, 0, line);
   }
+
+  const zeroIdx = file.findIndex(({ n }) => n === 0);
+  console.log(
+    [1000, 2000, 3000]
+      .map((di) => file[(zeroIdx + di) % file.length].n)
+      .reduce((acc, n) => acc + n)
+  );
 }
 solve(input);
