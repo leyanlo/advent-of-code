@@ -13,18 +13,14 @@ function solve1(input) {
 
   map = map
     .split('\n')
-    .map((line) =>
-      line.split('').map((char) => (char === ' ' ? 0 : char === '.' ? 1 : 2))
-    );
+    .map((line) => line.split('').map((char) => [' ', '.', '#'].indexOf(char)));
 
   path = path.match(/\d+|R|L/g);
 
-  let [x, y, dx, dy] = [map[0].indexOf(0), 0, 1, 0];
+  let [x, y, dx, dy] = [map[0].indexOf(1), 0, 1, 0];
 
   for (const instr of path) {
-    if (/R|L/.test(instr)) {
-      [dx, dy] = instr === 'R' ? [-dy, dx] : [dy, -dx];
-    } else {
+    if (/\d+/.test(instr)) {
       for (let i = 0; i < +instr; i++) {
         let [x2, y2] = [
           (x + dx + map[y].length) % map[y].length,
@@ -42,6 +38,8 @@ function solve1(input) {
           break;
         }
       }
+    } else {
+      [dx, dy] = instr === 'R' ? [-dy, dx] : [dy, -dx];
     }
   }
   console.log(1000 * (y + 1) + 4 * (x + 1) + facing[dy][dx]);
@@ -55,14 +53,12 @@ function solve2(input) {
     .split('\n')
     .map((line) => line.split('').map((char) => [' ', '.', '#'].indexOf(char)));
 
-  path = path.match(/\d+|[A-Z]/g);
+  path = path.match(/\d+|R|L/g);
 
   let [x, y, dx, dy] = [map[0].indexOf(1), 0, 1, 0];
 
   for (const instr of path) {
-    if (/R|L/.test(instr)) {
-      [dx, dy] = instr === 'R' ? [-dy, dx] : [dy, -dx];
-    } else {
+    if (/\d+/.test(instr)) {
       for (let i = 0; i < +instr; i++) {
         let [x2, y2, dx2, dy2] = [x + dx, y + dy, dx, dy];
         if (!map[y2]?.[x2]) {
@@ -102,6 +98,8 @@ function solve2(input) {
           break;
         }
       }
+    } else {
+      [dx, dy] = instr === 'R' ? [-dy, dx] : [dy, -dx];
     }
   }
   console.log(1000 * (y + 1) + 4 * (x + 1) + facing[dy][dx]);
