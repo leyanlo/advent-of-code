@@ -32,8 +32,8 @@ function solve1(input) {
         ];
         while (!map[y2]?.[x2]) {
           [x2, y2] = [
-            dx ? (x2 + dx + map[y2].length) % map[y2].length : x2,
-            dy ? (y2 + dy + map.length) % map.length : y2,
+            (x2 + dx + map[y].length) % map[y].length,
+            (y2 + dy + map.length) % map.length,
           ];
         }
         if (map[y2][x2] === 1) {
