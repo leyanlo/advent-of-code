@@ -2,6 +2,13 @@ const fs = require('fs');
 
 const input = fs.readFileSync('./day-21-input.txt', 'utf8').trimEnd();
 
+const ops = {
+  '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+  '*': (a, b) => a * b,
+  '/': (a, b) => a / b,
+};
+
 function solve1(input) {
   const map = {};
   let lines = input.split('\n');
@@ -20,15 +27,7 @@ function solve1(input) {
 
       map[monkey] = [m1, m2]
         .map((m) => map[m])
-        .reduce((acc, n) =>
-          op === '+'
-            ? acc + n
-            : op === '-'
-            ? acc - n
-            : op === '*'
-            ? acc * n
-            : acc / n
-        );
+        .reduce((acc, n) => ops[op](acc, n));
     }
     lines = lines.filter((line) => map[line.slice(0, 4)] === undefined);
   }
@@ -64,15 +63,7 @@ function solve2(input) {
 
         map[monkey] = [m1, m2]
           .map((m) => map[m])
-          .reduce((acc, n) =>
-            op === '+'
-              ? acc + n
-              : op === '-'
-              ? acc - n
-              : op === '*'
-              ? acc * n
-              : acc / n
-          );
+          .reduce((acc, n) => ops[op](acc, n));
       }
       lines = lines.filter((line) => map[line.slice(0, 4)] === undefined);
     }
