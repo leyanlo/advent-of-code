@@ -47,7 +47,7 @@ function solve(input, part) {
     let proposals = [];
     for (let y in map) {
       y = +y;
-      outer: for (let x in map[y]) {
+      for (let x in map[y]) {
         x = +x;
         if (map[y][x]) {
           if (neighbors.every(([dx, dy]) => !map[y + dy]?.[x + dx])) {
@@ -55,7 +55,7 @@ function solve(input, part) {
           }
           for (let i = round; i < round + 4; i++) {
             if (addProposal[(i - 1) % 4](map, x, y, proposals)) {
-              continue outer;
+              break;
             }
           }
         }
