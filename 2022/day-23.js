@@ -54,7 +54,7 @@ function solve(input, part) {
       outer: for (let x in map[y]) {
         x = +x;
         if (map[y][x]) {
-          if (neighbors.every(([dy, dx]) => !map[y + dy]?.[x + dx])) {
+          if (neighbors.every(([dx, dy]) => !map[y + dy]?.[x + dx])) {
             continue;
           }
           for (let i = round; i < round + 4; i++) {
