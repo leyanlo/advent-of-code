@@ -16,26 +16,22 @@ const neighbors = [
 const addProposal = [
   (map, x, y, proposals) => {
     if (!map[y - 1]?.[x] && !map[y - 1]?.[x - 1] && !map[y - 1]?.[x + 1]) {
-      proposals.push([[x, y].join(), [x, y - 1].join()]);
-      return true;
+      return proposals.push([[x, y].join(), [x, y - 1].join()]);
     }
   },
   (map, x, y, proposals) => {
     if (!map[y + 1]?.[x] && !map[y + 1]?.[x - 1] && !map[y + 1]?.[x + 1]) {
-      proposals.push([[x, y].join(), [x, y + 1].join()]);
-      return true;
+      return proposals.push([[x, y].join(), [x, y + 1].join()]);
     }
   },
   (map, x, y, proposals) => {
     if (!map[y - 1]?.[x - 1] && !map[y][x - 1] && !map[y + 1]?.[x - 1]) {
-      proposals.push([[x, y].join(), [x - 1, y].join()]);
-      return true;
+      return proposals.push([[x, y].join(), [x - 1, y].join()]);
     }
   },
   (map, x, y, proposals) => {
     if (!map[y - 1]?.[x + 1] && !map[y][x + 1] && !map[y + 1]?.[x + 1]) {
-      proposals.push([[x, y].join(), [x + 1, y].join()]);
-      return true;
+      return proposals.push([[x, y].join(), [x + 1, y].join()]);
     }
   },
 ];
