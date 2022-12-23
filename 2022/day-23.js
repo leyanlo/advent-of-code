@@ -42,8 +42,9 @@ function solve(input, part) {
     .map((line) => line.split('').map((char) => +(char === '#')));
   const nElves = map.flat().filter(Boolean).length;
 
-  let round = 1;
-  while (part === 2 || round <= 10) {
+  let round = 0;
+  while (part === 2 || round < 10) {
+    round++;
     let proposals = [];
     for (let y in map) {
       y = +y;
@@ -80,7 +81,6 @@ function solve(input, part) {
       map[y2] = map[y2] ?? [];
       map[y2][x2] = 1;
     }
-    round++;
   }
 
   if (part === 2) {
