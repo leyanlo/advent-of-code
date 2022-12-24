@@ -57,8 +57,7 @@ function solve(input) {
 
   const height = map.length - 2;
   const width = map[0].length - 2;
-  const nMaps = lcm(height, width);
-  const maps = [...Array(nMaps)].map(() =>
+  const maps = [...Array(lcm(height, width))].map(() =>
     map.map((line) => line.map((char) => (char === '#' ? 1 : 0)))
   );
 
@@ -66,22 +65,22 @@ function solve(input) {
     for (let x = 0; x < map[y].length; x++) {
       switch (map[y][x]) {
         case '^':
-          for (let i = 0; i < nMaps; i++) {
+          for (let i = 0; i < maps.length; i++) {
             maps[i][mod(y - 1 - i, height) + 1][x] = 1;
           }
           break;
         case '>':
-          for (let i = 0; i < nMaps; i++) {
+          for (let i = 0; i < maps.length; i++) {
             maps[i][y][mod(x - 1 + i, width) + 1] = 1;
           }
           break;
         case 'v':
-          for (let i = 0; i < nMaps; i++) {
+          for (let i = 0; i < maps.length; i++) {
             maps[i][mod(y - 1 + i, height) + 1][x] = 1;
           }
           break;
         case '<':
-          for (let i = 0; i < nMaps; i++) {
+          for (let i = 0; i < maps.length; i++) {
             maps[i][y][mod(x - 1 - i, width) + 1] = 1;
           }
           break;
