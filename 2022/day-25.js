@@ -5,7 +5,8 @@ const input = fs.readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 function toDec(str) {
   let n = 0;
   for (let i = 0; i < str.length; i++) {
-    n += ('=-012'.indexOf(str.at(-1 - i)) - 2) * 5 ** i;
+    const char = str.at(-1 - i);
+    n += ('=-012'.indexOf(char) - 2) * 5 ** i;
   }
   return n;
 }
