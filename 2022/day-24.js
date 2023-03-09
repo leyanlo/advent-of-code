@@ -22,10 +22,7 @@ function lcm(...nums) {
 }
 
 function mod(a, b) {
-  while (a < 0) {
-    a += b;
-  }
-  return a % b;
+  return a < 0 ? b - (-a % b) : a % b;
 }
 
 function timeTrip(start, end, tStart, maps) {
