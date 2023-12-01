@@ -22,12 +22,12 @@ function solve(input, part) {
       for (const word of words) {
         line = line.replaceAll(
           word,
-          `${word.at(0)}${wordToNum[word]}${word.at(-1)}`
+          `${word[0]}${wordToNum[word]}${word.at(-1)}`
         );
       }
     }
     const nums = line.match(/\d/g);
-    const val = +`${nums.at(0)}${nums.at(-1)}`;
+    const val = +`${nums[0]}${nums.at(-1)}`;
     sum += val;
   }
   console.log(sum);
