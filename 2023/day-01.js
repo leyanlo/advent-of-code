@@ -13,22 +13,25 @@ const wordToNum = {
   eight: 8,
   nine: 9,
 };
-const words = Object.keys(wordToNum);
 
 function solve(input, part) {
   let sum = 0;
   for (let line of input.split('\n')) {
-    if (part === 2) {
-      for (const word of words) {
-        line = line.replaceAll(
-          word,
-          `${word[0]}${wordToNum[word]}${word.at(-1)}`
-        );
-      }
+    let first, last;
+    if (part === 1) {
+      first = +line.match(/(\d)/)[1];
+      last = +line.match(/.*(\d)/)[1];
+    } else {
+      first = line.match(
+        /(one|two|three|four|five|six|seven|eight|nine|\d)/
+      )[1];
+      first = wordToNum[first] ?? +first;
+      last = line.match(
+        /.*(one|two|three|four|five|six|seven|eight|nine|\d)/
+      )[1];
+      last = wordToNum[last] ?? +last;
     }
-    const nums = line.match(/\d/g);
-    const val = +`${nums[0]}${nums.at(-1)}`;
-    sum += val;
+    sum += 10 * first + last;
   }
   console.log(sum);
 }
