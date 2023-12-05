@@ -42,20 +42,18 @@ function solve2(input) {
     const movedSeeds = [];
     for (const [dest, source, len] of map) {
       const unmovedSeeds = [];
-      while (seeds.length) {
-        const [start, end] = seeds.shift();
-        if (start >= source && start < source + len) {
-          if (end < source + len) {
-            movedSeeds.push([start - source + dest, end - source + dest]);
-          } else {
-            movedSeeds.push([start - source + dest, len - 1 + dest]);
-            unmovedSeeds.push([source + len, end]);
-          }
-        } else if (end >= source && end < source + len) {
-          movedSeeds.push([dest, end - source + dest]);
-          unmovedSeeds.push([start, source - 1]);
-        } else {
-          unmovedSeeds.push([start, end]);
+      for (const [start, end] of seeds) {
+        if (start < source + len && end >= source) {
+          movedSeeds.push([
+            Math.max(start, source) - source + dest,
+            Math.min(end, source + len - 1) - source + dest,
+          ]);
+        }
+        if (start < source) {
+          unmovedSeeds.push([start, Math.min(end, source - 1)]);
+        }
+        if (end >= source + len) {
+          unmovedSeeds.push([Math.max(start, source + len), end]);
         }
       }
       seeds = unmovedSeeds;
