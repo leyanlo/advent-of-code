@@ -6,13 +6,13 @@ function solve1(input) {
   let [seeds, ...maps] = input.split('\n\n');
   seeds = seeds.match(/\d+/g).map(Number);
   for (let map of maps) {
-    const lines = map
+    map = map
       .split('\n')
       .slice(1)
       .map((line) => line.match(/\d+/g).map(Number));
     for (let i = 0; i < seeds.length; i++) {
       const seed = seeds[i];
-      for (const [dest, source, len] of lines) {
+      for (const [dest, source, len] of map) {
         if (seed >= source && seed < source + len) {
           seeds[i] = seeds[i] - source + dest;
           break;
@@ -34,13 +34,13 @@ function solve2(input) {
   seeds = nextSeeds;
 
   for (let map of maps) {
-    const lines = map
+    map = map
       .split('\n')
       .slice(1)
       .map((line) => line.match(/\d+/g).map(Number));
 
     const movedSeeds = [];
-    for (const [dest, source, len] of lines) {
+    for (const [dest, source, len] of map) {
       const unmovedSeeds = [];
       while (seeds.length) {
         const [start, end] = seeds.shift();
