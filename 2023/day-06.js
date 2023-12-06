@@ -13,14 +13,8 @@ function solve(input, part) {
     const time = times[i];
     const dist = dists[i];
 
-    let minTime;
-    for (let t = 1; t < time / 2; t++) {
-      const totDist = t * (time - t);
-      if (totDist > dist) {
-        minTime = t;
-        break;
-      }
-    }
+    let minTime = (time - Math.sqrt(time ** 2 - 4 * dist)) / 2;
+    minTime = Number.isInteger(minTime) ? minTime + 1 : Math.ceil(minTime);
     const nWays = time - (minTime - 1) * 2 - 1;
     product *= nWays;
   }
