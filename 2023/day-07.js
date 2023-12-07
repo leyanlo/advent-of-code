@@ -4,13 +4,11 @@ const input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
 function compare1(lineA, lineB) {
   // prettier-ignore
-  const cards = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'].reverse();
-  const hexA = lineA[0]
-    .map((card) => cards.indexOf(card).toString(16))
-    .join('');
-  const hexB = lineB[0]
-    .map((card) => cards.indexOf(card).toString(16))
-    .join('');
+  const cards = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+
+  const hexA = lineA[0].map((card) => cards.indexOf(card).toString(16));
+  const hexB = lineB[0].map((card) => cards.indexOf(card).toString(16));
+
   const mapA = {};
   for (const char of hexA) {
     mapA[char] = (mapA[char] ?? 0) + 1;
@@ -19,44 +17,46 @@ function compare1(lineA, lineB) {
   for (const char of hexB) {
     mapB[char] = (mapB[char] ?? 0) + 1;
   }
-  const countsA = Object.values(mapA)
-    .sort((a, b) => b - a)
-    .join('');
-  const countsB = Object.values(mapB)
-    .sort((a, b) => b - a)
-    .join('');
-  return countsA.localeCompare(countsB) || hexA.localeCompare(hexB);
+
+  const countsA = Object.values(mapA).sort().reverse();
+  const countsB = Object.values(mapB).sort().reverse();
+
+  return (
+    countsA.join().localeCompare(countsB.join()) ||
+    hexA.join().localeCompare(hexB.join())
+  );
 }
 
 function compare2(lineA, lineB) {
   // prettier-ignore
-  const cards = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'].reverse();
+  const cards = ['J', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A'];
+
   const nJokersA = lineA[0].filter((card) => card === 'J').length;
   const nJokersB = lineB[0].filter((card) => card === 'J').length;
 
-  const hexA = lineA[0]
-    .map((card) => cards.indexOf(card).toString(16))
-    .join('');
-  const hexB = lineB[0]
-    .map((card) => cards.indexOf(card).toString(16))
-    .join('');
+  const hexA = lineA[0].map((card) => cards.indexOf(card).toString(16));
+  const hexB = lineB[0].map((card) => cards.indexOf(card).toString(16));
+
   const mapA = {};
   for (const char of hexA) {
     mapA[char] = (mapA[char] ?? 0) + 1;
   }
-  mapA[cards.indexOf('J').toString(16)] = 0;
+  mapA[0] = 0;
   const mapB = {};
   for (const char of hexB) {
     mapB[char] = (mapB[char] ?? 0) + 1;
   }
-  mapB[cards.indexOf('J').toString(16)] = 0;
-  let countsA = Object.values(mapA).sort((a, b) => b - a);
+  mapB[0] = 0;
+
+  let countsA = Object.values(mapA).sort().reverse();
   countsA[0] += nJokersA;
-  countsA = countsA.join('');
-  let countsB = Object.values(mapB).sort((a, b) => b - a);
+  let countsB = Object.values(mapB).sort().reverse();
   countsB[0] += nJokersB;
-  countsB = countsB.join('');
-  return countsA.localeCompare(countsB) || hexA.localeCompare(hexB);
+
+  return (
+    countsA.join().localeCompare(countsB.join()) ||
+    hexA.join().localeCompare(hexB.join())
+  );
 }
 
 function solve(input, part) {
@@ -68,6 +68,7 @@ function solve(input, part) {
     lines[i] = [hand, bid];
   }
   lines.sort(part === 1 ? compare1 : compare2);
+
   let sum = 0;
   for (let i = 0; i < lines.length; i++) {
     sum += lines[i][1] * (i + 1);
