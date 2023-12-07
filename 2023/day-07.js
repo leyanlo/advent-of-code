@@ -4,7 +4,7 @@ const input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
 function compare1(lineA, lineB) {
   // prettier-ignore
-  const cards = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
+  const cards = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'].reverse();
   const hexA = lineA[0]
     .map((card) => cards.indexOf(card).toString(16))
     .join('');
@@ -25,12 +25,12 @@ function compare1(lineA, lineB) {
   const countsB = Object.values(mapB)
     .sort((a, b) => b - a)
     .join('');
-  return countsA.localeCompare(countsB) || hexB.localeCompare(hexA);
+  return countsA.localeCompare(countsB) || hexA.localeCompare(hexB);
 }
 
 function compare2(lineA, lineB) {
   // prettier-ignore
-  const cards = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'];
+  const cards = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J'].reverse();
   const nJokersA = lineA[0].filter((card) => card === 'J').length;
   const nJokersB = lineB[0].filter((card) => card === 'J').length;
 
@@ -56,7 +56,7 @@ function compare2(lineA, lineB) {
   let countsB = Object.values(mapB).sort((a, b) => b - a);
   countsB[0] += nJokersB;
   countsB = countsB.join('');
-  return countsA.localeCompare(countsB) || hexB.localeCompare(hexA);
+  return countsA.localeCompare(countsB) || hexA.localeCompare(hexB);
 }
 
 function solve(input, part) {
