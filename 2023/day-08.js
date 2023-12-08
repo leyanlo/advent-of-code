@@ -3,10 +3,7 @@ const fs = require('fs');
 const input = fs.readFileSync('./day-08-input.txt', 'utf8').trimEnd();
 
 function gcd(...nums) {
-  function _gcd(a, b) {
-    return !b ? a : gcd(b, a % b);
-  }
-  return nums.reduce((acc, n) => _gcd(acc, n));
+  return nums.reduce((acc, n) => (!n ? acc : gcd(n, acc % n)));
 }
 
 function lcm(...nums) {
