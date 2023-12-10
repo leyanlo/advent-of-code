@@ -1,5 +1,12 @@
 const fs = require('fs');
 
+const DIR = {
+  U: [-1, 0],
+  R: [0, 1],
+  D: [1, 0],
+  L: [0, -1],
+};
+
 var input = `.....
 .S-7.
 .|.|.
@@ -19,7 +26,8 @@ var input = `...........
 .|..|.|..|.
 .L--J.L--J.
 ...........`,
-  startPipe = 'F';
+  startPipe = 'F',
+  startDir = DIR.D;
 var input = `.F----7F7F7F7F-7....
 .|F--7||||||||FJ....
 .||.FJ||||||||L7....
@@ -30,7 +38,8 @@ L--J.L7...LJS7F-7L7.
 .....|FJLJ|FJ|F7|.LJ
 ....FJL-7.||.||||...
 ....L---J.LJ.LJLJ...`,
-  startPipe = 'F';
+  startPipe = 'F',
+  startDir = DIR.D;
 var input = `FF7FSF7F7F7F7F7F---7
 L|LJ||||||||||||F--J
 FL-7LJLJ||||||LJL-77
@@ -41,9 +50,11 @@ L---JF-JLJ.||-FJLJJ7
 7-L-JL7||F7|L7F-7F7|
 L.L7LFJ|||||FJL7||LJ
 L7JLJL-JLJLJL--JLJ.L`,
-  startPipe = '7';
+  startPipe = '7',
+  startDir = DIR.D;
 var input = fs.readFileSync('./day-10-input.txt', 'utf8').trimEnd(),
-  startPipe = 'J';
+  startPipe = 'J',
+  startDir = DIR.U;
 // 450 too high
 // 28 wrong
 // 444 too high
@@ -113,6 +124,7 @@ const dirs = [
 //   // console.log(countsMap.map((row) => row.join('')).join('\n'));
 // }
 // solve(input);
+
 function solve(input) {
   console.log(input);
   let start;
@@ -125,65 +137,43 @@ function solve(input) {
     })
   );
 
-  let maxPath = [start];
-  let queue = [[...start, maxPath]];
-  let maxSteps = 0;
-  const countsMap = map.map((row) => row.map(() => '.'));
-  countsMap[start[0]][start[1]] = 0;
-  while (queue.length) {
-    const [i, j, path] = queue.shift();
-    if (path.length > maxPath.length) {
-      maxSteps = path.length;
-      maxPath = path;
+  const path = [start];
+  let dir = startDir;
+  while (path.length === 1 || path.at(-1).join() !== start.join()) {
+    const [i, j] = path.at(-1);
+    switch (map[i][j]) {
+      case '|':
+      case '-':
+        break;
+      case 'L':
+        dir = dir.join() === DIR.D.join() ? DIR.R : DIR.U;
+        break;
+      case 'J':
+        dir = dir.join() === DIR.D.join() ? DIR.L : DIR.U;
+        break;
+      case '7':
+        dir = dir.join() === DIR.U.join() ? DIR.L : DIR.D;
+        break;
+      case 'F':
+        dir = dir.join() === DIR.U.join() ? DIR.R : DIR.D;
+        break;
     }
-    for (const [di, dj] of dirs) {
-      if (path.find(([i2, j2]) => i2 === i + di && j2 === j + dj)) continue;
-      switch (map[i + di]?.[j + dj]) {
-        case '|':
-          if (dj) continue;
-          break;
-        case '-':
-          if (di) continue;
-          break;
-        case 'L':
-          if (di === -1 || dj === 1) continue;
-          break;
-        case 'J':
-          if (di === -1 || dj === -1) continue;
-          break;
-        case '7':
-          if (di === 1 || dj === -1) continue;
-          break;
-        case 'F':
-          if (di === 1 || dj === 1) continue;
-          break;
-        case '.':
-          continue;
-        case 'S':
-          continue;
-        default:
-          continue;
-      }
-      queue.push([i + di, j + dj, [...path, [i + di, j + dj]]]);
-      countsMap[i + di][j + dj] = path.length + 1;
-    }
+    const [di, dj] = dir;
+    path.push([i + di, j + dj]);
   }
-  console.log(maxSteps);
-  console.log(maxPath);
-  console.log(maxPath[1], maxPath.at(-1));
+  console.log(path);
   console.log(map.map((row) => row.join('')).join('\n') + '\n');
 
   // TODO calculate based on path
-  map[maxPath[0][0]][maxPath[0][1]] = startPipe;
-  console.log(map.map((row) => row.join('')).join('\n'));
-  console.log();
+  map[start[0]][start[1]] = startPipe;
+  console.log(map.map((row) => row.join('')).join('\n') + '\n');
 
   const pathMap = map.map((row) => row.map(() => 0));
-  const iMin = Math.min(...maxPath.map(([i]) => i));
-  const jMin = Math.min(...maxPath.map(([, j]) => j));
-  const iMax = Math.max(...maxPath.map(([i]) => i));
-  const jMax = Math.max(...maxPath.map(([, j]) => j));
-  for (const [i, j] of maxPath) {
+  const iMin = Math.min(...path.map(([i]) => i));
+  const jMin = Math.min(...path.map(([, j]) => j));
+  const iMax = Math.max(...path.map(([i]) => i));
+  const jMax = Math.max(...path.map(([, j]) => j));
+  for (const [i, j] of path) {
     pathMap[i][j] = 1;
   }
   console.log(pathMap.map((row) => row.join('')).join('\n') + '\n');
