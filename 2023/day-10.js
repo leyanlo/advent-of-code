@@ -63,10 +63,9 @@ function solve(input) {
     startPipe = '7';
   }
 
-  let curr = start;
-  const path = [curr];
+  const path = [start];
+  let [i, j] = start;
   do {
-    const [i, j] = path.at(-1);
     switch (map[i][j]) {
       case '|':
       case '-':
@@ -85,9 +84,10 @@ function solve(input) {
         break;
     }
     const [di, dj] = dir;
-    curr = [i + di, j + dj];
-    path.push(curr);
-  } while (map[curr[0]][curr[1]] !== 'S');
+    i += di;
+    j += dj;
+    path.push([i, j]);
+  } while (map[i][j] !== 'S');
   console.log(~~(path.length / 2));
 
   map[start[0]][start[1]] = startPipe;
