@@ -7,9 +7,7 @@ const DIR = {
   L: [0, -1],
 };
 
-const input = fs.readFileSync('./day-10-input.txt', 'utf8').trimEnd(),
-  startPipe = 'J',
-  startDir = DIR.U;
+const input = fs.readFileSync('./day-10-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   let start;
@@ -24,8 +22,50 @@ function solve(input) {
 
   const path = [start];
   let curr = start;
-  // TODO: calculate dir based on neighbors
-  let dir = startDir;
+
+  let startPipe;
+  let dir;
+  outer: {
+    switch (map[start[0] - 1][start[1]]) {
+      case '|':
+      case '7':
+      case 'F':
+        dir = DIR.U;
+        switch (map[start[0]][start[1] + 1]) {
+          case '-':
+          case 'J':
+          case '7':
+            startPipe = 'L';
+            break outer;
+        }
+        switch (map[start[0] + 1][start[1]]) {
+          case '|':
+          case 'L':
+          case 'J':
+            startPipe = '|';
+            break outer;
+        }
+        startPipe = 'J';
+        break outer;
+    }
+    switch (map[start[0]][start[1] + 1]) {
+      case '-':
+      case 'J':
+      case '7':
+        dir = DIR.R;
+        switch (map[start[0] + 1][start[1]]) {
+          case '|':
+          case 'L':
+          case 'J':
+            startPipe = 'F';
+            break outer;
+        }
+        startPipe = '-';
+        break outer;
+    }
+    startPipe = '7';
+  }
+
   do {
     const [i, j] = path.at(-1);
     switch (map[i][j]) {
@@ -85,7 +125,6 @@ function solve(input) {
         }
       } else if (nIntersects % 2) {
         nTiles++;
-        pathMap[i][j] = 2;
       }
     }
   }
