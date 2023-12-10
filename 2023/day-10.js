@@ -20,11 +20,8 @@ function solve(input) {
     })
   );
 
-  const path = [start];
-  let curr = start;
-
-  let startPipe;
   let dir;
+  let startPipe;
   outer: {
     switch (map[start[0] - 1][start[1]]) {
       case '|':
@@ -66,6 +63,8 @@ function solve(input) {
     startPipe = '7';
   }
 
+  let curr = start;
+  const path = [curr];
   do {
     const [i, j] = path.at(-1);
     switch (map[i][j]) {
