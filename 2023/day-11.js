@@ -32,28 +32,23 @@ function solve(input, expansion) {
 
   let sum = 0;
   for (let i = 0; i < galaxies.length - 1; i++) {
+    const [r1, c1] = galaxies[i];
     for (let j = i + 1; j < galaxies.length; j++) {
-      const [row1, col1] = galaxies[i];
-      const [row2, col2] = galaxies[j];
-      const minRow = Math.min(row1, row2);
-      const maxRow = Math.max(row1, row2);
-      const minCol = Math.min(col1, col2);
-      const maxCol = Math.max(col1, col2);
+      const [r2, c2] = galaxies[j];
+      const rows = [r1, r2].sort((a, b) => a - b);
+      const cols = [c1, c2].sort((a, b) => a - b);
       let nCrosses = 0;
-      for (const row of emptyRows) {
-        if (minRow < row && row < maxRow) {
+      for (const r of emptyRows) {
+        if (rows[0] < r && r < rows[1]) {
           nCrosses++;
         }
       }
-      for (const col of emptyCols) {
-        if (minCol < col && col < maxCol) {
+      for (const c of emptyCols) {
+        if (cols[0] < c && c < cols[1]) {
           nCrosses++;
         }
       }
-      sum +=
-        Math.abs(row2 - row1) +
-        Math.abs(col2 - col1) +
-        nCrosses * (expansion - 1);
+      sum += rows[1] - rows[0] + cols[1] - cols[0] + nCrosses * (expansion - 1);
     }
   }
   console.log(sum);
