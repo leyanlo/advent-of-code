@@ -27,15 +27,15 @@ function countArrangements(
   }
 
   let result = 0;
-  if (springs[springIdx].match(/[.?]/)) {
+  if (springs[springIdx] === '.' || springs[springIdx] === '?') {
     result += countArrangements(springs, groups, springIdx + 1, groupIdx, memo);
   }
 
   if (
-    springs[springIdx].match(/[#?]/) &&
+    (springs[springIdx] === '#' || springs[springIdx] === '?') &&
     // possible to fit group in remaining springs
     groups[groupIdx] <= springs.length - springIdx &&
-    !springs.substring(springIdx, springIdx + groups[groupIdx]).match(/\./) &&
+    !springs.substring(springIdx, springIdx + groups[groupIdx]).includes('.') &&
     springs[springIdx + groups[groupIdx]] !== '#'
   ) {
     result += countArrangements(
