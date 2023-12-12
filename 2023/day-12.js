@@ -22,7 +22,7 @@ function countArrangements(
   if (springIdx >= springs.length) {
     return +(groupIdx === groups.length);
   }
-  if (groupIdx >= groups.length) {
+  if (groupIdx === groups.length) {
     return +(springs.indexOf('#', springIdx) === -1);
   }
 
