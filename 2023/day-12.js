@@ -28,17 +28,8 @@ function countArrangements(
 
   if (springs[springIdx] === '.') {
     // move to next non-operational spring
-    const nextSpringIdx = springs.findIndex(
-      (s, i) => i >= springIdx && s !== '.'
-    );
     return memoize(
-      countArrangements(
-        springs,
-        groups,
-        nextSpringIdx === -1 ? springs.length : nextSpringIdx,
-        groupIdx,
-        memo
-      )
+      countArrangements(springs, groups, springIdx + 1, groupIdx, memo)
     );
   }
 
@@ -47,9 +38,7 @@ function countArrangements(
       // remaining springs smaller than current group
       springs.length - springIdx < groups[groupIdx] ||
       // impossible to fit current group in current index
-      springs
-        .slice(springIdx, springIdx + groups[groupIdx])
-        .some((s) => s === '.') ||
+      springs.substring(springIdx, springIdx + groups[groupIdx]).match(/\./) ||
       springs[springIdx + groups[groupIdx]] === '#'
     ) {
       return memoize(0);
@@ -81,9 +70,7 @@ function countArrangements(
       // remaining springs smaller than current group
       springs.length - springIdx < groups[groupIdx] ||
       // impossible to fit current group in current index
-      springs
-        .slice(springIdx, springIdx + groups[groupIdx])
-        .some((s) => s === '.') ||
+      springs.substring(springIdx, springIdx + groups[groupIdx]).match(/\./) ||
       springs[springIdx + groups[groupIdx]] === '#'
     ) {
       return memoize(result);
@@ -107,7 +94,7 @@ function solve(input, nCopies) {
   let sum = 0;
   for (const line of input.split('\n')) {
     let [springs, groups] = line.split(' ');
-    springs = Array(nCopies).fill(springs).join('?').split('');
+    springs = Array(nCopies).fill(springs.replace(/\.\.+/g, '.')).join('?');
     groups = Array(nCopies).fill(groups).join(',').split(',').map(Number);
 
     const nArrangements = countArrangements(springs, groups);
