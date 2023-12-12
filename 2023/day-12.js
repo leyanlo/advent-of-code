@@ -95,7 +95,7 @@ function solve(input, nCopies) {
   for (const line of input.split('\n')) {
     let [springs, groups] = line.split(' ');
     springs = Array(nCopies).fill(springs.replace(/\.\.+/g, '.')).join('?');
-    groups = Array(nCopies).fill(groups).join(',').split(',').map(Number);
+    groups = Array(nCopies).fill(groups.split(',')).flat().map(Number);
 
     const nArrangements = countArrangements(springs, groups);
     sum += nArrangements;
