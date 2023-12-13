@@ -1,5 +1,4 @@
-require = require('esm')(module);
-const $C = require('js-combinatorics');
+import * as $C from 'js-combinatorics';
 
 function getParamsAndOpcode(n) {
   const paddedN = ('' + n).padStart(5, '0');

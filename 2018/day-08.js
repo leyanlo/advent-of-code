@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-08-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-08-input.txt', 'utf8').trimEnd();
 
 function process(tree, i, entries, values) {
   const nChildren = tree[i++];

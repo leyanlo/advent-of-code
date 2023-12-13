@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-14-input.txt', 'utf8').trimEnd();
 
 function solve(input, nSteps) {
   const [template, rules] = input.split('\n\n');

@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-24-input.txt', 'utf8');
+const input = readFileSync('./day-24-input.txt', 'utf8');
 
 const dirs = [
   [-1, 0],

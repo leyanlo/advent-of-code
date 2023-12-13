@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-25-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 
 function getDist(p1, p2) {
   return p1.map((_, i) => Math.abs(p1[i] - p2[i])).reduce((acc, n) => acc + n);

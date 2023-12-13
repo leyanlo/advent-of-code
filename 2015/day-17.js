@@ -1,9 +1,8 @@
-require = require('esm')(module);
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const $C = require('js-combinatorics');
+import * as $C from 'js-combinatorics';
 
-const input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd(),
+const input = readFileSync('./day-17-input.txt', 'utf8').trimEnd(),
   total = 150;
 
 function solve(input) {

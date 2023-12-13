@@ -1,9 +1,8 @@
-require = require('esm')(module);
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const intcode = require('./intcode.js');
+import intcode from './intcode.js';
 
-const input = fs.readFileSync('./day-23-input.txt', 'utf8');
+const input = readFileSync('./day-23-input.txt', 'utf8');
 
 function solve() {
   const arr = input.split(',').map(Number);

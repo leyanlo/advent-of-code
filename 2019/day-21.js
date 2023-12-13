@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-21-input.txt', 'utf8');
+const input = readFileSync('./day-21-input.txt', 'utf8');
 
 function getModesAndOpcode(n) {
   const paddedN = ('' + n).padStart(5, '0');

@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-15-input.txt', 'utf8').trimEnd(),
+const input = readFileSync('./day-15-input.txt', 'utf8').trimEnd(),
   targetY = 2000000,
   maxCoord = 4000000;
 

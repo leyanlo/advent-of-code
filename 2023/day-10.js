@@ -1,4 +1,4 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
 const DIR = {
   U: [-1, 0],
@@ -7,7 +7,7 @@ const DIR = {
   L: [0, -1],
 };
 
-const input = fs.readFileSync('./day-10-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-10-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   let start;

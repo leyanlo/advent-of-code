@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-17-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-17-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const clayCoords = input.split('\n').map((row) =>

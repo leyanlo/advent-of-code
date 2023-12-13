@@ -6,7 +6,7 @@ function getModesAndOpcode(n) {
   ];
 }
 
-module.exports = function* intcode(arr) {
+export default function* intcode(arr) {
   let i = 0;
   let relativeBase = 0;
   let [modes, opcode] = getModesAndOpcode(arr[i]);
@@ -70,4 +70,4 @@ module.exports = function* intcode(arr) {
     [modes, opcode] = getModesAndOpcode(arr[i]);
   }
   return output;
-};
+}

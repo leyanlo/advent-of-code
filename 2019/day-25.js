@@ -1,13 +1,11 @@
-require = require('esm')(module);
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const prompt = require('prompt-sync')({
-  sigint: true,
-});
+import promptSync from 'prompt-sync';
+const prompt = promptSync({ sigint: true });
 
-const intcode = require('./intcode.js');
+import intcode from './intcode.js';
 
-const input = fs.readFileSync('./day-25-input.txt', 'utf8');
+const input = readFileSync('./day-25-input.txt', 'utf8');
 
 function getOutput(computer) {
   let nextChar = computer.next().value;

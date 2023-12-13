@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-08-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-08-input.txt', 'utf8').trimEnd();
 
 function gcd(...nums) {
   return nums.reduce((acc, n) => (!n ? acc : gcd(n, acc % n)));

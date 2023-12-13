@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-19-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-19-input.txt', 'utf8').trimEnd();
 
 const validChars = /[|\-+A-Z]/;
 

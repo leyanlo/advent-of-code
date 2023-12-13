@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-11-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-11-input.txt', 'utf8').trimEnd();
 
 const toNum = [...Array(26).keys()].reduce((acc, i) => {
   acc[String.fromCodePoint('a'.codePointAt(0) + i)] = i;

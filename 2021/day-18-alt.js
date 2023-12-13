@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-18-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-18-input.txt', 'utf8').trimEnd();
 
 function add(a, b) {
   return reduce(a.concat(b).map((el) => ({ n: el.n, depth: el.depth + 1 })));

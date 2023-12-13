@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-25-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 
 function toDec(str) {
   let n = 0;

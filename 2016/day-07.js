@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-07-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
 function hasAbba(str) {
   for (let i = 0; i <= str.length - 4; i++) {

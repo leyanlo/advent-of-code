@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-13-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-13-input.txt', 'utf8').trimEnd();
 
 function getCaughtMap(ranges, delay) {
   let caughtMap = ranges.map(() => false);

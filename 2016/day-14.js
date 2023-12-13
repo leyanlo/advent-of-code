@@ -1,7 +1,7 @@
-const crypto = require('crypto');
-const fs = require('fs');
+import crypto from 'crypto';
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-14-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-14-input.txt', 'utf8').trimEnd();
 
 function solve(input, part) {
   const triples = {

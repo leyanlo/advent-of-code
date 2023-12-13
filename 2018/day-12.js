@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-12-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-12-input.txt', 'utf8').trimEnd();
 
 function solve(input, generations) {
   let [state, rules] = input.replace(/\./g, ' ').split('\n\n');

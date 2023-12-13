@@ -1,11 +1,11 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
 var input = `#############
 #...........#
 ###B#C#B#D###
   #A#D#C#A#
   #########`;
-// var input = fs.readFileSync('./day-23-input.txt', 'utf8').trimEnd();
+// var input = readFileSync('./day-23-input.txt', 'utf8').trimEnd();
 
 const dirs = [
   [0, 1],
