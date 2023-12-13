@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 
 const input = readFileSync('./day-13-input.txt', 'utf8').trimEnd();
 
-function rotate(map) {
+function transpose(map) {
   return map[0].map((_, j) => map.map((_, i) => map[i][j]));
 }
 
@@ -41,7 +41,7 @@ function solve(input, maxErrors) {
   let sum = 0;
   for (let map of input.split('\n\n')) {
     map = map.split('\n').map((row) => row.split(''));
-    let rot = rotate(map);
+    let rot = transpose(map);
 
     map = map.map((row) =>
       parseInt(row.map((char) => +(char === '#')).join(''), 2)
