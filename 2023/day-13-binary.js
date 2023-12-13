@@ -7,7 +7,6 @@ function rotate(map) {
 }
 
 function getErrors(a, b) {
-  [a, b] = [a, b].sort((a, b) => b - a);
   let n = a ^ b;
   let count = 0;
   while (n) {
