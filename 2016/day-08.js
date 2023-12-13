@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-08-input.txt', 'utf8').trimEnd(),
+const input = readFileSync('./day-08-input.txt', 'utf8').trimEnd(),
   [width, height] = [50, 6];
 
 const screen = [...Array(height)].map(() => [...Array(width)].fill(0));

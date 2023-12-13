@@ -1,9 +1,8 @@
-require = require('esm')(module);
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const $C = require('js-combinatorics');
+import * as $C from 'js-combinatorics';
 
-const input = fs.readFileSync('./day-09-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-09-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const matrix = {};

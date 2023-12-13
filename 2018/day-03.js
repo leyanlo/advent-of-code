@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-03-input.txt', 'utf8');
+const input = readFileSync('./day-03-input.txt', 'utf8');
 
 // const input = `#1 @ 1,3: 4x4
 // #2 @ 3,1: 4x4

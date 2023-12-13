@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-24-input.txt', 'utf8').trimEnd();
 const debug = false;
 
 function logArmies(armies) {

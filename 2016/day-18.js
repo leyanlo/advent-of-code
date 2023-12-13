@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-18-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-18-input.txt', 'utf8').trimEnd();
 function solve(input, nRows) {
   const map = [input.split('').map((char) => +(char === '^'))];
   for (let i = 1; i < nRows; i++) {

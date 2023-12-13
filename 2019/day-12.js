@@ -1,4 +1,3 @@
-require = require('esm')(module);
 
 const inputIdx = 2;
 

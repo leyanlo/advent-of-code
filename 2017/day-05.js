@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-05-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-05-input.txt', 'utf8').trimEnd();
 
 function solve(input, part) {
   const offsets = input.split('\n').map(Number);

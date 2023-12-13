@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-02-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-02-input.txt', 'utf8').trimEnd();
 
 const outcomeScore = {
   A: { X: 3, Y: 6, Z: 0 },

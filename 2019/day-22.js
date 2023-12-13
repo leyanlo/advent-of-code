@@ -1,6 +1,6 @@
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const input = fs.readFileSync('./day-22-input.txt', 'utf8');
+const input = readFileSync('./day-22-input.txt', 'utf8');
 
 function solve1(input) {
   let deck = [...Array(10007).keys()];

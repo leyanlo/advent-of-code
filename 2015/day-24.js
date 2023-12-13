@@ -1,9 +1,8 @@
-require = require('esm')(module);
-const fs = require('fs');
+import { readFileSync } from 'node:fs';
 
-const $C = require('js-combinatorics');
+import * as $C from 'js-combinatorics';
 
-const input = fs.readFileSync('./day-24-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-24-input.txt', 'utf8').trimEnd();
 
 function solve(input, part) {
   const weights = input.split('\n').map(Number);
