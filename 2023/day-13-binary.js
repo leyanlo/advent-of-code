@@ -9,10 +9,9 @@ function rotate(map) {
 function getErrors(a, b) {
   let n = a ^ b;
   let count = 0;
-  while (n) {
+  do {
     count += n & 1;
-    n >>= 1;
-  }
+  } while ((n >>= 1));
   return count;
 }
 
