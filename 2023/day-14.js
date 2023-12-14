@@ -12,8 +12,7 @@ function move(map) {
       let i2 = i;
       while (map[i2][j] === 'O' && map[i2 - 1]?.[j] === '.') {
         map[i2][j] = '.';
-        i2--;
-        map[i2][j] = 'O';
+        map[--i2][j] = 'O';
       }
     }
   }
