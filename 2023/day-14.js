@@ -51,6 +51,6 @@ function solve(input) {
     period = Math.max(period, idx - scores.lastIndexOf(scores[idx], idx - 1));
   }
   const remainder = 1000000000 % period;
-  console.log(scores[1000 - 1 - period - (1000 % period) + remainder]);
+  console.log(scores.at(-1 - period - (scores.length % period) + remainder));
 }
 solve(input);
