@@ -34,22 +34,29 @@ function solve(input) {
   let map = input.split('\n').map((line) => line.split(''));
 
   const scores = [];
-  // should be periodic by 1000 cycles
-  for (let i = 0; i < 1000 * 4; i++) {
+  let period;
+  let i = 0;
+  outer: do {
     move(map);
     i === 0 && console.log(score(map));
     map = rotate(map);
     if ((i + 1) % 4 === 0) {
-      scores.push(score(map));
+      const s = score(map);
+      const lastIdx = scores.lastIndexOf(s, scores.length - 1);
+      scores.push(s);
+      if (lastIdx !== -1) {
+        const maybePeriod = scores.length - 1 - lastIdx;
+        for (let j = 0; j < maybePeriod; j++) {
+          if (scores.at(-2 - j) !== scores.at(-2 - j - maybePeriod)) {
+            continue outer;
+          }
+        }
+        period = maybePeriod;
+        break;
+      }
     }
-  }
+  } while (++i);
 
-  let period = 0;
-  // check the last 10 scores (largest period found should be correct)
-  for (let i = 0; i < 10; i++) {
-    const idx = scores.length - 1 - i;
-    period = Math.max(period, idx - scores.lastIndexOf(scores[idx], idx - 1));
-  }
   const remainder = 1000000000 % period;
   console.log(scores.at(-1 - period - (scores.length % period) + remainder));
 }
