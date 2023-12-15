@@ -1,28 +1,10 @@
 import { readFileSync } from 'node:fs';
 
-var input = `rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7`;
-var input = readFileSync('./day-15-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-15-input.txt', 'utf8').trimEnd();
 
-// function solve(input) {
-//   console.log(input);
-//   const cmds = input.split(',');
-//   let sum = 0;
-//   for (let cmd of cmds) {
-//     let val = 0;
-//     for (const char of cmd) {
-//       val += char.codePointAt(0);
-//       val *= 17;
-//       val %= 256;
-//     }
-//     sum += val;
-//   }
-//   console.log(sum);
-// }
-// solve(input);
-
-function hash(key) {
+function hash(str) {
   let val = 0;
-  for (const char of key) {
+  for (const char of str) {
     val += char.codePointAt(0);
     val *= 17;
     val %= 256;
@@ -30,40 +12,35 @@ function hash(key) {
   return val;
 }
 
-function solve(input) {
-  console.log(input);
-  const map = {};
-  const cmds = input.split(',');
-  for (const cmd of cmds) {
-    const op = cmd.match(/[-=]/g)[0];
-    let [key, val] = cmd.split(op);
-    val = +val;
-    const h = hash(key);
-    const l = { key, val };
+function solve1(input) {
+  let sum = 0;
+  for (const step of input.split(',')) {
+    sum += hash(step);
+  }
+  console.log(sum);
+}
+solve1(input);
+
+function solve2(input) {
+  const map = [...Array(256)].map(() => ({}));
+  for (const step of input.split(',')) {
+    let [, label, op, len] = step.match(/(\w+)([-=])(\d*)/);
+    len = +len;
+    const box = hash(label);
     if (op === '=') {
-      map[h] ??= [];
-      const i = map[h].findIndex((lens) => lens.key === key);
-      if (i !== -1) {
-        map[h][i] = l;
-      } else {
-        map[h].push(l);
-      }
+      map[box][label] = len;
     } else {
-      const i = map[h]?.findIndex((lens) => lens.key === key);
-      if (map[h] && i !== -1) {
-        map[h].splice(i, 1);
-      }
+      delete map[box][label];
     }
   }
-  console.log(map);
 
   let sum = 0;
-  for (let box in map) {
-    box = +box;
-    for (let slot = 0; slot < map[box].length; slot++) {
-      sum += (box + 1) * (slot + 1) * map[box][slot].val;
+  for (let box = 0; box < map.length; box++) {
+    const lengths = Object.values(map[box]);
+    for (let slot = 0; slot < lengths.length; slot++) {
+      sum += (box + 1) * (slot + 1) * lengths[slot];
     }
   }
   console.log(sum);
 }
-solve(input);
+solve2(input);
