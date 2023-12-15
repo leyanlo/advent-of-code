@@ -1,5 +1,6 @@
-import crypto from 'crypto';
 import { readFileSync } from 'node:fs';
+
+import crypto from 'crypto';
 
 const input = readFileSync('./day-14-input.txt', 'utf8').trimEnd();
 
