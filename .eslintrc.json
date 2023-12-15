@@ -7,18 +7,15 @@
     "es2020": true,
     "node": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "prettier"],
+  "plugins": ["simple-import-sort"],
   "rules": {
-    "import/order": ["error", { "newlines-between": "always" }],
     "no-constant-condition": ["error", { "checkLoops": false }],
     "no-global-assign": ["error", { "exceptions": ["require"] }],
     "no-redeclare": "off",
     "no-regex-spaces": "off",
-    "no-unused-vars": "off"
+    "no-unused-vars": "off",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   }
 }
