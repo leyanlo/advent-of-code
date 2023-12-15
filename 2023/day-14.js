@@ -33,31 +33,25 @@ function score(map) {
 function solve(input) {
   let map = input.split('\n').map((line) => line.split(''));
 
-  const scores = [];
+  const seen = [];
   let period;
   let i = 0;
-  outer: do {
+  do {
     move(map);
     i === 0 && console.log(score(map));
     map = rotate(map);
     if ((i + 1) % 4 === 0) {
-      const s = score(map);
-      const lastIdx = scores.lastIndexOf(s, scores.length - 1);
-      scores.push(s);
+      const hash = JSON.stringify(map);
+      const lastIdx = seen.lastIndexOf(hash, seen.length - 1);
       if (lastIdx !== -1) {
-        const maybePeriod = scores.length - 1 - lastIdx;
-        for (let j = 0; j < maybePeriod; j++) {
-          if (scores.at(-2 - j) !== scores.at(-2 - j - maybePeriod)) {
-            continue outer;
-          }
-        }
-        period = maybePeriod;
+        period = seen.length - lastIdx;
         break;
       }
+      seen.push(hash);
     }
   } while (++i);
 
-  const remainder = 1000000000 % period;
-  console.log(scores.at(-1 - period - (scores.length % period) + remainder));
+  const offset = (1000000000 - seen.length) % period;
+  console.log(score(JSON.parse(seen.at(-1 + (offset && offset - period)))));
 }
 solve(input);
