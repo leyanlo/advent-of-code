@@ -1,9 +1,10 @@
 import { readFileSync } from 'node:fs';
 
 import promptSync from 'prompt-sync';
-const prompt = promptSync({ sigint: true });
 
 import intcode from './intcode.js';
+
+const prompt = promptSync({ sigint: true });
 
 const input = readFileSync('./day-25-input.txt', 'utf8');
 

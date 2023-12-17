@@ -1,5 +1,7 @@
 import { readFileSync } from 'node:fs';
 
+import { Heap } from 'heap-js';
+
 const input = readFileSync('./day-17-input.txt', 'utf8').trimEnd();
 
 const DIR = {
@@ -12,13 +14,15 @@ const DIR = {
 function solve(input, minMomentum, maxMomentum) {
   const map = input.split('\n').map((line) => line.split('').map(Number));
 
-  const queue = [
-    [1, 0, 0, DIR.D, 1],
-    [0, 1, 0, DIR.R, 1],
-  ];
+  const heap = new Heap((a, b) => a.heat - b.heat);
+
+  heap.init([
+    { i: 1, j: 0, heat: 0, dir: DIR.D, momentum: 1 },
+    { i: 0, j: 1, heat: 0, dir: DIR.R, momentum: 1 },
+  ]);
   const seen = map.map((row) => row.map(() => ({})));
-  while (queue.length) {
-    const [i, j, heat, dir, momentum] = queue.shift();
+  while (heap.length) {
+    const { i, j, heat, dir, momentum } = heap.pop();
     const key = dir.concat(momentum).join();
     if (!map[i]?.[j] || seen[i][j][key]) {
       continue;
@@ -52,15 +56,14 @@ function solve(input, minMomentum, maxMomentum) {
     }
     for (const nextDir of nextDirs) {
       const [di, dj] = nextDir;
-      queue.push([
-        i + di,
-        j + dj,
-        heat + map[i][j],
-        nextDir,
-        1 + +(dir === nextDir) * momentum,
-      ]);
+      heap.push({
+        i: i + di,
+        j: j + dj,
+        heat: heat + map[i][j],
+        dir: nextDir,
+        momentum: 1 + +(dir === nextDir) * momentum,
+      });
     }
-    queue.sort((a, b) => a[2] - b[2]);
   }
 }
 
