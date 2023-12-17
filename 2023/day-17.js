@@ -13,14 +13,13 @@ function solve(input, minMomentum, maxMomentum) {
   const map = input.split('\n').map((line) => line.split('').map(Number));
 
   const queue = [
-    [1, 0, 0, ['D'], 1],
-    [0, 1, 0, ['R'], 1],
+    [1, 0, 0, DIRS.D, 1],
+    [0, 1, 0, DIRS.R, 1],
   ];
   const seen = map.map((row) => row.map(() => ({})));
   while (queue.length) {
-    const [i, j, heat, dirs, momentum] = queue.shift();
-    const d = dirs.at(-1);
-    const key = d + momentum;
+    const [i, j, heat, dir, momentum] = queue.shift();
+    const key = dir.concat(momentum).join();
     if (!map[i]?.[j] || seen[i][j][key]) {
       continue;
     }
@@ -37,31 +36,31 @@ function solve(input, minMomentum, maxMomentum) {
     }
 
     const nextDirs = [];
-    switch (momentum >= minMomentum && d) {
-      case 'U':
-      case 'D':
-        nextDirs.push('L');
-        nextDirs.push('R');
+    switch (momentum >= minMomentum && dir) {
+      case DIRS.U:
+      case DIRS.D:
+        nextDirs.push(DIRS.L);
+        nextDirs.push(DIRS.R);
         break;
-      case 'L':
-      case 'R':
-        nextDirs.push('U');
-        nextDirs.push('D');
+      case DIRS.L:
+      case DIRS.R:
+        nextDirs.push(DIRS.U);
+        nextDirs.push(DIRS.D);
     }
     if (momentum < maxMomentum) {
-      nextDirs.push(d);
+      nextDirs.push(dir);
     }
-    for (const dir of nextDirs) {
-      const [di, dj] = DIRS[dir];
+    for (const nextDir of nextDirs) {
+      const [di, dj] = nextDir;
       queue.push([
         i + di,
         j + dj,
         heat + map[i][j],
-        dirs.concat(dir),
-        1 + +(dir === d) * momentum,
+        nextDir,
+        1 + +(dir === nextDir) * momentum,
       ]);
     }
-    queue.sort((a, b) => a[2] - b[2] || b[0] + b[1] - a[0] - a[1]);
+    queue.sort((a, b) => a[2] - b[2]);
   }
 }
 
