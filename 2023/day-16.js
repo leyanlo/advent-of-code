@@ -2,89 +2,83 @@ import { readFileSync } from 'node:fs';
 
 const input = readFileSync('./day-16-input.txt', 'utf8').trimEnd();
 
+const DIR = {
+  U: [-1, 0],
+  D: [1, 0],
+  L: [0, -1],
+  R: [0, 1],
+};
+
+const NEXT_DIRS = {
+  '.': {
+    [DIR.U]: [DIR.U],
+    [DIR.D]: [DIR.D],
+    [DIR.L]: [DIR.L],
+    [DIR.R]: [DIR.R],
+  },
+  '#': {
+    [DIR.U]: [],
+    [DIR.D]: [],
+    [DIR.L]: [],
+    [DIR.R]: [],
+  },
+  '\\': {
+    [DIR.U]: [DIR.L],
+    [DIR.D]: [DIR.R],
+    [DIR.L]: [DIR.U],
+    [DIR.R]: [DIR.D],
+  },
+  '/': {
+    [DIR.U]: [DIR.R],
+    [DIR.D]: [DIR.L],
+    [DIR.L]: [DIR.D],
+    [DIR.R]: [DIR.U],
+  },
+  '|': {
+    [DIR.U]: [DIR.U],
+    [DIR.D]: [DIR.D],
+    [DIR.L]: [DIR.U, DIR.D],
+    [DIR.R]: [DIR.U, DIR.D],
+  },
+  '-': {
+    [DIR.U]: [DIR.L, DIR.R],
+    [DIR.D]: [DIR.L, DIR.R],
+    [DIR.L]: [DIR.L],
+    [DIR.R]: [DIR.R],
+  },
+};
+
 function solve(input) {
   const map = input.split('\n').map((line) => line.split(''));
 
   const queues = [];
   for (let i = 0; i < map.length; i++) {
-    queues.push([[i, 0, 0, 1]]);
-    queues.push([[i, map[0].length - 1, 0, -1]]);
+    queues.push([[i, 0, DIR.R]]);
+    queues.push([[i, map[0].length - 1, DIR.L]]);
   }
   for (let j = 0; j < map[0].length; j++) {
-    queues.push([[0, j, 1, 0]]);
-    queues.push([[map.length - 1, j, -1, -0]]);
+    queues.push([[0, j, DIR.D]]);
+    queues.push([[map.length - 1, j, DIR.U]]);
   }
 
   let max = 0;
   let part1;
   for (const queue of queues) {
-    const beam = map.map((row) => row.map(() => []));
+    const seen = map.map((row) => row.map(() => []));
     while (queue.length) {
-      let [i, j, di, dj] = queue.shift();
-      switch (!beam[i]?.[j]?.includes([di, dj].join()) && map[i]?.[j]) {
-        case '.':
-          queue.push([i + di, j + dj, di, dj]);
-          beam[i][j].push([di, dj].join());
-          break;
-        case '#':
-          break;
-        case '\\':
-          beam[i][j].push([di, dj].join());
-          if (di === 1) {
-            di = 0;
-            dj = 1;
-          } else if (di === -1) {
-            di = 0;
-            dj = -1;
-          } else if (dj === 1) {
-            di = 1;
-            dj = 0;
-          } else {
-            di = -1;
-            dj = 0;
-          }
-          queue.push([i + di, j + dj, di, dj]);
-          break;
-        case '/':
-          beam[i][j].push([di, dj].join());
-          if (di === 1) {
-            di = 0;
-            dj = -1;
-          } else if (di === -1) {
-            di = 0;
-            dj = 1;
-          } else if (dj === 1) {
-            di = -1;
-            dj = 0;
-          } else {
-            di = 1;
-            dj = 0;
-          }
-          queue.push([i + di, j + dj, di, dj]);
-          break;
-        case '|':
-          beam[i][j].push([di, dj].join());
-          if (dj) {
-            queue.push([i + 1, j, 1, 0]);
-            queue.push([i - 1, j, -1, 0]);
-          } else {
-            queue.push([i + di, j + dj, di, dj]);
-          }
-          break;
-        case '-':
-          beam[i][j].push([di, dj].join());
-          if (di) {
-            queue.push([i, j + 1, 0, 1]);
-            queue.push([i, j - 1, 0, -1]);
-          } else {
-            queue.push([i + di, j + dj, di, dj]);
-          }
-          break;
+      let [i, j, dir] = queue.shift();
+      if (!map[i]?.[j] || seen[i][j].includes(dir)) continue;
+
+      seen[i][j].push(dir);
+      const nextDirs = NEXT_DIRS[map[i][j]][dir];
+      for (const nextDir of nextDirs) {
+        const [di, dj] = nextDir;
+        queue.push([i + di, j + dj, nextDir]);
       }
     }
     max = Math.max(
       max,
-      beam
+      seen
         .map((row) => row.map((b) => +!!b.length))
         .flat()
         .reduce((acc, n) => acc + n),
