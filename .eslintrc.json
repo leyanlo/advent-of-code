@@ -4,12 +4,14 @@
     "sourceType": "module"
   },
   "env": {
-    "es2020": true,
-    "node": true
+    "es6": true
   },
   "extends": ["eslint:recommended", "prettier"],
-  "plugins": ["simple-import-sort"],
+  "plugins": ["simple-import-sort", "import"],
   "rules": {
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
     "no-constant-condition": ["error", { "checkLoops": false }],
     "no-global-assign": ["error", { "exceptions": ["require"] }],
     "no-redeclare": "off",
