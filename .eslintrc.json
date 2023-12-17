@@ -1,11 +1,11 @@
 {
   "parserOptions": {
-    "ecmaVersion": 2021,
-    "sourceType": "module"
+    "ecmaVersion": 2021, // module support
+    "sourceType": "module" // keyword import
   },
   "env": {
-    "es6": true,
-    "node": true
+    "es2021": true, // Set not defined
+    "node": true // console not defined
   },
   "extends": ["eslint:recommended", "prettier"],
   "plugins": ["simple-import-sort", "import"],
