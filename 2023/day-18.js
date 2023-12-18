@@ -33,8 +33,5 @@ function solve(input, part) {
 
   return console.log(area + perimeter / 2 + 1);
 }
-
-console.time();
 solve(input, 1);
 solve(input, 2);
-console.timeEnd();
