@@ -12,8 +12,7 @@ const DIR = {
 function solve(input, part) {
   let r = 0;
   let c = 0;
-  let area = 0;
-  let perimeter = 0;
+  let area = 1;
   for (const line of input.split('\n')) {
     let [d, n, color] = line.split(/[ ()]+/g);
     n = +n;
@@ -27,11 +26,10 @@ function solve(input, part) {
     const c0 = c;
     r += dr * n;
     c += dc * n;
-    area += (r * c0 - r0 * c) / 2;
-    perimeter += n;
+    area += (r * c0 - r0 * c + n) / 2;
   }
 
-  return console.log(area + perimeter / 2 + 1);
+  return console.log(area);
 }
 solve(input, 1);
 solve(input, 2);
