@@ -66,11 +66,5 @@ function solve(input, minMomentum, maxMomentum) {
     }
   }
 }
-
-console.time();
 solve(input, 0, 3);
-console.timeEnd();
-
-console.time();
 solve(input, 4, 10);
-console.timeEnd();
