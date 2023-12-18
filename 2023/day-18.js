@@ -15,11 +15,11 @@ function solve(input, part) {
   let area = 0;
   let perimeter = 0;
   for (const line of input.split('\n')) {
-    let [d, n, color] = line.split(/[ ()#]+/g);
+    let [d, n, color] = line.split(/[ ()]+/g);
     n = +n;
     if (part === 2) {
       d = ['R', 'D', 'L', 'U'][color.at(-1)];
-      n = parseInt(color.slice(0, -1), 16);
+      n = parseInt(color.slice(1, -1), 16);
     }
 
     const [dr, dc] = DIR[d];
