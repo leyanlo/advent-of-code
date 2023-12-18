@@ -15,8 +15,7 @@ U 3 (#a77fa3)
 L 2 (#015232)
 U 2 (#7a21e3)`;
 var input = readFileSync('./day-18-input.txt', 'utf8').trimEnd();
-// 77300 wrong
-// 74074 correct
+// 112074045986829 correct
 
 const DIR = {
   U: [-1, 0],
@@ -37,71 +36,100 @@ function printMap(map, minR, maxR, minC, maxC) {
   console.log(lines.map((line) => line.join('')).join('\n'));
 }
 
+// function solve(input) {
+//   console.log(input);
+//   const map = { 0: { 0: 1 } };
+//
+//   let curr = [0, 0];
+//   for (const line of input.split('\n')) {
+//     let [d, n, color] = line.split(/[ ()]+/g);
+//     n = +n;
+//     console.log({ d, n, color });
+//     let [r, c] = curr;
+//     let [dr, dc] = DIR[d];
+//     for (let i = 0; i < n; i++) {
+//       r += dr;
+//       c += dc;
+//       map[r] ??= {};
+//       map[r][c] = 1;
+//     }
+//     curr = [r, c];
+//   }
+//   const minR = Math.min(...Object.keys(map).map(Number));
+//   const maxR = Math.max(...Object.keys(map).map(Number));
+//   const minC = Math.min(
+//     ...Object.keys(map)
+//       .map((r) => Math.min(...Object.keys(map[r]).map(Number)))
+//       .map(Number)
+//   );
+//   const maxC = Math.max(
+//     ...Object.keys(map)
+//       .map((r) => Math.max(...Object.keys(map[r]).map(Number)))
+//       .map(Number)
+//   );
+//   // printMap(map, minR, maxR, minC, maxC);
+//   console.log({ minR, maxR, minC, maxC });
+//
+//   const queue = [[1, 1]];
+//   const seen = {};
+//   while (queue.length) {
+//     const [r, c] = queue.pop();
+//     if (
+//       seen[r]?.[c] ||
+//       map[r][c] ||
+//       r < minR ||
+//       r > maxR ||
+//       c < minC ||
+//       c > maxC
+//     )
+//       continue;
+//     seen[r] ??= {};
+//     seen[r][c] = 1;
+//
+//     for (const [dr, dc] of Object.values(DIR)) {
+//       queue.push([r + dr, c + dc]);
+//     }
+//   }
+//
+//   let count = 0;
+//   // printMap(seen, minR, maxR, minC, maxC);
+//   console.log(
+//     Object.values(map)
+//       .map((row) => Object.values(row))
+//       .flat().length +
+//       Object.values(seen)
+//         .map((row) => Object.values(row))
+//         .flat().length
+//   );
+// }
+//
+// console.time();
+// solve(input);
+// console.timeEnd();
+
 function solve(input) {
   console.log(input);
-  const map = { 0: { 0: 1 } };
 
-  let curr = [0, 0];
+  let r = 0;
+  let c = 0;
+  let doubleArea = 0;
+  let perimeter = 0;
   for (const line of input.split('\n')) {
-    let [d, n, color] = line.split(/[ ()]+/g);
-    n = +n;
+    let [d, n, color] = line.split(/[ ()#]+/g);
+    d = ['R', 'D', 'L', 'U'][color.at(-1)];
+    n = parseInt(color.slice(0, -1), 16);
     console.log({ d, n, color });
-    let [r, c] = curr;
-    let [dr, dc] = DIR[d];
-    for (let i = 0; i < n; i++) {
-      r += dr;
-      c += dc;
-      map[r] ??= {};
-      map[r][c] = 1;
-    }
-    curr = [r, c];
-  }
-  const minR = Math.min(...Object.keys(map).map(Number));
-  const maxR = Math.max(...Object.keys(map).map(Number));
-  const minC = Math.min(
-    ...Object.keys(map)
-      .map((r) => Math.min(...Object.keys(map[r]).map(Number)))
-      .map(Number)
-  );
-  const maxC = Math.max(
-    ...Object.keys(map)
-      .map((r) => Math.max(...Object.keys(map[r]).map(Number)))
-      .map(Number)
-  );
-  // printMap(map, minR, maxR, minC, maxC);
-  console.log({ minR, maxR, minC, maxC });
 
-  const queue = [[1, 1]];
-  const seen = {};
-  while (queue.length) {
-    const [r, c] = queue.pop();
-    if (
-      seen[r]?.[c] ||
-      map[r][c] ||
-      r < minR ||
-      r > maxR ||
-      c < minC ||
-      c > maxC
-    )
-      continue;
-    seen[r] ??= {};
-    seen[r][c] = 1;
-
-    for (const [dr, dc] of Object.values(DIR)) {
-      queue.push([r + dr, c + dc]);
-    }
+    const [dr, dc] = DIR[d];
+    const r0 = r;
+    const c0 = c;
+    r += dr * n;
+    c += dc * n;
+    doubleArea += r * c0 - r0 * c;
+    perimeter += n;
   }
 
-  let count = 0;
-  // printMap(seen, minR, maxR, minC, maxC);
-  console.log(
-    Object.values(map)
-      .map((row) => Object.values(row))
-      .flat().length +
-      Object.values(seen)
-        .map((row) => Object.values(row))
-        .flat().length
-  );
+  return console.log(doubleArea / 2 + perimeter / 2 + 1);
 }
 
 console.time();
