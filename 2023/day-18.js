@@ -29,7 +29,7 @@ function solve(input, part) {
     area += (r * c0 - r0 * c + n) / 2;
   }
 
-  return console.log(area);
+  console.log(area);
 }
 solve(input, 1);
 solve(input, 2);
