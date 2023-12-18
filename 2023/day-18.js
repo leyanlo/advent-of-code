@@ -112,7 +112,7 @@ function solve(input) {
 
   let r = 0;
   let c = 0;
-  let doubleArea = 0;
+  let area = 0;
   let perimeter = 0;
   for (const line of input.split('\n')) {
     let [d, n, color] = line.split(/[ ()#]+/g);
@@ -125,11 +125,11 @@ function solve(input) {
     const c0 = c;
     r += dr * n;
     c += dc * n;
-    doubleArea += r * c0 - r0 * c;
+    area += (r * c0 - r0 * c) / 2;
     perimeter += n;
   }
 
-  return console.log(doubleArea / 2 + perimeter / 2 + 1);
+  return console.log(area + perimeter / 2 + 1);
 }
 
 console.time();
