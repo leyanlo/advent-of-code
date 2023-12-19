@@ -9,16 +9,20 @@ function solve1(input) {
   for (const line of workflows.split('\n')) {
     let [name, rules] = line.split(/[{}]/g);
     map[name] = (parts) => {
+      function next(target) {
+        return target === 'A' || (target !== 'R' && map[target](parts));
+      }
+
       for (const rule of rules.split(',')) {
         if (rule.includes(':')) {
           let [expr, target] = rule.split(':');
           let op = expr.match(/[\W]/g)[0];
           let [left, right] = expr.split(op);
           if (op === '>' ? parts[left] > +right : parts[left] < +right) {
-            return target === 'A' || (target !== 'R' && map[target](parts));
+            return next(target);
           }
         } else {
-          return rule === 'A' || (rule !== 'R' && map[rule](parts));
+          return next(rule);
         }
       }
     };
@@ -47,6 +51,16 @@ function solve2(input) {
   for (const line of workflows.split('\n')) {
     let [name, rules] = line.split(/[{}]/g);
     map[name] = (ranges) => {
+      function next(target, ranges) {
+        return target === 'A'
+          ? Object.values(ranges)
+              .map((r) => r.filter(Boolean).length)
+              .reduce((acc, n) => acc * n)
+          : target !== 'R'
+            ? map[target](ranges)
+            : 0;
+      }
+
       let sum = 0;
       for (const rule of rules.split(',')) {
         if (rule.includes(':')) {
@@ -62,22 +76,9 @@ function solve2(input) {
               ranges[part][i] = 0;
             }
           }
-          if (target === 'A') {
-            sum += Object.values(yesRanges)
-              .map((r) => r.filter(Boolean).length)
-              .reduce((acc, n) => acc * n);
-          } else if (target !== 'R') {
-            sum += map[target](yesRanges);
-          }
+          sum += next(target, yesRanges);
         } else {
-          const target = rule;
-          if (target === 'A') {
-            sum += Object.values(ranges)
-              .map((r) => r.filter(Boolean).length)
-              .reduce((acc, n) => acc * n);
-          } else if (target !== 'R') {
-            sum += map[target](ranges);
-          }
+          sum += next(rule, ranges);
         }
       }
       return sum;
