@@ -28,20 +28,20 @@
     };
 
     async function solve(input, part) {
-      //       input = `R 6 (#70c710)
-      // D 5 (#0dc571)
-      // L 2 (#5713f0)
-      // D 2 (#d2c081)
-      // R 2 (#59c680)
-      // D 2 (#411b91)
-      // L 5 (#8ceee2)
-      // U 2 (#caa173)
-      // L 1 (#1b58a2)
-      // U 2 (#caa171)
-      // R 2 (#7807d2)
-      // U 3 (#a77fa3)
-      // L 2 (#015232)
-      // U 2 (#7a21e3)`;
+      input = `R 6 (#70c710)
+D 5 (#0dc571)
+L 2 (#5713f0)
+D 2 (#d2c081)
+R 2 (#59c680)
+D 2 (#411b91)
+L 5 (#8ceee2)
+U 2 (#caa173)
+L 1 (#1b58a2)
+U 2 (#caa171)
+R 2 (#7807d2)
+U 3 (#a77fa3)
+L 2 (#015232)
+U 2 (#7a21e3)`;
 
       const EL = {
         svg: window[`part${part}`],
@@ -125,7 +125,7 @@
           };stroke:#cccccc;stroke-width:${part === 1 ? '.1' : '1000'}`
         );
         EL.svgPolygons.appendChild(triangleEl);
-        await new Promise((r) => setTimeout(r, 10000 / lines.length));
+        await new Promise((r) => setTimeout(r, 5000 / lines.length));
       }
 
       EL.ans.textContent = area;
@@ -145,7 +145,7 @@
     Answer:
     <span id="part1ans"></span>
   </p>
-  <svg xmlns="http://www.w3.org/2000/svg" id="part1" width="480px">
+  <svg xmlns="http://www.w3.org/2000/svg" id="part1" width="240px">
     <g id="part1polygons"></g>
     <polyline
       id="part1line"
