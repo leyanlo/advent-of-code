@@ -17,7 +17,7 @@ hdj{m>838:A,pv}
 {x=2036,m=264,a=79,s=2244}
 {x=2461,m=1339,a=466,s=291}
 {x=2127,m=1623,a=2188,s=1013}`;
-// var input = readFileSync('./day-19-input.txt', 'utf8').trimEnd();
+var input = readFileSync('./day-19-input.txt', 'utf8').trimEnd();
 
 // function solve(input) {
 //   console.log(input);
@@ -66,6 +66,28 @@ hdj{m>838:A,pv}
 // }
 // solve(input);
 
+function getCombos(conditions) {
+  const ranges = {
+    x: Array(4000).fill(1),
+    m: Array(4000).fill(1),
+    a: Array(4000).fill(1),
+    s: Array(4000).fill(1),
+  };
+  for (const { part, op, val } of conditions) {
+    for (let i = 0; i < 4000; i++) {
+      if ((op === '>' && i + 1 <= val) || (op === '<' && i + 1) >= val) {
+        ranges[part][i] = 0;
+      }
+      if ((op === '>' && i + 1 <= val) || i + 1 >= val) {
+        ranges[part][i] = 0;
+      }
+    }
+  }
+  return Object.values(ranges)
+    .map((r) => r.filter(Boolean).length)
+    .reduce((acc, n) => acc * n);
+}
+
 function solve2(input) {
   console.log(input);
   let [workflows, ratings] = input.split('\n\n');
@@ -73,7 +95,7 @@ function solve2(input) {
   const map = {};
   for (const line of workflows.split('\n')) {
     let [name, rules] = line.split(/[{}]/g);
-    map[name] = (ranges) => {
+    map[name] = (conditions = [], path = ['in']) => {
       let sum = 0;
       for (const rule of rules.split(',')) {
         if (rule.includes(':')) {
@@ -81,29 +103,34 @@ function solve2(input) {
           let op = expr.match(/[\W]/g)[0];
           let [part, val] = expr.split(op);
           val = +val;
-          const yesRanges = structuredClone(ranges);
-          for (let i = 0; i < 4000; i++) {
-            if ((op === '>' && i + 1 <= val) || i + 1 >= val) {
-              yesRanges[part][i] = 0;
-            } else {
-              ranges[part][i] = 0;
-            }
-          }
+          const yesConditions = conditions.concat({ part, op, val });
+          const yesPath = path.concat(target);
+          conditions = conditions.concat({
+            part,
+            op: op === '<' ? '>' : '<',
+            val: op === '<' ? val - 1 : val + 1,
+          });
           if (target === 'A') {
-            sum += Object.values(yesRanges)
-              .map((r) => r.filter(Boolean).length)
-              .reduce((acc, n) => acc * n);
+            const combos = getCombos(yesConditions);
+            if (combos) {
+              console.log(combos, yesPath, yesConditions);
+              debugger;
+            }
+            sum += combos;
           } else if (target !== 'R') {
-            sum += map[target](yesRanges);
+            sum += map[target](yesConditions, yesPath);
           }
         } else {
           const target = rule;
           if (target === 'A') {
-            sum += Object.values(ranges)
-              .map((r) => r.filter(Boolean).length)
-              .reduce((acc, n) => acc * n);
+            const combos = getCombos(conditions);
+            if (combos) {
+              console.log(combos, path, conditions);
+              debugger;
+            }
+            sum += combos;
           } else if (target !== 'R') {
-            sum += map[target](ranges);
+            sum += map[target](conditions, path);
           }
         }
       }
@@ -111,13 +138,7 @@ function solve2(input) {
     };
   }
 
-  const ranges = {
-    x: Array(4000).fill(1),
-    m: Array(4000).fill(1),
-    a: Array(4000).fill(1),
-    s: Array(4000).fill(1),
-  };
-  console.log(map.in(ranges));
+  console.log(map.in());
 
   // expected: 167409079868000
   // actual: 117623085000000
