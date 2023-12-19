@@ -15,10 +15,10 @@ function solve1(input) {
           let op = expr.match(/[\W]/g)[0];
           let [left, right] = expr.split(op);
           if (op === '>' ? parts[left] > +right : parts[left] < +right) {
-            return target;
+            return target === 'A' || (target !== 'R' && map[target](parts));
           }
         } else {
-          return rule;
+          return rule === 'A' || (rule !== 'R' && map[rule](parts));
         }
       }
     };
@@ -32,12 +32,7 @@ function solve1(input) {
       parts[words[i]] = +words[i + 1];
     }
 
-    let curr = 'in';
-    while (curr !== 'A' && curr !== 'R') {
-      curr = map[curr](parts);
-    }
-
-    if (curr === 'A') {
+    if (map.in(parts)) {
       sum += Object.values(parts).reduce((acc, n) => acc + n);
     }
   }
