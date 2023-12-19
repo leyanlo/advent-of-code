@@ -9,7 +9,7 @@ function solve1(input) {
   for (const line of workflows.split('\n')) {
     let [name, rules] = line.split(/[{}]/g);
     map[name] = (parts) => {
-      function next(target) {
+      function isAccepted(target) {
         return target === 'A' || (target !== 'R' && map[target](parts));
       }
 
@@ -19,10 +19,10 @@ function solve1(input) {
           let op = expr.match(/[\W]/g)[0];
           let [left, right] = expr.split(op);
           if (op === '>' ? parts[left] > +right : parts[left] < +right) {
-            return next(target);
+            return isAccepted(target);
           }
         } else {
-          return next(rule);
+          return isAccepted(rule);
         }
       }
     };
@@ -51,7 +51,7 @@ function solve2(input) {
   for (const line of workflows.split('\n')) {
     let [name, rules] = line.split(/[{}]/g);
     map[name] = (ranges) => {
-      function next(target, ranges) {
+      function getCombos(target, ranges) {
         return target === 'A'
           ? Object.values(ranges)
               .map((r) => r.filter(Boolean).length)
@@ -76,9 +76,9 @@ function solve2(input) {
               ranges[part][i] = 0;
             }
           }
-          sum += next(target, yesRanges);
+          sum += getCombos(target, yesRanges);
         } else {
-          sum += next(rule, ranges);
+          sum += getCombos(rule, ranges);
         }
       }
       return sum;
