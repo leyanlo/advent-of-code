@@ -1,0 +1,169 @@
+<html lang="en">
+  <style>
+    body {
+      background: #0f0f23;
+      color: #cccccc;
+      font-family: 'Source Code Pro', monospace;
+      font-weight: 300;
+      font-size: 14pt;
+      min-width: 60em;
+    }
+
+    h1,
+    h2 {
+      font-size: 1em;
+      font-weight: normal;
+      color: #ffffff;
+      margin-top: 1em;
+      margin-bottom: 1em;
+      white-space: nowrap;
+    }
+  </style>
+  <script>
+    const DIR = {
+      U: [-1, 0],
+      D: [1, 0],
+      L: [0, -1],
+      R: [0, 1],
+    };
+
+    async function solve(input, part) {
+      //       input = `R 6 (#70c710)
+      // D 5 (#0dc571)
+      // L 2 (#5713f0)
+      // D 2 (#d2c081)
+      // R 2 (#59c680)
+      // D 2 (#411b91)
+      // L 5 (#8ceee2)
+      // U 2 (#caa173)
+      // L 1 (#1b58a2)
+      // U 2 (#caa171)
+      // R 2 (#7807d2)
+      // U 3 (#a77fa3)
+      // L 2 (#015232)
+      // U 2 (#7a21e3)`;
+
+      const EL = {
+        svg: window[`part${part}`],
+        svgPolygons: window[`part${part}polygons`],
+        svgLine: window[`part${part}line`],
+        ans: window[`part${part}ans`],
+      };
+
+      const lines = input.split('\n');
+
+      let r = 0;
+      let c = 0;
+      let rMin = 0;
+      let rMax = 0;
+      let cMin = 0;
+      let cMax = 0;
+      for (const line of lines) {
+        let [d, n, color] = line.split(/[ ()]+/g);
+        n = +n;
+        if (part === 2) {
+          d = ['R', 'D', 'L', 'U'][color.at(-1)];
+          n = parseInt(color.slice(1, -1), 16);
+        }
+
+        const [dr, dc] = DIR[d];
+        r += dr * n;
+        c += dc * n;
+        rMin = Math.min(rMin, r);
+        rMax = Math.max(rMax, r);
+        cMin = Math.min(cMin, c);
+        cMax = Math.max(cMax, c);
+      }
+
+      EL.svg.setAttribute(
+        'viewBox',
+        [0, 0, cMax - cMin, rMax - rMin].join(' ')
+      );
+
+      r = 0;
+      c = 0;
+      let area = 1;
+      for (const line of lines) {
+        let [d, n, color] = line.split(/[ ()]+/g);
+        n = +n;
+        if (part === 2) {
+          d = ['R', 'D', 'L', 'U'][color.at(-1)];
+          n = parseInt(color.slice(1, -1), 16);
+        }
+
+        const [dr, dc] = DIR[d];
+        const r0 = r;
+        const c0 = c;
+        r += dr * n;
+        c += dc * n;
+        const dArea = (r * c0 - r0 * c + n) / 2;
+        area += dArea;
+
+        EL.svgLine.setAttribute(
+          'points',
+          `${EL.svgLine.getAttribute('points')} ${[c - cMin, r - rMin].join()}`
+        );
+
+        const triangleEl = document.createElementNS(
+          'http://www.w3.org/2000/svg',
+          'polygon'
+        );
+        triangleEl.setAttribute(
+          'points',
+          [
+            [0, 0],
+            [c0 - cMin, r0 - rMin],
+            [c - cMin, r - rMin],
+          ]
+            .map((p) => p.join())
+            .join(' ')
+        );
+        triangleEl.setAttribute(
+          'style',
+          `fill:${
+            dArea > 0 ? '#5555bb88' : '#df230888'
+          };stroke:#cccccc;stroke-width:${part === 1 ? '.1' : '1000'}`
+        );
+        EL.svgPolygons.appendChild(triangleEl);
+        await new Promise((r) => setTimeout(r, 10000 / lines.length));
+      }
+
+      EL.ans.textContent = area;
+    }
+
+    fetch('./day-18-input.txt')
+      .then((res) => res.text())
+      .then((input) => {
+        solve(input, 1);
+        solve(input, 2);
+      });
+  </script>
+
+  <h1>2023 day 18</h1>
+  <h2>Part 1</h2>
+  <p>
+    Answer:
+    <span id="part1ans"></span>
+  </p>
+  <svg xmlns="http://www.w3.org/2000/svg" id="part1" width="480px">
+    <g id="part1polygons"></g>
+    <polyline
+      id="part1line"
+      points="0,0"
+      style="fill: none; stroke: white; stroke-width: 0.1"
+    />
+  </svg>
+  <h2>Part 2</h2>
+  <p>
+    Answer:
+    <span id="part2ans"></span>
+  </p>
+  <svg xmlns="http://www.w3.org/2000/svg" id="part2" width="640px">
+    <g id="part2polygons"></g>
+    <polyline
+      id="part2line"
+      points="0,0"
+      style="fill: none; stroke: black; stroke-width: 100"
+    />
+  </svg>
+</html>
