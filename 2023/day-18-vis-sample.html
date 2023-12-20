@@ -128,10 +128,9 @@ U 2 (#7a21e3)`;
           };stroke:#cccccc;stroke-width:${part === 1 ? '.1' : '1000'}`
         );
         EL.svgPolygons.appendChild(triangleEl);
+        EL.ans.textContent = area;
         await new Promise((r) => setTimeout(r, 5000 / lines.length));
       }
-
-      EL.ans.textContent = area;
     }
 
     fetch('./day-18-input.txt')
@@ -145,7 +144,7 @@ U 2 (#7a21e3)`;
   <h1>2023 day 18</h1>
   <h2>Part 1</h2>
   <p>
-    Answer:
+    Area:
     <span id="part1ans"></span>
   </p>
   <svg xmlns="http://www.w3.org/2000/svg" id="part1" width="240px">
@@ -157,7 +156,7 @@ U 2 (#7a21e3)`;
   </svg>
   <h2>Part 2</h2>
   <p>
-    Answer:
+    Area:
     <span id="part2ans"></span>
   </p>
   <svg xmlns="http://www.w3.org/2000/svg" id="part2" width="640px">
