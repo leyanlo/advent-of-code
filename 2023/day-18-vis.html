@@ -28,21 +28,6 @@
     };
 
     async function solve(input, part) {
-      //       input = `R 6 (#70c710)
-      // D 5 (#0dc571)
-      // L 2 (#5713f0)
-      // D 2 (#d2c081)
-      // R 2 (#59c680)
-      // D 2 (#411b91)
-      // L 5 (#8ceee2)
-      // U 2 (#caa173)
-      // L 1 (#1b58a2)
-      // U 2 (#caa171)
-      // R 2 (#7807d2)
-      // U 3 (#a77fa3)
-      // L 2 (#015232)
-      // U 2 (#7a21e3)`;
-
       const EL = {
         svg: window[`part${part}`],
         svgPolygons: window[`part${part}polygons`],
@@ -101,7 +86,10 @@
 
         EL.svgLine.setAttribute(
           'points',
-          `${EL.svgLine.getAttribute('points')} ${[c - cMin, r - rMin].join()}`
+          `${EL.svgLine.getAttribute('points') ?? [-cMin, -rMin].join()} ${[
+            c - cMin,
+            r - rMin,
+          ].join()}`
         );
 
         const triangleEl = document.createElementNS(
@@ -111,7 +99,7 @@
         triangleEl.setAttribute(
           'points',
           [
-            [0, 0],
+            [-cMin, -rMin],
             [c0 - cMin, r0 - rMin],
             [c - cMin, r - rMin],
           ]
@@ -149,7 +137,6 @@
     <g id="part1polygons"></g>
     <polyline
       id="part1line"
-      points="0,0"
       style="fill: none; stroke: white; stroke-width: 0.1"
     />
   </svg>
@@ -162,7 +149,6 @@
     <g id="part2polygons"></g>
     <polyline
       id="part2line"
-      points="0,0"
       style="fill: none; stroke: black; stroke-width: 100"
     />
   </svg>
