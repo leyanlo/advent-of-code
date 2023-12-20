@@ -9,13 +9,13 @@ function solve(input) {
     let [l, r] = line.split(' -> ');
     if (l === 'broadcaster') {
       initialQueue.push(
-        ...r.split(', ').map((module) => ({ module, pulse: 0, from: 'button' }))
+        ...r.split(', ').map((name) => ({ name, pulse: 0, from: 'button' }))
       );
     } else if (l[0] === '%') {
       map[l.substring(1)] = {
         kind: 'ff',
         outputs: r.split(', '),
-        state: 0,
+        pulse: 0,
       };
     } else {
       map[l.substring(1)] = {
@@ -26,11 +26,10 @@ function solve(input) {
     }
   }
 
-  for (const module in map) {
-    const outputs = map[module].outputs;
-    for (const output of outputs) {
+  for (const name in map) {
+    for (const output of map[name].outputs) {
       if (map[output]?.kind === 'conj') {
-        map[output].inputs.push({ module, state: 0 });
+        map[output].inputs.push({ name, pulse: 0 });
       }
     }
   }
@@ -48,39 +47,34 @@ function solve(input) {
     const queue = [...initialQueue];
     nPulses[0]++;
     while (queue.length) {
-      const { module, pulse, from } = queue.shift();
+      const { name, pulse, from } = queue.shift();
       nPulses[pulse]++;
-      if (module in buttonCounts && !pulse) {
-        buttonCounts[module] ||= i;
+      if (name in buttonCounts && !pulse) {
+        buttonCounts[name] ||= i;
       }
-      const input = map[module];
-      if (!input) continue;
+      const curr = map[name];
+      if (!curr) continue;
 
-      if (input.kind === 'ff') {
+      if (curr.kind === 'ff') {
         if (!pulse) {
-          input.state = +!input.state;
+          curr.pulse = +!curr.pulse;
           queue.push(
-            ...input.outputs.map((m) => ({
-              module: m,
-              pulse: input.state,
-              from: module,
+            ...curr.outputs.map((out) => ({
+              name: out,
+              pulse: curr.pulse,
+              from: name,
             }))
           );
         }
       } else {
-        input.inputs = input.inputs.map((i) =>
-          i.module === from
-            ? {
-                module: from,
-                state: pulse,
-              }
-            : i
+        curr.inputs = curr.inputs.map((inp) =>
+          inp.name === from ? { name: from, pulse } : inp
         );
         queue.push(
-          ...input.outputs.map((m) => ({
-            module: m,
-            pulse: +!input.inputs.every((i) => i.state),
-            from: module,
+          ...curr.outputs.map((out) => ({
+            name: out,
+            pulse: +!curr.inputs.every((inp) => inp.pulse),
+            from: name,
           }))
         );
       }
