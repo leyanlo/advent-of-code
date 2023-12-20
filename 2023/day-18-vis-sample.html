@@ -101,7 +101,10 @@ U 2 (#7a21e3)`;
 
         EL.svgLine.setAttribute(
           'points',
-          `${EL.svgLine.getAttribute('points')} ${[c - cMin, r - rMin].join()}`
+          `${EL.svgLine.getAttribute('points') ?? [-cMin, -rMin].join()} ${[
+            c - cMin,
+            r - rMin,
+          ].join()}`
         );
 
         const triangleEl = document.createElementNS(
@@ -111,7 +114,7 @@ U 2 (#7a21e3)`;
         triangleEl.setAttribute(
           'points',
           [
-            [0, 0],
+            [-cMin, -rMin],
             [c0 - cMin, r0 - rMin],
             [c - cMin, r - rMin],
           ]
@@ -149,7 +152,6 @@ U 2 (#7a21e3)`;
     <g id="part1polygons"></g>
     <polyline
       id="part1line"
-      points="0,0"
       style="fill: none; stroke: white; stroke-width: 0.1"
     />
   </svg>
@@ -162,7 +164,6 @@ U 2 (#7a21e3)`;
     <g id="part2polygons"></g>
     <polyline
       id="part2line"
-      points="0,0"
       style="fill: none; stroke: black; stroke-width: 100"
     />
   </svg>
