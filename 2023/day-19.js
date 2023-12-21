@@ -54,7 +54,7 @@ function solve2(input) {
       function getCombos(target, ranges) {
         return target === 'A'
           ? Object.values(ranges)
-              .map((r) => r.filter(Boolean).length)
+              .map(([min, max]) => max - min + 1)
               .reduce((acc, n) => acc * n)
           : target !== 'R'
             ? map[target](ranges)
@@ -69,12 +69,12 @@ function solve2(input) {
           let [part, val] = expr.split(op);
           val = +val;
           const yesRanges = structuredClone(ranges);
-          for (let i = 0; i < 4000; i++) {
-            if ((op === '>' && i + 1 <= val) || (op === '<' && i + 1 >= val)) {
-              yesRanges[part][i] = 0;
-            } else {
-              ranges[part][i] = 0;
-            }
+          if (op === '>') {
+            yesRanges[part][0] = Math.max(yesRanges[part][0], val + 1);
+            ranges[part][1] = Math.min(ranges[part][1], val);
+          } else {
+            yesRanges[part][1] = Math.min(yesRanges[part][1], val - 1);
+            ranges[part][0] = Math.max(ranges[part][0], val);
           }
           sum += getCombos(target, yesRanges);
         } else {
@@ -86,10 +86,10 @@ function solve2(input) {
   }
 
   const ranges = {
-    x: Array(4000).fill(1),
-    m: Array(4000).fill(1),
-    a: Array(4000).fill(1),
-    s: Array(4000).fill(1),
+    x: [1, 4000],
+    m: [1, 4000],
+    a: [1, 4000],
+    s: [1, 4000],
   };
   console.log(map.in(ranges));
 }
