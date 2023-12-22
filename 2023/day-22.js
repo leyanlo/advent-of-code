@@ -14,6 +14,7 @@ function fall(bricks, map) {
           for (let z = z1; z <= z2; z++) {
             const below = map[z - 1][y][x];
             if (below && below !== i + 1) {
+              // brick is supported
               continue outer;
             }
           }
@@ -22,18 +23,20 @@ function fall(bricks, map) {
 
       isFalling = true;
       fallingBricks.add(i);
+      // move brick down
+      bricks[i] = [
+        [x1, y1, z1 - 1],
+        [x2, y2, z2 - 1],
+      ];
       for (let x = x1; x <= x2; x++) {
         for (let y = y1; y <= y2; y++) {
           for (let z = z1; z <= z2; z++) {
+            // update map
             map[z][y][x] = 0;
             map[z - 1][y][x] = i + 1;
           }
         }
       }
-      bricks[i] = [
-        [x1, y1, z1 - 1],
-        [x2, y2, z2 - 1],
-      ];
     }
   }
   return fallingBricks.size;
@@ -57,9 +60,11 @@ function solve(input) {
     ]);
   }
 
+  // initialize map to all zeros except ground is -1
   const map = [...Array(maxZ + 1)].map((_, z) =>
     [...Array(maxY + 1)].map(() => Array(maxX + 1).fill(+!!z - 1))
   );
+  // add bricks to map as index + 1 (zeros are empty space)
   for (let i = 0; i < bricks.length; i++) {
     const [[x1, y1, z1], [x2, y2, z2]] = bricks[i];
     for (let x = x1; x <= x2; x++) {
@@ -83,6 +88,7 @@ function solve(input) {
     for (let x = x1; x <= x2; x++) {
       for (let y = y1; y <= y2; y++) {
         for (let z = z1; z <= z2; z++) {
+          // remove brick
           map2[z][y][x] = 0;
         }
       }
