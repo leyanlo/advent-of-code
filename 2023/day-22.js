@@ -2,6 +2,43 @@ import { readFileSync } from 'node:fs';
 
 const input = readFileSync('./day-22-input.txt', 'utf8').trimEnd();
 
+function fall(bricks, map) {
+  let isFalling = true;
+  const fallingBricks = new Set();
+  while (isFalling) {
+    isFalling = false;
+    outer: for (let j = 0; j < bricks.length; j++) {
+      const [[x1, y1, z1], [x2, y2, z2]] = bricks[j];
+      for (let x = x1; x <= x2; x++) {
+        for (let y = y1; y <= y2; y++) {
+          for (let z = z1; z <= z2; z++) {
+            const below = map[z - 1][y][x];
+            if (below && below !== j + 1) {
+              continue outer;
+            }
+          }
+        }
+      }
+
+      isFalling = true;
+      fallingBricks.add(j);
+      for (let x = x1; x <= x2; x++) {
+        for (let y = y1; y <= y2; y++) {
+          for (let z = z1; z <= z2; z++) {
+            map[z][y][x] = 0;
+            map[z - 1][y][x] = j + 1;
+          }
+        }
+      }
+      bricks[j] = [
+        [x1, y1, z1 - 1],
+        [x2, y2, z2 - 1],
+      ];
+    }
+  }
+  return fallingBricks.size;
+}
+
 function solve(input) {
   const bricks = [];
   let maxX = 0;
@@ -34,37 +71,7 @@ function solve(input) {
     }
   }
 
-  let isFalling = true;
-  while (isFalling) {
-    isFalling = false;
-    outer: for (let i = 0; i < bricks.length; i++) {
-      const [[x1, y1, z1], [x2, y2, z2]] = bricks[i];
-      for (let x = x1; x <= x2; x++) {
-        for (let y = y1; y <= y2; y++) {
-          for (let z = z1; z <= z2; z++) {
-            const below = map[z - 1][y][x];
-            if (below && below !== i + 1) {
-              continue outer;
-            }
-          }
-        }
-      }
-
-      isFalling = true;
-      for (let x = x1; x <= x2; x++) {
-        for (let y = y1; y <= y2; y++) {
-          for (let z = z1; z <= z2; z++) {
-            map[z][y][x] = 0;
-            map[z - 1][y][x] = i + 1;
-          }
-        }
-      }
-      bricks[i] = [
-        [x1, y1, z1 - 1],
-        [x2, y2, z2 - 1],
-      ];
-    }
-  }
+  fall(bricks, map);
 
   let part1 = bricks.length;
   let part2 = 0;
@@ -81,43 +88,9 @@ function solve(input) {
       }
     }
 
-    let isFalling = true;
-    const fallingBricks = new Set();
-    while (isFalling) {
-      isFalling = false;
-      outer: for (let j = 0; j < bricks2.length; j++) {
-        if (j === i) continue;
-
-        const [[x1, y1, z1], [x2, y2, z2]] = bricks2[j];
-        for (let x = x1; x <= x2; x++) {
-          for (let y = y1; y <= y2; y++) {
-            for (let z = z1; z <= z2; z++) {
-              const below = map2[z - 1][y][x];
-              if (below && below !== j + 1) {
-                continue outer;
-              }
-            }
-          }
-        }
-
-        isFalling = true;
-        fallingBricks.add(j);
-        for (let x = x1; x <= x2; x++) {
-          for (let y = y1; y <= y2; y++) {
-            for (let z = z1; z <= z2; z++) {
-              map2[z][y][x] = 0;
-              map2[z - 1][y][x] = j + 1;
-            }
-          }
-        }
-        bricks2[j] = [
-          [x1, y1, z1 - 1],
-          [x2, y2, z2 - 1],
-        ];
-      }
-    }
-    part2 += fallingBricks.size;
-    part1 -= +!!fallingBricks.size;
+    const count = fall(bricks2, map2);
+    part1 -= +!!count;
+    part2 += count;
   }
   console.log(part1);
   console.log(part2);
