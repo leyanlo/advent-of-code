@@ -3,17 +3,17 @@ import { readFileSync } from 'node:fs';
 const input = readFileSync('./day-22-input.txt', 'utf8').trimEnd();
 
 function fall(bricks, map) {
-  let isFalling = true;
   const fallingBricks = new Set();
+  let isFalling = true;
   while (isFalling) {
     isFalling = false;
-    outer: for (let j = 0; j < bricks.length; j++) {
-      const [[x1, y1, z1], [x2, y2, z2]] = bricks[j];
+    outer: for (let i = 0; i < bricks.length; i++) {
+      const [[x1, y1, z1], [x2, y2, z2]] = bricks[i];
       for (let x = x1; x <= x2; x++) {
         for (let y = y1; y <= y2; y++) {
           for (let z = z1; z <= z2; z++) {
             const below = map[z - 1][y][x];
-            if (below && below !== j + 1) {
+            if (below && below !== i + 1) {
               continue outer;
             }
           }
@@ -21,16 +21,16 @@ function fall(bricks, map) {
       }
 
       isFalling = true;
-      fallingBricks.add(j);
+      fallingBricks.add(i);
       for (let x = x1; x <= x2; x++) {
         for (let y = y1; y <= y2; y++) {
           for (let z = z1; z <= z2; z++) {
             map[z][y][x] = 0;
-            map[z - 1][y][x] = j + 1;
+            map[z - 1][y][x] = i + 1;
           }
         }
       }
-      bricks[j] = [
+      bricks[i] = [
         [x1, y1, z1 - 1],
         [x2, y2, z2 - 1],
       ];
