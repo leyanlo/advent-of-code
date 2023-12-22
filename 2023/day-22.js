@@ -51,6 +51,7 @@ function solve(input) {
     const [[x1, y1, z1], [x2, y2, z2]] = line
       .split('~')
       .map((coord) => coord.split(',').map(Number));
+    // assumes x2 >= x1, y2 >= y1, z2 >= z1
     maxX = Math.max(maxX, x2);
     maxY = Math.max(maxY, y2);
     maxZ = Math.max(maxZ, z2);
