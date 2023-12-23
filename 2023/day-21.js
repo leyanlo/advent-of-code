@@ -2,10 +2,6 @@ import { readFileSync } from 'node:fs';
 
 const input = readFileSync('./day-21-input.txt', 'utf8').trimEnd();
 
-function safeMod(a, b) {
-  return a < 0 ? (b - (-a % b)) % b : a % b;
-}
-
 const dirs = [
   [-1, 0],
   [1, 0],
@@ -61,7 +57,7 @@ function solve2(input) {
       for (const [dr, dc] of dirs) {
         const r2 = r + dr;
         const c2 = c + dc;
-        if (map[safeMod(r2, size)][safeMod(c2, size)]) {
+        if (map.at(r2 % size).at(c2 % size)) {
           nextPositions.add([r2, c2].join());
         }
       }
