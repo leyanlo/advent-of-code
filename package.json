@@ -10,7 +10,8 @@
   "dependencies": {
     "heap-js": "^2.3.0",
     "js-combinatorics": "^2.1.2",
-    "prompt-sync": "^4.2.0"
+    "prompt-sync": "^4.2.0",
+    "z3-solver": "^4.12.4"
   },
   "devDependencies": {
     "eslint": "^8.55.0",
