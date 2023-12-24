@@ -68,7 +68,6 @@ async function solve2(input) {
 
     // x + vx * t = x1 + vx1 * t
     const t = Z3.Int.const(`t${i}`);
-    solver.add(t.ge(0));
     solver.add(x.add(vx.mul(t)).eq(t.mul(vx1).add(x1)));
     solver.add(y.add(vy.mul(t)).eq(t.mul(vy1).add(y1)));
     solver.add(z.add(vz.mul(t)).eq(t.mul(vz1).add(z1)));
