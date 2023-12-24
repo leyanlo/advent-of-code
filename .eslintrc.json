@@ -1,6 +1,6 @@
 {
   "parserOptions": {
-    "ecmaVersion": 2021, // module support
+    "ecmaVersion": "latest", // module support, top-level await
     "sourceType": "module" // keyword import
   },
   "env": {
