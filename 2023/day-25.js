@@ -38,12 +38,14 @@ function solve(input) {
   // cbx -> dqf
   // hbr -> sds
   // pzv -> xft
-  map.cbx.delete('dqf');
-  map.dqf.delete('cbx');
-  map.hbr.delete('sds');
-  map.sds.delete('hbr');
-  map.pzv.delete('xft');
-  map.xft.delete('pzv');
+  for (const [a, b] of [
+    ['cbx', 'dqf'],
+    ['hbr', 'sds'],
+    ['pzv', 'xft'],
+  ]) {
+    map[a].delete(b);
+    map[b].delete(a);
+  }
   const keys = Object.keys(map);
   const group = getGroup(map, keys[0]);
   console.log(group.size * (keys.length - group.size));
