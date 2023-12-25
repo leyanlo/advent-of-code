@@ -66,7 +66,16 @@ async function solve2(input) {
   for (let i = 0; i < 3; i++) {
     const [x1, y1, z1, vx1, vy1, vz1] = hailstones[i];
 
-    // x + vx * t = x1 + vx1 * t
+    // 9 equations, 9 unknowns
+    // x + vx * t1 = x1 + vx1 * t1
+    // y + vy * t1 = y1 + vy1 * t1
+    // z + vz * t1 = z1 + vz1 * t1
+    // x + vx * t2 = x2 + vx2 * t2
+    // y + vy * t2 = y2 + vy2 * t2
+    // z + vz * t2 = z2 + vz2 * t2
+    // x + vx * t3 = x3 + vx3 * t3
+    // y + vy * t3 = y3 + vy3 * t3
+    // z + vz * t3 = z3 + vz3 * t3
     const t = Z3.Int.const(`t${i}`);
     solver.add(x.add(vx.mul(t)).eq(t.mul(vx1).add(x1)));
     solver.add(y.add(vy.mul(t)).eq(t.mul(vy1).add(y1)));
