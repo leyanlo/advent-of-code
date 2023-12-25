@@ -2,9 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 const input = readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 
-function getGroups(map) {
-  const keys = Object.keys(map);
-  const groups = [];
+function getGroup(map, key) {
   function addKeys(keys, group) {
     for (const k of keys) {
       if (!group.has(k)) {
@@ -14,14 +12,9 @@ function getGroups(map) {
     }
   }
 
-  for (const k of keys) {
-    if (!groups.find((g) => g.has(k))) {
-      const group = new Set([k]);
-      groups.push(group);
-      addKeys(map[k], group);
-    }
-  }
-  return groups;
+  const group = new Set([key]);
+  addKeys(map[key], group);
+  return group;
 }
 
 function solve(input) {
@@ -51,7 +44,8 @@ function solve(input) {
   map.sds.delete('hbr');
   map.pzv.delete('xft');
   map.xft.delete('pzv');
-  const groups = getGroups(map);
-  console.log(groups[0].size * groups[1].size);
+  const keys = Object.keys(map);
+  const group = getGroup(map, keys[0]);
+  console.log(group.size * (keys.length - group.size));
 }
 solve(input);
