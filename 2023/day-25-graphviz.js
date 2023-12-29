@@ -1,6 +1,4 @@
-import { readFileSync } from 'node:fs';
-
-import { mincut } from '@graph-algorithm/minimum-cut';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 const input = readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 
@@ -18,21 +16,33 @@ function getGroup(map, key) {
   addKeys(map[key], group);
   return group;
 }
+
 function solve(input) {
   const map = {};
-  const graph = [];
+  const digraph = ['digraph D {'];
   for (const line of input.split('\n')) {
     const [left, ...right] = line.match(/\w+/g);
     map[left] ??= new Set();
+    digraph.push(`  ${left} -> {${right.join(', ')}}`);
     for (const r of right) {
-      graph.push([left, r]);
       map[left].add(r);
       map[r] ??= new Set();
       map[r].add(left);
     }
   }
+  digraph.push('}');
+  writeFileSync('day-25.dot', digraph.join('\n'));
+  // run `dot -Tsvg day-25.dot -o day-25.svg` to generate svg
 
-  for (const [a, b] of mincut(graph)) {
+  // find 3 pairs connecting 2 blobs
+  // cbx -> dqf
+  // hbr -> sds
+  // pzv -> xft
+  for (const [a, b] of [
+    ['cbx', 'dqf'],
+    ['hbr', 'sds'],
+    ['pzv', 'xft'],
+  ]) {
     map[a].delete(b);
     map[b].delete(a);
   }
