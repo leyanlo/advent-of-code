@@ -8,6 +8,7 @@
     "lint": "eslint --fix --ignore-path .gitignore \"**/*.js\""
   },
   "dependencies": {
+    "@graph-algorithm/minimum-cut": "^2.0.0",
     "heap-js": "^2.3.0",
     "js-combinatorics": "^2.1.2",
     "prompt-sync": "^4.2.0",
