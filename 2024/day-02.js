@@ -1,12 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-var input = `7 6 4 2 1
-1 2 7 8 9
-9 7 6 2 1
-1 3 2 4 5
-8 6 4 4 1
-1 3 6 7 9`;
-var input = readFileSync('./day-02-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-02-input.txt', 'utf8').trimEnd();
 
 // function solve(input) {
 //   const lines = input.split('\n');
@@ -43,12 +37,9 @@ function isSafe(nums, nErrs = 0) {
       if (nErrs > 1) {
         return false;
       }
-      const next1 = [...nums];
-      next1.splice(i - 1, 1);
-      const next2 = [...nums];
-      next2.splice(i, 1);
-      const next3 = [...nums];
-      next3.splice(0, 1);
+      const next1 = nums.toSpliced(i - 1, 1);
+      const next2 = nums.toSpliced(i, 1);
+      const next3 = nums.toSpliced(0, 1);
       return isSafe(next1, 1) || isSafe(next2, 1) || isSafe(next3, 1);
     }
   }
