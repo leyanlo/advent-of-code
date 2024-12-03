@@ -8,10 +8,7 @@ function solve(input, part) {
   }
   const matches = input.matchAll(/mul\((\d{1,3}),(\d{1,3})\)/g);
   const nums = Array.from(matches).map((match) => [+match[1], +match[2]]);
-  let sum = 0;
-  for (const [a, b] of nums) {
-    sum += a * b;
-  }
+  const sum = nums.reduce((acc, [a, b]) => acc + a * b, 0);
   console.log(sum);
 }
 solve(input, 1);
