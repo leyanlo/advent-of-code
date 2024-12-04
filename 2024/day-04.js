@@ -51,30 +51,21 @@ const DIRS2 = [
 function solve2(input) {
   const lines = input.split('\n');
   let count = 0;
-  const seen = lines.map((line) => line.split('').fill(0));
-  for (let i = 0; i < lines.length; i++) {
-    for (let j = 0; j < lines[0].length; j++) {
-      const char = lines[i][j];
-      if (char === 'M' || char === 'S') {
+  for (let i = 1; i < lines.length - 1; i++) {
+    outer: for (let j = 1; j < lines[0].length - 1; j++) {
+      if (lines[i][j] === 'A') {
         for (const [di, dj] of DIRS2) {
-          let i2 = i + di;
-          let j2 = j + dj;
-          if (lines[i2]?.[j2] !== 'A') {
-            continue;
+          const char1 = lines[i + di][j + dj];
+          if (char1 !== 'M' && char1 !== 'S') {
+            continue outer;
           }
 
-          i2 += di;
-          j2 += dj;
-          if (lines[i2]?.[j2] !== FLIP[char]) {
-            continue;
-          }
-
-          if (seen[i2 - di][j2 - dj]) {
-            count++;
-          } else {
-            seen[i2 - di][j2 - dj] = 1;
+          const char2 = lines[i - di][j - dj];
+          if (char2 !== FLIP[char1]) {
+            continue outer;
           }
         }
+        count++;
       }
     }
   }
