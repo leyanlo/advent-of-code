@@ -1,54 +1,42 @@
 import { readFileSync } from 'node:fs';
 
-var input = `MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX`;
-var input = readFileSync('./day-04-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-04-input.txt', 'utf8').trimEnd();
 
 const DIRS = [
   [0, 1],
-  [0, -1],
+  [1, 1],
   [1, 0],
   [1, -1],
-  [1, 1],
-  [-1, 0],
+  [0, -1],
   [-1, -1],
+  [-1, 0],
   [-1, 1],
 ];
 
-const XMAS = 'XMAS';
-
-// function solve(input) {
-//   const lines = input.split('\n');
-//   let count = 0;
-//   for (let i = 0; i < lines.length; i++) {
-//     for (let j = 0; j < lines[0].length; j++) {
-//       if (lines[i][j] === XMAS[0]) {
-//         outer: for (const [di, dj] of DIRS) {
-//           let i2 = i + di;
-//           let j2 = j + dj;
-//           for (let k = 1; k < XMAS.length; k++) {
-//             if (lines[i2]?.[j2] !== XMAS[k]) {
-//               continue outer;
-//             }
-//             i2 += di;
-//             j2 += dj;
-//           }
-//           count++;
-//         }
-//       }
-//     }
-//   }
-//   console.log(count);
-// }
-// solve(input);
+function solve1(input) {
+  const lines = input.split('\n');
+  let count = 0;
+  for (let i = 0; i < lines.length; i++) {
+    for (let j = 0; j < lines[0].length; j++) {
+      if (lines[i][j] === 'X') {
+        outer: for (const [di, dj] of DIRS) {
+          let i2 = i + di;
+          let j2 = j + dj;
+          for (const char of 'MAS') {
+            if (lines[i2]?.[j2] !== char) {
+              continue outer;
+            }
+            i2 += di;
+            j2 += dj;
+          }
+          count++;
+        }
+      }
+    }
+  }
+  console.log(count);
+}
+solve1(input);
 
 const FLIP = {
   M: 'S',
