@@ -50,7 +50,7 @@ const XMAS = 'XMAS';
 // }
 // solve(input);
 
-const S_TO_M = {
+const FLIP = {
   M: 'S',
   S: 'M',
 };
@@ -60,34 +60,36 @@ const DIRS2 = [
   [1, -1],
 ];
 
-function solve(input) {
+function solve2(input) {
   const lines = input.split('\n');
   let count = 0;
   const seen = lines.map((line) => line.split('').fill(0));
   for (let i = 0; i < lines.length; i++) {
     for (let j = 0; j < lines[0].length; j++) {
-      if (lines[i][j] === 'M' || lines[i][j] === 'S') {
-        outer: for (const [di, dj] of DIRS2) {
+      const char = lines[i][j];
+      if (char === 'M' || char === 'S') {
+        for (const [di, dj] of DIRS2) {
           let i2 = i + di;
           let j2 = j + dj;
           if (lines[i2]?.[j2] !== 'A') {
-            continue outer;
+            continue;
           }
 
           i2 += di;
           j2 += dj;
-          if (lines[i2]?.[j2] !== S_TO_M[lines[i][j]]) {
-            continue outer;
+          if (lines[i2]?.[j2] !== FLIP[char]) {
+            continue;
           }
 
-          if (seen[i2 - di][j2 - dj] === 1) {
+          if (seen[i2 - di][j2 - dj]) {
             count++;
+          } else {
+            seen[i2 - di][j2 - dj] = 1;
           }
-          seen[i2 - di][j2 - dj] = 1;
         }
       }
     }
   }
   console.log(count);
 }
-solve(input);
+solve2(input);
