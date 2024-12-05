@@ -7,10 +7,7 @@ function solve(input, part) {
   const map = {};
   for (const rule of rules.split('\n')) {
     const [left, right] = rule.split('|').map(Number);
-    map[left] ??= {};
-    map[left][right] = -1;
-    map[right] ??= {};
-    map[right][left] = 1;
+    (map[left] ??= {})[right] = -1;
   }
 
   let sum = 0;
