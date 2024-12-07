@@ -15,7 +15,7 @@ function solve(input, part) {
         nextCombos.push(combo + n);
         nextCombos.push(combo * n);
         if (part === 2) {
-          nextCombos.push(parseInt(combo.toString() + n.toString(), 10));
+          nextCombos.push(parseInt('' + combo + n, 10));
         }
       }
       combos = nextCombos;
