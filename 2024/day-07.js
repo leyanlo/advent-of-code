@@ -18,7 +18,7 @@ function solve(input, part) {
           nextCombos.push(parseInt('' + combo + n, 10));
         }
       }
-      combos = nextCombos;
+      combos = nextCombos.filter((combo) => combo <= left);
     }
     if (combos.some((combo) => combo === left)) {
       sum += left;
