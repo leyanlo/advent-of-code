@@ -11,9 +11,9 @@ const DIRS = [
 
 function solve(input, part) {
   const map = input.split('\n').map((line) => line.split('').map(Number));
-  const trailheads = map
-    .flatMap((row, i) => row.map((cell, j) => (cell === 0 ? [i, j] : null)))
-    .filter(Boolean);
+  const trailheads = map.flatMap((row, i) =>
+    row.map((cell, j) => (cell === 0 ? [i, j] : []))
+  );
   let sum = 0;
   for (const [i0, j0] of trailheads) {
     let score = 0;
