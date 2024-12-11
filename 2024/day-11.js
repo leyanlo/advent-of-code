@@ -18,10 +18,8 @@ function solve(input, t) {
 
       const len = stone.length;
       if (len % 2 === 0) {
-        const [left, right] = [
-          +stone.substring(0, len / 2),
-          +stone.substring(len / 2),
-        ];
+        const left = +stone.substring(0, len / 2);
+        const right = +stone.substring(len / 2);
         nextCounts[left] = (nextCounts[left] ?? 0) + counts[stone];
         nextCounts[right] = (nextCounts[right] ?? 0) + counts[stone];
         continue;
