@@ -25,8 +25,8 @@ function solve(input, t) {
         continue;
       }
 
-      const newStone = +stone * 2024;
-      nextCounts[newStone] = (nextCounts[newStone] ?? 0) + counts[stone];
+      const nextStone = +stone * 2024;
+      nextCounts[nextStone] = (nextCounts[nextStone] ?? 0) + counts[stone];
     }
     counts = nextCounts;
   }
