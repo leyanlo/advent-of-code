@@ -15,13 +15,6 @@ const DIR_TO_IDX = {
   '-1': { 0: 3 },
 };
 
-const IDX_TO_DIR = [
-  [1, 0],
-  [0, 1],
-  [1, 0],
-  [0, 1],
-];
-
 function solve(input, part) {
   const map = input.split('\n').map((line) => line.split(''));
   const perims = map.map((row) => row.map(() => Array(4).fill(1)));
@@ -66,7 +59,7 @@ function solve(input, part) {
             return true;
           }
 
-          const [di, dj] = IDX_TO_DIR[pIdx];
+          const [di, dj] = DIRS[(pIdx + 1) % 4];
           if (
             map[i + di]?.[j + dj] === char &&
             perims[i + di][j + dj][pIdx] === 1
