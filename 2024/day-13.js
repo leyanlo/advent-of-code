@@ -26,11 +26,9 @@ function solve(input, part) {
     const a = (x * dy2 - y * dx2) / (dx1 * dy2 - dx2 * dy1);
     if (Number.isInteger(a)) {
       const xRemain = x - dx1 * a;
-      if (xRemain % dx2 === 0) {
-        const b = xRemain / dx2;
-        if (dy1 * a + dy2 * b === y) {
-          sum += a * 3 + b;
-        }
+      const b = xRemain / dx2;
+      if (Number.isInteger(b) && dy1 * a + dy2 * b === y) {
+        sum += a * 3 + b;
       }
     }
   }
