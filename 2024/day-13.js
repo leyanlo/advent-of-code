@@ -24,10 +24,10 @@ function solve(input, part) {
     // a = (x*dy2 - y*dx2) / (dx1*dy2 - dx2*dy1)
 
     const a = (x * dy2 - y * dx2) / (dx1 * dy2 - dx2 * dy1);
-    if (Number.isInteger(a)) {
+    if (a % 1 === 0) {
       const xRemain = x - dx1 * a;
       const b = xRemain / dx2;
-      if (Number.isInteger(b) && dy1 * a + dy2 * b === y) {
+      if (b % 1 === 0 && dy1 * a + dy2 * b === y) {
         sum += a * 3 + b;
       }
     }
