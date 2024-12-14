@@ -8,47 +8,6 @@ function mod(a, b) {
   return a < 0 ? b - (-a % b) : a % b;
 }
 
-// function solve(input, w, h) {
-//   console.log(input);
-//   const robots = input
-//     .split('\n')
-//     .map((line) => line.match(/-?\d+/g).map(Number));
-//   console.log(robots);
-//
-//   // const map = Array.from({ length: h }).map(() =>
-//   //   Array.from({ length: w }).map(() => [])
-//   // );
-//
-//   for (let t = 0; t < 100; t++) {
-//     for (const robot of robots) {
-//       const [px, py, vx, vy] = robot;
-//       robot[0] = mod(px + vx, w);
-//       robot[1] = mod(py + vy, h);
-//     }
-//   }
-//
-//   const quads = [0, 0, 0, 0];
-//   console.log('after', robots);
-//   for (const [px, py] of robots) {
-//     if (py < h / 2 - 1) {
-//       if (px < w / 2 - 1) {
-//         quads[0]++;
-//       } else if (px > w / 2) {
-//         quads[1]++;
-//       }
-//     } else if (py > h / 2) {
-//       if (px < w / 2 - 1) {
-//         quads[2]++;
-//       } else if (px > w / 2) {
-//         quads[3]++;
-//       }
-//     }
-//   }
-//   console.log(quads);
-//   console.log(quads.reduce((acc, n) => acc * n));
-// }
-// solve(input, w, h);
-
 function solve(input, w, h, part) {
   const robots = input
     .split('\n')
