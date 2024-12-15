@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const input = readFileSync('./day-15-input.txt', 'utf8').trimEnd();
+const DEBUG = 0;
 
 const DIRS = {
   '>': [0, 1],
@@ -23,7 +24,7 @@ function logMap(msg, map, curr) {
   console.log();
 }
 
-function solve1(input, debug) {
+function solve1(input) {
   let [map, moves] = input.split('\n\n');
   let start;
   map = map.split('\n').map((row, i) =>
@@ -37,7 +38,7 @@ function solve1(input, debug) {
   );
 
   let curr = start;
-  debug && logMap('Initial state:', map, curr);
+  DEBUG && logMap('Initial state:', map, curr);
   moves = moves.replaceAll('\n', '').split('');
   for (const move of moves) {
     const [di, dj] = DIRS[move];
@@ -49,23 +50,26 @@ function solve1(input, debug) {
         break;
       }
       case 'O': {
+        const queue = [];
         let [i3, j3] = [i2, j2];
         while (map[i3][j3] === 'O') {
+          queue.push([i3, j3]);
           i3 += di;
           j3 += dj;
         }
         if (map[i3][j3] === '.') {
           curr = [i2, j2];
-          map[i2][j2] = '.';
-          while (i2 !== i3 || j2 !== j3) {
-            i2 += di;
-            j2 += dj;
-            map[i2][j2] = 'O';
+          queue.sort(([ai, aj], [bi, bj]) =>
+            di ? di * (bi - ai) : dj * (bj - aj)
+          );
+          for ([i3, j3] of queue) {
+            map[i3 + di][j3 + dj] = 'O';
+            map[i3][j3] = '.';
           }
         }
       }
     }
-    debug && logMap(`Move ${move}:`, map, curr);
+    DEBUG && logMap(`Move ${move}:`, map, curr);
   }
 
   let sum = 0;
@@ -80,7 +84,7 @@ function solve1(input, debug) {
 }
 solve1(input, 0);
 
-function solve2(input, debug) {
+function solve2(input) {
   let [map, moves] = input.split('\n\n');
   let start;
   map = map.split('\n').map((row, i) =>
@@ -98,7 +102,7 @@ function solve2(input, debug) {
   );
 
   let curr = start;
-  debug && logMap('Initial state:', map, curr);
+  DEBUG && logMap('Initial state:', map, curr);
   moves = moves.replaceAll('\n', '').split('');
   for (const move of moves) {
     const [di, dj] = DIRS[move];
@@ -186,7 +190,7 @@ function solve2(input, debug) {
         }
       }
     }
-    debug && logMap(`Move ${move}:`, map, curr);
+    DEBUG && logMap(`Move ${move}:`, map, curr);
   }
 
   let sum = 0;
