@@ -1,46 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-var input = `########
-#..O.O.#
-##@.O..#
-#...O..#
-#.#.O..#
-#...O..#
-#......#
-########
-
-<^^>>>vv<v>>v<<`;
-var input = `##########
-#..O..O.O#
-#......O.#
-#.OO..O.O#
-#..O@..O.#
-#O#..O...#
-#O..O..O.#
-#.OO.O.OO#
-#....O...#
-##########
-
-<vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^
-vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
-><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<
-<<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^
-^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><
-^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^
->^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^
-<><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>
-^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
-v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^`;
-// var input = `#######
-// #...#.#
-// #.....#
-// #..OO@#
-// #..O..#
-// #.....#
-// #######
-//
-// <vv<<^^<<^^`;
-var input = readFileSync('./day-15-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-15-input.txt', 'utf8').trimEnd();
 
 const DIRS = {
   '>': [0, 1],
@@ -49,73 +9,78 @@ const DIRS = {
   '^': [-1, 0],
 };
 
-// function solve(input) {
-//   let [map, moves] = input.split('\n\n');
-//   let start;
-//   map = map.split('\n').map((row, i) =>
-//     row.split('').map((char, j) => {
-//       if (char === '@') {
-//         start = [i, j];
-//         return '.';
-//       }
-//       return char;
-//     })
-//   );
-//
-//   let curr = start;
-//   moves = moves.replaceAll('\n', '').split('');
-//   for (const move of moves) {
-//     const [di, dj] = DIRS[move];
-//     const [i, j] = curr;
-//     let [i2, j2] = [i + di, j + dj];
-//     switch (map[i2][j2]) {
-//       case '.': {
-//         curr = [i2, j2];
-//         break;
-//       }
-//       case 'O': {
-//         let [i3, j3] = [i2, j2];
-//         while (map[i3][j3] === 'O') {
-//           i3 += di;
-//           j3 += dj;
-//         }
-//         if (map[i3][j3] === '.') {
-//           curr = [i2, j2];
-//           map[i2][j2] = '.';
-//           while (i2 !== i3 || j2 !== j3) {
-//             i2 += di;
-//             j2 += dj;
-//             map[i2][j2] = 'O';
-//           }
-//         }
-//       }
-//     }
-//     // console.log(`Move ${move}:`);
-//     // console.log(
-//     //   map
-//     //     .map((row, i) =>
-//     //       row
-//     //         .map((char, j) => (i === curr[0] && j === curr[1] ? '@' : char))
-//     //         .join('')
-//     //     )
-//     //     .join('\n')
-//     // );
-//     // console.log();
-//   }
-//
-//   let sum = 0;
-//   for (let i = 0; i < map.length; i++) {
-//     for (let j = 0; j < map[0].length; j++) {
-//       if (map[i][j] === 'O') {
-//         sum += 100 * i + j;
-//       }
-//     }
-//   }
-//   console.log(sum);
-// }
-// solve(input);
+function logMap(msg, map, curr) {
+  console.log(msg);
+  console.log(
+    map
+      .map((row, i) =>
+        row
+          .map((char, j) => (i === curr[0] && j === curr[1] ? '@' : char))
+          .join('')
+      )
+      .join('\n')
+  );
+  console.log();
+}
 
-function solve(input) {
+function solve1(input, debug) {
+  let [map, moves] = input.split('\n\n');
+  let start;
+  map = map.split('\n').map((row, i) =>
+    row.split('').map((char, j) => {
+      if (char === '@') {
+        start = [i, j];
+        return '.';
+      }
+      return char;
+    })
+  );
+
+  let curr = start;
+  debug && logMap('Initial state:', map, curr);
+  moves = moves.replaceAll('\n', '').split('');
+  for (const move of moves) {
+    const [di, dj] = DIRS[move];
+    const [i, j] = curr;
+    let [i2, j2] = [i + di, j + dj];
+    switch (map[i2][j2]) {
+      case '.': {
+        curr = [i2, j2];
+        break;
+      }
+      case 'O': {
+        let [i3, j3] = [i2, j2];
+        while (map[i3][j3] === 'O') {
+          i3 += di;
+          j3 += dj;
+        }
+        if (map[i3][j3] === '.') {
+          curr = [i2, j2];
+          map[i2][j2] = '.';
+          while (i2 !== i3 || j2 !== j3) {
+            i2 += di;
+            j2 += dj;
+            map[i2][j2] = 'O';
+          }
+        }
+      }
+    }
+    debug && logMap(`Move ${move}:`, map, curr);
+  }
+
+  let sum = 0;
+  for (let i = 0; i < map.length; i++) {
+    for (let j = 0; j < map[0].length; j++) {
+      if (map[i][j] === 'O') {
+        sum += 100 * i + j;
+      }
+    }
+  }
+  console.log(sum);
+}
+solve1(input, 0);
+
+function solve2(input, debug) {
   let [map, moves] = input.split('\n\n');
   let start;
   map = map.split('\n').map((row, i) =>
@@ -131,20 +96,9 @@ function solve(input) {
       }
     })
   );
+
   let curr = start;
-
-  console.log('Initial state:');
-  console.log(
-    map
-      .map((row, i) =>
-        row
-          .map((char, j) => (i === curr[0] && j === curr[1] ? '@' : char))
-          .join('')
-      )
-      .join('\n')
-  );
-  console.log();
-
+  debug && logMap('Initial state:', map, curr);
   moves = moves.replaceAll('\n', '').split('');
   for (const move of moves) {
     const [di, dj] = DIRS[move];
@@ -232,17 +186,7 @@ function solve(input) {
         }
       }
     }
-    // console.log(`Move ${move}:`);
-    // console.log(
-    //   map
-    //     .map((row, i) =>
-    //       row
-    //         .map((char, j) => (i === curr[0] && j === curr[1] ? '@' : char))
-    //         .join('')
-    //     )
-    //     .join('\n')
-    // );
-    // console.log();
+    debug && logMap(`Move ${move}:`, map, curr);
   }
 
   let sum = 0;
@@ -255,4 +199,4 @@ function solve(input) {
   }
   console.log(sum);
 }
-solve(input);
+solve2(input, 0);
