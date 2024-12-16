@@ -9,10 +9,6 @@ const DIRS = [
   [-1, 0],
 ];
 
-function mod(a, b) {
-  return a < 0 ? b - (-a % b) : a % b;
-}
-
 function solve(input) {
   let start;
   const map = input.split('\n').map((line, i) =>
@@ -51,7 +47,7 @@ function solve(input) {
       seen[i][j][dirIdx] = score;
 
       for (let dirIdx2 = 0; dirIdx2 < 4; dirIdx2++) {
-        if (dirIdx2 === mod(dirIdx + 2, 4)) {
+        if (dirIdx2 === (dirIdx + 2) % 4) {
           continue;
         }
 
