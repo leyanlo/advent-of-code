@@ -23,9 +23,9 @@ function solve(input) {
   let queue = [[...start, 0, 0, [start]]];
   const paths = {};
   const seen = map.map((row) =>
-    row.map(() => DIRS.map(() => Number.POSITIVE_INFINITY))
+    row.map(() => DIRS.map(() => Number.MAX_SAFE_INTEGER))
   );
-  let minScore = Number.POSITIVE_INFINITY;
+  let minScore = Number.MAX_SAFE_INTEGER;
   while (queue.length !== 0) {
     const nextQueue = [];
     for (const [i, j, dirIdx, score, path] of queue) {
