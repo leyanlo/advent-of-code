@@ -1,16 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-var input = `Register A: 729
-Register B: 0
-Register C: 0
-
-Program: 0,1,5,4,3,0`;
-var input = `Register A: 2024
-Register B: 0
-Register C: 0
-
-Program: 0,3,5,4,3,0`;
-var input = readFileSync('./day-17-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-17-input.txt', 'utf8').trimEnd();
 
 function combo(registers, operand) {
   const [a, b, c] = registers;
@@ -84,18 +74,6 @@ const instr = [
   },
 ];
 
-// function solve(input) {
-//   const [a, b, c, ...program] = input.match(/\d+/g).map(Number);
-//   const registers = [a, b, c];
-//   let p = 0;
-//   const out = [];
-//   while (p < program.length - 1) {
-//     p = instr[program[p]](registers, program[p + 1], out) ?? p + 2;
-//   }
-//   console.log(out.join());
-// }
-// solve(input);
-
 function run([a, b, c, program]) {
   const registers = [a, b, c];
   let p = 0;
@@ -106,7 +84,14 @@ function run([a, b, c, program]) {
   return out;
 }
 
-function solve(input) {
+function solve1(input) {
+  const [a, b, c, ...program] = input.match(/\d+/g).map(Number);
+  const out = run([a, b, c, program]);
+  console.log(out.join());
+}
+solve1(input);
+
+function solve2(input) {
   const [, b, c, ...program] = input.match(/\d+/g).map(Number);
   let minA = Number.MAX_SAFE_INTEGER;
 
@@ -128,4 +113,4 @@ function solve(input) {
   dfs();
   console.log(minA);
 }
-solve(input);
+solve2(input);
