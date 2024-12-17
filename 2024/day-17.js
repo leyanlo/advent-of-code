@@ -22,7 +22,7 @@ function xor(a, b) {
   return Number(BigInt(a) ^ BigInt(b));
 }
 
-const instr = [
+const INSTR = [
   // adv
   (registers, operand, out) => {
     const [a, b, c] = registers;
@@ -43,11 +43,7 @@ const instr = [
   // jnz
   (registers, operand, out) => {
     const [a, b, c] = registers;
-    if (a === 0) {
-      return;
-    }
-
-    return operand;
+    return a === 0 ? undefined : operand;
   },
 
   // bxc
@@ -79,7 +75,8 @@ function run([a, b, c, program]) {
   let p = 0;
   const out = [];
   while (p < program.length - 1) {
-    p = instr[program[p]](registers, program[p + 1], out) ?? p + 2;
+    const f = INSTR[program[p]];
+    p = f(registers, program[p + 1], out) ?? p + 2;
   }
   return out;
 }
