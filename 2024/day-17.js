@@ -91,24 +91,20 @@ solve1(input);
 function solve2(input) {
   const [, b, c, ...program] = input.match(/\d+/g).map(Number);
 
-  let queue = [[0, 0]];
-  outer: while (queue.length !== 0) {
-    const nextQueue = [];
-    for (const [depth, a] of queue) {
-      if (depth === program.length) {
-        console.log(a);
-        break outer;
-      }
-
-      for (let i = 0; i < 8; i++) {
-        const nextA = 8 * a + i;
+  let aValues = [0];
+  for (let i = 0; i < program.length; i++) {
+    const nextAValues = [];
+    for (const a of aValues) {
+      for (let j = 0; j < 8; j++) {
+        const nextA = 8 * a + j;
         const out = run([nextA, b, c, program]);
-        if (out[0] === program.at(-1 - depth)) {
-          queue.push([depth + 1, nextA]);
+        if (out[0] === program.at(-1 - i)) {
+          nextAValues.push(nextA);
         }
       }
     }
-    queue = nextQueue;
+    aValues = nextAValues;
   }
+  console.log(Math.min(...aValues));
 }
 solve2(input);
