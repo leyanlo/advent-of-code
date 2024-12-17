@@ -105,6 +105,6 @@ function solve2(input) {
     }
     aValues = nextAValues;
   }
-  console.log(Math.min(...aValues));
+  console.log(aValues[0]);
 }
 solve2(input);
