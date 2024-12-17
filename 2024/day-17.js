@@ -90,24 +90,25 @@ solve1(input);
 
 function solve2(input) {
   const [, b, c, ...program] = input.match(/\d+/g).map(Number);
-  let minA = Number.MAX_SAFE_INTEGER;
 
-  function dfs(depth = 0, a = 0) {
-    if (depth === program.length) {
-      minA = Math.min(minA, a);
-      return;
-    }
+  let queue = [[0, 0]];
+  outer: while (queue.length !== 0) {
+    const nextQueue = [];
+    for (const [depth, a] of queue) {
+      if (depth === program.length) {
+        console.log(a);
+        break outer;
+      }
 
-    for (let i = 0; i < 8; i++) {
-      const nextA = 8 * a + i;
-      const out = run([nextA, b, c, program]);
-      if (out[0] === program.at(-1 - depth)) {
-        dfs(depth + 1, nextA);
+      for (let i = 0; i < 8; i++) {
+        const nextA = 8 * a + i;
+        const out = run([nextA, b, c, program]);
+        if (out[0] === program.at(-1 - depth)) {
+          queue.push([depth + 1, nextA]);
+        }
       }
     }
+    queue = nextQueue;
   }
-
-  dfs();
-  console.log(minA);
 }
 solve2(input);
