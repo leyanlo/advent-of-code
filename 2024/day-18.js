@@ -1,8 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const input = readFileSync('./day-18-input.txt', 'utf8').trimEnd();
-const w = 71;
-const h = 71;
+const size = 71;
 const n = 1024;
 
 const DIRS = [
@@ -28,8 +27,8 @@ function solve(input) {
   const coords = input.split('\n').map((line) => line.split(',').map(Number));
 
   function minSteps(n) {
-    const map = Array.from({ length: h }).map(() =>
-      Array.from({ length: w }).fill(1)
+    const map = Array.from({ length: size }).map(() =>
+      Array.from({ length: size }).fill(1)
     );
     for (let i = 0; i < n; i++) {
       const [x, y] = coords[i];
@@ -50,7 +49,7 @@ function solve(input) {
       }
       queue = nextQueue;
     }
-    return minSteps[h - 1][w - 1];
+    return minSteps[size - 1][size - 1];
   }
   console.log(minSteps(n));
 
