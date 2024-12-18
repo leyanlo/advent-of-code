@@ -12,6 +12,18 @@ const DIRS = [
   [0, -1],
 ];
 
+function binarySearch(start, end, check) {
+  while (start < end) {
+    const mid = Math.floor((start + end) / 2);
+    if (check(mid)) {
+      end = mid;
+    } else {
+      start = mid + 1;
+    }
+  }
+  return start;
+}
+
 function solve(input) {
   const coords = input.split('\n').map((line) => line.split(',').map(Number));
 
@@ -42,11 +54,11 @@ function solve(input) {
   }
   console.log(minSteps(n));
 
-  for (let n2 = n + 1; n2 < coords.length; n2++) {
-    if (minSteps(n2) === Number.MAX_SAFE_INTEGER) {
-      console.log(coords[n2 - 1].join());
-      break;
-    }
-  }
+  const firstFail = binarySearch(
+    n + 1,
+    coords.length - 1,
+    (n) => minSteps(n) === Number.MAX_SAFE_INTEGER
+  );
+  console.log(coords[firstFail - 1].join());
 }
 solve(input);
