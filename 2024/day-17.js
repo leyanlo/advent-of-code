@@ -19,7 +19,7 @@ function combo(registers, operand) {
 }
 
 function xor(a, b) {
-  return Number(BigInt(a) ^ BigInt(b));
+  return (a ^ b) >>> 0;
 }
 
 const INSTR = [
