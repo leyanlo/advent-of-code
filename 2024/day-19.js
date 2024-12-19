@@ -20,6 +20,7 @@ function solve(input, part) {
           }
 
           count += c;
+          continue;
         }
 
         for (const pattern of patterns) {
