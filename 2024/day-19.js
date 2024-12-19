@@ -1,58 +1,24 @@
 import { readFileSync } from 'node:fs';
 
-var input = `r, wr, b, g, bwu, rb, gb, br
+const input = readFileSync('./day-19-input.txt', 'utf8').trimEnd();
 
-brwrr
-bggr
-gbbr
-rrbgbr
-ubwu
-bwurrg
-brgr
-bbrgwb`;
-var input = readFileSync('./day-19-input.txt', 'utf8').trimEnd();
-
-// function solve(input) {
-//   let [patterns, designs] = input.split('\n\n');
-//   patterns = patterns.match(/\w+/g);
-//   designs = designs.split('\n');
-//
-//   let count = 0;
-//   outer: for (const design of designs) {
-//     let remaining = [design];
-//     while (remaining.length !== 0) {
-//       const nextRemaining = new Set();
-//       for (const r of remaining) {
-//         if (r === '') {
-//           count++;
-//           continue outer;
-//         }
-//
-//         for (const pattern of patterns) {
-//           if (r.startsWith(pattern)) {
-//             nextRemaining.add(r.substring(pattern.length));
-//           }
-//         }
-//       }
-//       remaining = Array.from(nextRemaining);
-//     }
-//   }
-//   console.log(count);
-// }
-// solve(input);
-
-function solve(input) {
+function solve(input, part) {
   let [patterns, designs] = input.split('\n\n');
   patterns = patterns.match(/\w+/g);
   designs = designs.split('\n');
 
   let count = 0;
-  for (const design of designs) {
+  outer: for (const design of designs) {
     let remaining = [[design, 1]];
     while (remaining.length !== 0) {
       const nextRemaining = {};
       for (const [r, c] of remaining) {
         if (r === '') {
+          if (part === 1) {
+            count++;
+            continue outer;
+          }
+
           count += c;
         }
 
@@ -69,4 +35,5 @@ function solve(input) {
   }
   console.log(count);
 }
-solve(input);
+solve(input, 1);
+solve(input, 2);
