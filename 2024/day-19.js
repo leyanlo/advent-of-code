@@ -25,8 +25,7 @@ function solve(input, part) {
         for (const pattern of patterns) {
           if (r.startsWith(pattern)) {
             const next = r.substring(pattern.length);
-            nextRemaining[next] ??= 0;
-            nextRemaining[next] += c;
+            nextRemaining[next] = (nextRemaining[next] ?? 0) + c;
           }
         }
       }
