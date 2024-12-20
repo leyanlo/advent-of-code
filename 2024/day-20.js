@@ -17,7 +17,7 @@ function solve(input, tMaxCheat) {
       if (char === 'S') {
         start = [i, j];
       }
-      return +(char !== '#');
+      return char === '#' ? 0 : 1;
     })
   );
 
