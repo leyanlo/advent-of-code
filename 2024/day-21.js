@@ -62,7 +62,7 @@ function getMoves(start, end, pad) {
   return validPerms.map((perm) => perm.join('') + 'A');
 }
 
-function lineToNumMoves(line, nKeypads, depth = 0, memo = {}) {
+function lineToNumMoves(line, limit, depth = 0, memo = {}) {
   const key = [line, depth].join();
   if (memo[key]) {
     return memo[key];
@@ -84,11 +84,11 @@ function lineToNumMoves(line, nKeypads, depth = 0, memo = {}) {
     const next = toCoords[char];
     const moves = getMoves(curr, next, pad);
 
-    if (depth === nKeypads) {
+    if (depth === limit) {
       nMoves += moves[0].length;
     } else {
       nMoves += Math.min(
-        ...moves.map((m) => lineToNumMoves(m, nKeypads, depth + 1, memo))
+        ...moves.map((m) => lineToNumMoves(m, limit, depth + 1, memo))
       );
     }
 
@@ -99,11 +99,11 @@ function lineToNumMoves(line, nKeypads, depth = 0, memo = {}) {
   return nMoves;
 }
 
-function solve(input, nKeypads) {
+function solve(input, limit) {
   const lines = input.split('\n');
   let sum = 0;
   for (const line of lines) {
-    const nMoves = lineToNumMoves(line, nKeypads);
+    const nMoves = lineToNumMoves(line, limit);
     sum += nMoves * +line.match(/\d+/g);
   }
   console.log(sum);
