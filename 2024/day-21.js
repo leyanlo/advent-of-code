@@ -2,13 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import * as $C from 'js-combinatorics';
 
-var input = `029A
-980A
-179A
-456A
-379A`;
-var input = readFileSync('./day-21-input.txt', 'utf8').trimEnd();
-// 131400 too low
+const input = readFileSync('./day-21-input.txt', 'utf8').trimEnd();
 
 const NUMPAD = [
   ['7', '8', '9'],
@@ -44,25 +38,12 @@ const DIR_TO_COORDS = DIRPAD.reduce((acc, row, i) => {
 }, {});
 
 function getMoves(start, end, pad) {
-  let [i, j] = start;
+  const [i, j] = start;
   const [i2, j2] = end;
+  const [di, dj] = [i2 - i, j2 - j];
   let moves = '';
-  while (j2 < j) {
-    moves += '<';
-    j--;
-  }
-  while (i2 < i) {
-    moves += '^';
-    i--;
-  }
-  while (i2 > i) {
-    moves += 'v';
-    i++;
-  }
-  while (j2 > j) {
-    moves += '>';
-    j++;
-  }
+  moves += di >= 0 ? 'v'.repeat(di) : '^'.repeat(-di);
+  moves += dj >= 0 ? '>'.repeat(dj) : '<'.repeat(-dj);
 
   const perms = Array.from(new $C.Permutation(moves));
 
@@ -123,18 +104,10 @@ function solve(input, nKeypads) {
   const lines = input.split('\n');
   let sum = 0;
   for (const line of lines) {
-    if (line === '456A') debugger;
-
     const nMoves = lineToNumMoves(line, nKeypads);
     sum += nMoves * +line.match(/\d+/g);
   }
   console.log(sum);
 }
-/*
-<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A
-v<<A>>^A<A>AvA<^AA>A<vAAA>^A
-<A^A>^^AvvvA
-029A
-*/
-// solve(input, 2);
+solve(input, 2);
 solve(input, 25);
