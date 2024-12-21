@@ -47,20 +47,19 @@ function getMoves(start, end, pad) {
 
   const perms = Array.from(new $C.Permutation(moves));
 
-  const paths = [];
-  outer: for (const moves of perms) {
+  const validPerms = perms.filter((perm) => {
     let [i, j] = start;
-    for (const m of moves) {
-      const [di, dj] = DIRS[m];
+    for (const move of perm) {
+      const [di, dj] = DIRS[move];
       [i, j] = [i + di, j + dj];
       if (pad[i][j] === '') {
-        continue outer;
+        return false;
       }
     }
-    paths.push(moves.join('') + 'A');
-  }
+    return true;
+  });
 
-  return paths;
+  return validPerms.map((perm) => perm.join('') + 'A');
 }
 
 function lineToNumMoves(line, nKeypads, depth = 0, memo = {}) {
