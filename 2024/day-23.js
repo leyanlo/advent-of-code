@@ -3,18 +3,18 @@ import { readFileSync } from 'node:fs';
 const input = readFileSync('./day-23-input.txt', 'utf8').trimEnd();
 
 function solve1(input) {
-  const connections = input.split('\n').map((line) => line.split('-'));
+  const edges = input.split('\n').map((line) => line.split('-'));
   const map = {};
-  for (const [a, b] of connections) {
+  for (const [a, b] of edges) {
     (map[a] ??= []).push(b);
     (map[b] ??= []).push(a);
   }
 
   const sets = new Set();
   for (const node in map) {
-    for (const [a, b] of connections) {
-      if (map[a].includes(node) && map[b].includes(node)) {
-        const set = [a, b, node];
+    for (const edge of edges) {
+      if (edge.every((n) => map[n].includes(node))) {
+        const set = edge.concat(node);
         if (set.some((n) => n.startsWith('t'))) {
           sets.add(set.sort().join());
         }
@@ -26,17 +26,17 @@ function solve1(input) {
 solve1(input);
 
 function solve2(input) {
-  const connections = input.split('\n').map((line) => line.split('-'));
+  const edges = input.split('\n').map((line) => line.split('-'));
   const map = {};
-  for (const [a, b] of connections) {
+  for (const [a, b] of edges) {
     (map[a] ??= []).push(b);
     (map[b] ??= []).push(a);
   }
 
-  const sets = connections;
+  const sets = edges;
   for (const node in map) {
     for (const set of sets) {
-      if (set.every((node2) => map[node2].includes(node))) {
+      if (set.every((n) => map[n].includes(node))) {
         set.push(node);
       }
     }
