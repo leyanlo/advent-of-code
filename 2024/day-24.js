@@ -56,7 +56,7 @@ function swap(c, [a, b]) {
   return c;
 }
 
-function toBit(i) {
+function toStr(i) {
   return i.toString().padStart(2, '0');
 }
 
@@ -76,8 +76,8 @@ function solve2(input) {
   for (let i = 0; i < nBits; i++) {
     const map = {};
     for (let j = 0; j < nBits; j++) {
-      map['x' + toBit(j)] = +(i === j);
-      map['y' + toBit(j)] = 0;
+      map['x' + toStr(j)] = +(i === j);
+      map['y' + toStr(j)] = 0;
     }
 
     const queue = bottom.split('\n').map((line) => line.split(' '));
@@ -115,9 +115,9 @@ function solve2(input) {
       .map((k) => map[k])
       .join('');
     const isError = 2 ** i !== parseInt(binary, 2);
-    console.log(`${'x' + toBit(i)}=1`, `z=${binary}`, isError ? '❌ ' : '✅ ');
+    console.log(`${'x' + toStr(i)}=1`, `z=${binary}`, isError ? '❌ ' : '✅ ');
     if (isError) {
-      errors.push('z' + toBit(i));
+      errors.push('z' + toStr(i));
     }
   }
 
