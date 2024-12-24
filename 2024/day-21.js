@@ -1,7 +1,5 @@
 import { readFileSync } from 'node:fs';
 
-import * as $C from 'js-combinatorics';
-
 const input = readFileSync('./day-21-input.txt', 'utf8').trimEnd();
 
 const NUMPAD = [
@@ -41,11 +39,10 @@ function getMoves(start, end, pad) {
   const [i, j] = start;
   const [i2, j2] = end;
   const [di, dj] = [i2 - i, j2 - j];
-  let moves = '';
-  moves += di >= 0 ? 'v'.repeat(di) : '^'.repeat(-di);
-  moves += dj >= 0 ? '>'.repeat(dj) : '<'.repeat(-dj);
+  const vertMoves = di >= 0 ? 'v'.repeat(di) : '^'.repeat(-di);
+  const horizMoves = dj >= 0 ? '>'.repeat(dj) : '<'.repeat(-dj);
 
-  const perms = Array.from(new $C.Permutation(moves));
+  const perms = [vertMoves + horizMoves, horizMoves + vertMoves];
 
   const validPerms = perms.filter((perm) => {
     let [i, j] = start;
@@ -59,7 +56,7 @@ function getMoves(start, end, pad) {
     return true;
   });
 
-  return validPerms.map((perm) => perm.join('') + 'A');
+  return validPerms.map((perm) => perm + 'A');
 }
 
 function lineToNumMoves(line, limit, depth = 0, memo = {}) {
