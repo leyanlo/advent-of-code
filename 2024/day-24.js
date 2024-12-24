@@ -50,30 +50,6 @@ function solve1(input) {
 }
 solve1(input);
 
-/*
-{
-  x07: [ 'krv', 'jss' ],
-  x17: [ 'pcp', 'fgt' ],
-  x24: [ 'mqq', 'z24' ],
-  x32: [ 'qcs', 'fqc' ],
-  y07: [ 'krv', 'jss' ],
-  y17: [ 'pcp', 'fgt' ],
-  y24: [ 'mqq', 'z24' ],
-  y32: [ 'qcs', 'fqc' ]
-}
-
-qcs: z32 srn
-fqc: pcs
-
-// x06&y06=1 0000000000000000000000000000000000000100000000 ❌
-// x23&y23=1 0000000000000000000010000000000000000000000000 ❌
-x06&y06: dsw vpk
-x23&y23: srm vjv
-
-dsw: btq
-vpk: z06 gdb
-*/
-
 function swap(c, [a, b]) {
   if (c === a) return b;
   if (c === b) return a;
@@ -85,7 +61,8 @@ function toBit(i) {
 }
 
 function solve2(input) {
-  let [top, bottom] = input.split('\n\n');
+  const [top, bottom] = input.split('\n\n');
+  const nBits = top.split('\n').length / 2;
 
   // inspect day-24.svg to determine which swaps will fix the errors
   const swaps = [
@@ -96,9 +73,9 @@ function solve2(input) {
   ];
 
   const errors = [];
-  for (let i = 0; i < 45; i++) {
+  for (let i = 0; i < nBits; i++) {
     const map = {};
-    for (let j = 0; j < 45; j++) {
+    for (let j = 0; j < nBits; j++) {
       map['x' + toBit(j)] = +(i === j);
       map['y' + toBit(j)] = 0;
     }
@@ -137,15 +114,18 @@ function solve2(input) {
       .sort((a, b) => b.localeCompare(a))
       .map((k) => map[k])
       .join('');
-    const isError = 2 ** (i % 45) !== parseInt(binary, 2);
+    const isError = 2 ** i !== parseInt(binary, 2);
     console.log(`${'x' + toBit(i)}=1`, `z=${binary}`, isError ? '❌ ' : '✅ ');
     if (isError) {
       errors.push('z' + toBit(i));
     }
   }
 
-  console.log('Error bits:', errors.join() || 'None!');
-  console.log('Part 2:', swaps.flat().sort().join());
+  console.log(
+    errors.length !== 0
+      ? `Error bits: ${errors.join()}`
+      : `Part 2: ${swaps.flat().sort().join()}`
+  );
 
   const digraph = ['digraph {'];
   for (const line of bottom.split('\n')) {
