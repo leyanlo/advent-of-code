@@ -103,37 +103,33 @@ function solve2(input) {
       map['y' + toBit(j)] = 0;
     }
 
-    let queue = bottom.split('\n').map((line) => line.split(' '));
-    while (queue.length !== 0) {
-      const nextQueue = [];
-      for (const line of queue) {
-        let [a, op, b, , c] = line;
+    const queue = bottom.split('\n').map((line) => line.split(' '));
+    for (const line of queue) {
+      let [a, op, b, , c] = line;
 
-        for (const s of swaps) {
-          c = swap(c, s);
+      for (const s of swaps) {
+        c = swap(c, s);
+      }
+
+      if (map[a] === undefined || map[b] === undefined) {
+        queue.push(line);
+        continue;
+      }
+
+      switch (op) {
+        case 'AND': {
+          map[c] = map[a] & map[b];
+          break;
         }
-
-        if (map[a] === undefined || map[b] === undefined) {
-          nextQueue.push(line);
-          continue;
+        case 'OR': {
+          map[c] = map[a] | map[b];
+          break;
         }
-
-        switch (op) {
-          case 'AND': {
-            map[c] = map[a] & map[b];
-            break;
-          }
-          case 'OR': {
-            map[c] = map[a] | map[b];
-            break;
-          }
-          case 'XOR': {
-            map[c] = map[a] ^ map[b];
-            break;
-          }
+        case 'XOR': {
+          map[c] = map[a] ^ map[b];
+          break;
         }
       }
-      queue = nextQueue;
     }
 
     const binary = Object.keys(map)
