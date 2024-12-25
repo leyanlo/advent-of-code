@@ -1,45 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-var input = `#####
-.####
-.####
-.####
-.#.#.
-.#...
-.....
-
-#####
-##.##
-.#.##
-...##
-...#.
-...#.
-.....
-
-.....
-#....
-#....
-#...#
-#.#.#
-#.###
-#####
-
-.....
-.....
-#.#..
-###..
-###.#
-###.#
-#####
-
-.....
-.....
-.....
-#....
-#.#..
-#.#.#
-#####`;
-var input = readFileSync('./day-25-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-25-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const blocks = input.split('\n\n');
