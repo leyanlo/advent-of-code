@@ -1,49 +1,29 @@
 import { readFileSync } from 'node:fs';
 
-var input = `L68
-L30
-R48
-L5
-R60
-L55
-L1
-L99
-R14
-L82`;
-var input = readFileSync('./day-01-input.txt', 'utf8').trimEnd();
-// 5949 wrong
-// 5936 wrong
-// 5858 wrong
+const input = readFileSync('./day-01-input.txt', 'utf8').trimEnd();
 
-// function solve1(input) {
-//   console.log(input);
-//   let dial = 50
-//   let nZeros = 0;
-//   for (let line of input.split('\n')) {
-//     let turn = line[0];
-//     let amount = parseInt(line.slice(1), 10);
-//     if (turn === 'L') {
-//       dial -= amount;
-//     } else if (turn === 'R') {
-//       dial += amount;
-//     }
-//     dial = (dial + 100) % 100;
-//     if (dial === 0) {
-//       nZeros += 1;
-//     }
-//   }
-//   console.log(nZeros);
-// }
-// solve1(input);
-
-function solve2(input) {
-  console.log(input);
-  let dial = 50
+function solve1(input) {
+  let dial = 50;
   let nZeros = 0;
   for (let line of input.split('\n')) {
-    let turn = line[0];
-    let amount = parseInt(line.slice(1), 10);
-    const dir = turn === 'L' ? -1 : 1;
+    const dir = line[0] === 'L' ? -1 : 1;
+    let amount = parseInt(line.substring(1), 10);
+    dial += dir * amount;
+    dial %= 100;
+    if (dial === 0) {
+      nZeros += 1;
+    }
+  }
+  console.log(nZeros);
+}
+solve1(input);
+
+function solve2(input) {
+  let dial = 50;
+  let nZeros = 0;
+  for (let line of input.split('\n')) {
+    const dir = line[0] === 'L' ? -1 : 1;
+    let amount = parseInt(line.substring(1), 10);
     for (let i = 0; i < amount; i++) {
       dial += dir;
       if (dial < 0) {
