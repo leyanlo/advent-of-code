@@ -26,11 +26,7 @@ function solve2(input) {
     let amount = parseInt(line.substring(1), 10);
     for (let i = 0; i < amount; i++) {
       dial += dir;
-      if (dial < 0) {
-        dial += 100;
-      } else if (dial >= 100) {
-        dial -= 100;
-      }
+      dial %= 100;
       if (dial === 0) {
         nZeros += 1;
       }
