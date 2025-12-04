@@ -1,16 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-var input = `..@@.@@@@.
-@@@.@.@.@@
-@@@@@.@.@@
-@.@@@@..@.
-@@.@@@@.@@
-.@@@@@@@.@
-.@.@.@.@@@
-@.@@@.@@@@
-.@@@@@@@@.
-@.@.@@@.@.`;
-var input = readFileSync('./day-04-input.txt', 'utf8').trimEnd();
+const input = readFileSync('./day-04-input.txt', 'utf8').trimEnd();
 
 const DIRS = [
   [-1, -1],
