@@ -35,10 +35,11 @@ function rotLeft(arr) {
 }
 
 function solve2(input) {
-  let lines = input.split('\n');
-  const ops = lines.at(-1).split(/\s+/).filter(Boolean);
-  lines = lines.slice(0, -1).map((line) => line.replaceAll(' ', '0').split(''));
-  const rotLines = rotLeft(lines).map((line) => line.join(''));
+  const lines = input.split('\n');
+  const paddedLines = lines
+    .slice(0, -1)
+    .map((line) => line.replaceAll(' ', '0'));
+  const rotLines = rotLeft(paddedLines).map((line) => line.join(''));
 
   const nums = [];
   let row = [];
@@ -53,6 +54,7 @@ function solve2(input) {
   }
   nums.push(row);
 
+  const ops = lines.at(-1).split(/\s+/).filter(Boolean);
   let sum = 0;
   for (let i = 0; i < ops.length; i++) {
     const op = ops[i];
