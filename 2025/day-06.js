@@ -4,10 +4,10 @@ const input = readFileSync('./day-06-input.txt', 'utf8').trimEnd();
 
 function solve(input) {
   const lines = input.split('\n');
-  const nums = lines
-    .slice(0, -1)
-    .map((line) => line.split(/\s+/).filter(Boolean).map(Number));
-  const ops = lines.at(-1).split(/\s+/).filter(Boolean);
+  const ops = lines.pop().split(/\s+/).filter(Boolean);
+  const nums = lines.map((line) =>
+    line.split(/\s+/).filter(Boolean).map(Number)
+  );
   let sum = 0;
   for (let i = 0; i < ops.length; i++) {
     const op = ops[i];
@@ -36,9 +36,8 @@ function rotLeft(arr) {
 
 function solve2(input) {
   const lines = input.split('\n');
-  const paddedLines = lines
-    .slice(0, -1)
-    .map((line) => line.replaceAll(' ', '0'));
+  const ops = lines.pop().split(/\s+/).filter(Boolean);
+  const paddedLines = lines.map((line) => line.replaceAll(' ', '0'));
   const rotLines = rotLeft(paddedLines).map((line) => line.join(''));
 
   const nums = [];
@@ -54,7 +53,6 @@ function solve2(input) {
   }
   nums.push(row);
 
-  const ops = lines.at(-1).split(/\s+/).filter(Boolean);
   let sum = 0;
   for (let i = 0; i < ops.length; i++) {
     const op = ops[i];
