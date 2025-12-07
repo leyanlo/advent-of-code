@@ -25,21 +25,17 @@ solve1(input);
 
 function solve2(input) {
   const lines = input.split('\n');
-  const zeroes = Array.from({ length: lines[0].length }, () => 0);
-  let timelines = [...zeroes];
+  let timelines = Array.from({ length: lines[0].length }, () => 0);
   timelines[lines[0].indexOf('S')] = 1;
   for (let i = 1; i < lines.length; i++) {
-    const nextTimelines = [...zeroes];
     for (let j = 0; j < timelines.length; j++) {
       const t = timelines[j];
       if (lines[i][j] === '^') {
-        nextTimelines[j - 1] += t;
-        nextTimelines[j + 1] += t;
-      } else {
-        nextTimelines[j] += t;
+        timelines[j - 1] += t;
+        timelines[j] = 0;
+        timelines[j + 1] += t;
       }
     }
-    timelines = nextTimelines;
   }
   console.log(Object.values(timelines).reduce((a, b) => a + b, 0));
 }
