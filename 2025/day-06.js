@@ -14,7 +14,7 @@ function rotLeft(arr) {
   return rot;
 }
 
-function solve(input) {
+function solve1(input) {
   const lines = input.split('\n');
   const ops = lines.pop().trim().split(/\s+/);
   const nums = rotLeft(
@@ -32,7 +32,7 @@ function solve(input) {
   }
   console.log(sum);
 }
-solve(input);
+solve1(input);
 
 function solve2(input) {
   const lines = input.split('\n');
