@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 const input = readFileSync('./day-07-input.txt', 'utf8').trimEnd();
 
 function solve1(input) {
-  const lines = input.split('\n').map((line) => line.split(''));
+  const lines = input.split('\n');
   let nSplits = 0;
   let beams = [lines[0].indexOf('S')];
   for (let i = 1; i < lines.length; i++) {
@@ -24,23 +24,23 @@ function solve1(input) {
 solve1(input);
 
 function solve2(input) {
-  const lines = input.split('\n').map((line) => line.split(''));
+  const lines = input.split('\n');
   const zeroes = Array.from({ length: lines[0].length }, () => 0);
-  let beams = [...zeroes];
-  beams[lines[0].indexOf('S')] = 1;
+  let timelines = [...zeroes];
+  timelines[lines[0].indexOf('S')] = 1;
   for (let i = 1; i < lines.length; i++) {
-    const nextBeams = [...zeroes];
-    for (let j = 0; j < beams.length; j++) {
-      const beam = beams[j];
+    const nextTimelines = [...zeroes];
+    for (let j = 0; j < timelines.length; j++) {
+      const t = timelines[j];
       if (lines[i][j] === '^') {
-        nextBeams[j - 1] += beam;
-        nextBeams[j + 1] += beam;
+        nextTimelines[j - 1] += t;
+        nextTimelines[j + 1] += t;
       } else {
-        nextBeams[j] += beam;
+        nextTimelines[j] += t;
       }
     }
-    beams = nextBeams;
+    timelines = nextTimelines;
   }
-  console.log(Object.values(beams).reduce((a, b) => a + b, 0));
+  console.log(Object.values(timelines).reduce((a, b) => a + b, 0));
 }
 solve2(input);
