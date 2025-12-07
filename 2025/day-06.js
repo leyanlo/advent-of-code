@@ -2,24 +2,6 @@ import { readFileSync } from 'node:fs';
 
 const input = readFileSync('./day-06-input.txt', 'utf8').trimEnd();
 
-function solve(input) {
-  const lines = input.split('\n');
-  const ops = lines.pop().trim().split(/\s+/);
-  const nums = lines.map((line) => line.trim().split(/\s+/).map(Number));
-  let sum = 0;
-  for (let i = 0; i < ops.length; i++) {
-    const op = ops[i];
-    const col = nums.map((row) => row[i]);
-    if (op === '+') {
-      sum += col.reduce((a, b) => a + b, 0);
-    } else if (op === '*') {
-      sum += col.reduce((a, b) => a * b, 1);
-    }
-  }
-  console.log(sum);
-}
-solve(input);
-
 function rotLeft(arr) {
   const rot = [];
   for (let i = 0; i < arr[0].length; i++) {
@@ -31,6 +13,26 @@ function rotLeft(arr) {
   }
   return rot;
 }
+
+function solve(input) {
+  const lines = input.split('\n');
+  const ops = lines.pop().trim().split(/\s+/);
+  const nums = rotLeft(
+    lines.map((line) => line.trim().split(/\s+/).map(Number))
+  );
+  let sum = 0;
+  for (let i = 0; i < ops.length; i++) {
+    const op = ops[i];
+    const col = nums[i];
+    if (op === '+') {
+      sum += col.reduce((a, b) => a + b, 0);
+    } else if (op === '*') {
+      sum += col.reduce((a, b) => a * b, 1);
+    }
+  }
+  console.log(sum);
+}
+solve(input);
 
 function solve2(input) {
   const lines = input.split('\n');
