@@ -8,14 +8,12 @@ function solve(input) {
   const timelines = Array.from({ length: lines[0].length }, () => 0);
   timelines[lines[0].indexOf('S')] = 1;
   for (let i = 1; i < lines.length; i++) {
-    for (let j = 0; j < timelines.length; j++) {
+    for (const { index: j } of lines[i].matchAll(/\^/g)) {
       const t = timelines[j];
-      if (t && lines[i][j] === '^') {
-        timelines[j - 1] += t;
-        timelines[j] = 0;
-        timelines[j + 1] += t;
-        nSplits++;
-      }
+      timelines[j - 1] += t;
+      timelines[j] = 0;
+      timelines[j + 1] += t;
+      nSplits++;
     }
   }
   console.log(nSplits);
