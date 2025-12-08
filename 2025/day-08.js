@@ -21,7 +21,7 @@ function getCombos(coords) {
 function solve(input) {
   const coords = input.split('\n').map((line) => line.split(',').map(Number));
   const combos = getCombos(coords);
-  const circuits = coords.reduce((acc, coord, i) => {
+  const coordToId = coords.reduce((acc, coord, i) => {
     acc[coord] = i;
     return acc;
   }, {});
@@ -36,22 +36,22 @@ function solve(input) {
           .reduce((acc, n) => acc * n, 1)
       );
     }
-    if (circuits[a] === circuits[b]) {
+    if (coordToId[a] === coordToId[b]) {
       // already connected
       continue;
     }
 
     // merge circuits
-    const oldId = circuits[b];
-    const newId = circuits[a];
-    for (const key in circuits) {
-      if (circuits[key] === oldId) {
-        circuits[key] = newId;
-      }
-    }
+    const oldId = coordToId[b];
+    const newId = coordToId[a];
     if (counts[oldId] + counts[newId] === coords.length) {
       console.log(a[0] * b[0]);
       break;
+    }
+    for (const key in coordToId) {
+      if (coordToId[key] === oldId) {
+        coordToId[key] = newId;
+      }
     }
     counts[newId] += counts[oldId];
     counts[oldId] = 0;
