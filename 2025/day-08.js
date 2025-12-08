@@ -36,22 +36,25 @@ function solve(input) {
           .reduce((acc, n) => acc * n, 1)
       );
     }
-    if (circuits[a] !== circuits[b]) {
-      // merge circuits
-      const oldId = circuits[b];
-      const newId = circuits[a];
-      for (const key in circuits) {
-        if (circuits[key] === oldId) {
-          circuits[key] = newId;
-        }
-      }
-      if (counts[oldId] + counts[newId] === coords.length) {
-        console.log(a[0] * b[0]);
-        break;
-      }
-      counts[newId] += counts[oldId];
-      counts[oldId] = 0;
+    if (circuits[a] === circuits[b]) {
+      // already connected
+      continue;
     }
+
+    // merge circuits
+    const oldId = circuits[b];
+    const newId = circuits[a];
+    for (const key in circuits) {
+      if (circuits[key] === oldId) {
+        circuits[key] = newId;
+      }
+    }
+    if (counts[oldId] + counts[newId] === coords.length) {
+      console.log(a[0] * b[0]);
+      break;
+    }
+    counts[newId] += counts[oldId];
+    counts[oldId] = 0;
   }
 }
 solve(input);
