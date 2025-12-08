@@ -48,9 +48,9 @@ function solve(input) {
       console.log(a[0] * b[0]);
       break;
     }
-    for (const key in coordToId) {
-      if (coordToId[key] === oldId) {
-        coordToId[key] = newId;
+    for (const coord in coordToId) {
+      if (coordToId[coord] === oldId) {
+        coordToId[coord] = newId;
       }
     }
     counts[newId] += counts[oldId];
