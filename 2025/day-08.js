@@ -12,7 +12,7 @@ function getCombos(coords) {
       const dist = Math.sqrt(
         (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2
       );
-      combos.push({ coords: [coords[i], coords[j]], dist });
+      combos.push({ coords: [a, b], dist });
     }
   }
   return combos.sort((a, b) => a.dist - b.dist).map((c) => c.coords);
