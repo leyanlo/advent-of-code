@@ -62,8 +62,8 @@ function doLinesIntersect(p1, p2, q1, q2) {
   return o1 && o2 && o3 && o4 && o1 !== o2 && o3 !== o4;
 }
 
-function isRectInPoly(coords, tiles) {
-  const [a, b] = coords;
+function isRectInPoly(rect, poly) {
+  const [a, b] = rect;
   const corners = [
     [a[0], a[1]],
     [b[0], a[1]],
@@ -72,22 +72,22 @@ function isRectInPoly(coords, tiles) {
   ];
 
   for (const corner of corners) {
-    if (!isPointInPoly(corner, tiles)) {
+    if (!isPointInPoly(corner, poly)) {
       return false;
     }
   }
 
-  const rectEdges = [
+  const edges = [
     [corners[0], corners[1]],
     [corners[1], corners[3]],
     [corners[3], corners[2]],
     [corners[2], corners[0]],
   ];
 
-  for (const edge of rectEdges) {
-    for (let i = 0; i < tiles.length; i++) {
-      const j = (i + 1) % tiles.length;
-      if (doLinesIntersect(edge[0], edge[1], tiles[i], tiles[j])) {
+  for (const edge of edges) {
+    for (let i = 0; i < poly.length; i++) {
+      const j = (i + 1) % poly.length;
+      if (doLinesIntersect(edge[0], edge[1], poly[i], poly[j])) {
         return false;
       }
     }
