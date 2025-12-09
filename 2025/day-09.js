@@ -1,17 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-var input = `7,1
-11,1
-11,7
-9,7
-9,5
-2,5
-2,3
-7,3`;
-var input = readFileSync('./day-09-input.txt', 'utf8').trimEnd();
-// 4208946784 wrong
-// 1181915416 wrong
-// 1577956170 right
+const input = readFileSync('./day-09-input.txt', 'utf8').trimEnd();
 
 function getCombos(coords) {
   const combos = [];
@@ -26,12 +15,19 @@ function getCombos(coords) {
   return combos.sort((a, b) => b.area - a.area);
 }
 
-// function solve(input) {
-//   const tiles = input.split('\n').map((line) => line.split(',').map(Number));
-//   const combos = getCombos(tiles);
-//   console.log(combos[0].area);
-// }
-// solve(input);
+function isPointOnLine(point, line) {
+  const [x, y] = point;
+  const [[x1, y1], [x2, y2]] = line;
+
+  const crossProduct = (y2 - y1) * (x - x1) - (x2 - x1) * (y - y1);
+  if (crossProduct) return false;
+
+  const dotProduct = (x - x1) * (x2 - x1) + (y - y1) * (y2 - y1);
+  if (dotProduct < 0) return false;
+
+  const squaredLengthBA = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+  return dotProduct <= squaredLengthBA;
+}
 
 function isPointInPoly(point, poly) {
   let inside = false;
@@ -49,22 +45,6 @@ function isPointInPoly(point, poly) {
     if (intersect) inside = !inside;
   }
   return inside;
-}
-
-function isPointOnLine(point, line) {
-  const [x, y] = point;
-  const [[x1, y1], [x2, y2]] = line;
-
-  const crossProduct = (y2 - y1) * (x - x1) - (x2 - x1) * (y - y1);
-  if (Math.abs(crossProduct) > 1e-10) return false;
-
-  const dotProduct = (x - x1) * (x2 - x1) + (y - y1) * (y2 - y1);
-  if (dotProduct < 0) return false;
-
-  const squaredLengthBA = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-  if (dotProduct > squaredLengthBA) return false;
-
-  return true;
 }
 
 function getOrientation(p, q, r) {
@@ -85,10 +65,10 @@ function doLinesIntersect(p1, p2, q1, q2) {
 function isRectInPoly(coords, tiles) {
   const [a, b] = coords;
   const corners = [
-    [Math.min(a[0], b[0]), Math.min(a[1], b[1])],
-    [Math.max(a[0], b[0]), Math.min(a[1], b[1])],
-    [Math.min(a[0], b[0]), Math.max(a[1], b[1])],
-    [Math.max(a[0], b[0]), Math.max(a[1], b[1])],
+    [a[0], a[1]],
+    [b[0], a[1]],
+    [a[0], b[1]],
+    [b[0], b[1]],
   ];
 
   for (const corner of corners) {
