@@ -32,14 +32,14 @@ function isPointOnLine(point, line) {
 function isPointInPoly(point, poly) {
   let inside = false;
   const [x, y] = point;
-  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const [xi, yi] = poly[i];
-    const [xj, yj] = poly[j];
-
+  for (let i = 0; i < poly.length; i++) {
+    const j = (i + 1) % poly.length;
     if (isPointOnLine(point, [poly[i], poly[j]])) {
       return true;
     }
 
+    const [xi, yi] = poly[i];
+    const [xj, yj] = poly[j];
     const intersect =
       yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
