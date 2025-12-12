@@ -20,15 +20,18 @@ function solve(input) {
     .at(-1)
     .split('\n')
     .map((line) => {
-      const [w, h, ...counts] = line.matchAll(/\d+/g).map((m) => +m);
-      return { w, h, counts };
+      const [w, h, ...shapeCounts] = line.matchAll(/\d+/g).map((m) => +m);
+      return { w, h, shapeCounts };
     });
 
   let count = 0;
-  for (const { w, h, counts } of regions) {
+  for (const { w, h, shapeCounts } of regions) {
     const regionArea = w * h;
-    const shapeArea = counts.reduce((acc, c, i) => acc + shapeAreas[i] * c, 0);
-    count += shapeArea <= regionArea;
+    const shapesArea = shapeCounts.reduce(
+      (acc, c, i) => acc + shapeAreas[i] * c,
+      0
+    );
+    count += shapesArea <= regionArea;
   }
   console.log(count);
 }
